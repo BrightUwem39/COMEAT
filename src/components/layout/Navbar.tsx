@@ -14,11 +14,13 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md transition-[background-color,box-shadow] duration-300">
       <Container className="flex h-20 items-center justify-between gap-6">
-        <BrandLogo
-          imageClassName="size-16 transition-transform duration-500 ease-out group-hover/logo:-rotate-3 group-hover/logo:scale-110 group-active/logo:scale-95 motion-reduce:transform-none"
-          linkClassName="group/logo rounded-full transition-[filter] duration-500 hover:drop-shadow-[0_0_12px_rgba(230,165,26,0.45)]"
-          priority
-        />
+        <div className="hidden lg:block">
+          <BrandLogo
+            imageClassName="size-16 transition-transform duration-500 ease-out group-hover/logo:-rotate-3 group-hover/logo:scale-110 group-active/logo:scale-95 motion-reduce:transform-none"
+            linkClassName="group/logo rounded-full transition-[filter] duration-500 hover:drop-shadow-[0_0_12px_rgba(230,165,26,0.45)]"
+            priority
+          />
+        </div>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary navigation">
           {navigation.map((item) => (
@@ -37,11 +39,20 @@ export function Navbar() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4 lg:hidden">
-          <Link className="group rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/cart" aria-label="View cart">
+        <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center lg:hidden">
+          <div className="justify-self-start">
+            <MobileMenu navigation={navigation} />
+          </div>
+
+          <BrandLogo
+            imageClassName="size-16 transition-transform duration-500 ease-out group-hover/logo:-rotate-3 group-hover/logo:scale-110 group-active/logo:scale-95 motion-reduce:transform-none"
+            linkClassName="group/logo rounded-full transition-[filter] duration-500 hover:drop-shadow-[0_0_12px_rgba(230,165,26,0.45)]"
+            priority
+          />
+
+          <Link className="group justify-self-end rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/cart" aria-label="View cart">
             <BagIcon />
           </Link>
-          <MobileMenu navigation={navigation} />
         </div>
       </Container>
     </header>
