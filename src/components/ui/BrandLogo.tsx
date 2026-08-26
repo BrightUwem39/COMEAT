@@ -3,13 +3,14 @@ import Link from "next/link";
 
 type BrandLogoProps = {
   imageClassName?: string;
+  linkClassName?: string;
   onClick?: () => void;
   priority?: boolean;
 };
 
-export function BrandLogo({ imageClassName = "size-16", onClick, priority = false }: BrandLogoProps) {
+export function BrandLogo({ imageClassName = "size-16", linkClassName = "", onClick, priority = false }: BrandLogoProps) {
   return (
-    <Link aria-label="ComEat home" className="inline-flex shrink-0" href="/" onClick={onClick}>
+    <Link aria-label="ComEat home" className={`inline-flex shrink-0 ${linkClassName}`} href="/" onClick={onClick}>
       <Image
         alt=""
         className={`object-contain ${imageClassName}`}
