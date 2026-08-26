@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { TouchEvent as ReactTouchEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 
@@ -9,9 +10,14 @@ type MobileMenuProps = {
 };
 
 export function MobileMenu({ navigation }: MobileMenuProps) {
+  const [dragging, setDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
   const [open, setOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentDragOffsetRef = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -49,10 +55,48 @@ export function MobileMenu({ navigation }: MobileMenuProps) {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [open]);
+
+  const handleTouchStart = (event: ReactTouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    touchStartXRef.current = touch.clientX;
+    currentDragOffsetRef.current = 0;
+    setDragging(true);
+  };
+
+  const handleTouchMove = (event: ReactTouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    if (touchStartXRef.current === null || !touch) return;
+
+    const nextOffset = Math.min(0, touch.clientX - touchStartXRef.current);
+    currentDragOffsetRef.current = nextOffset;
+    setDragOffset(nextOffset);
+  };
+
+  const finishSwipe = () => {
+    touchStartXRef.current = null;
+    setDragging(false);
+
+    if (currentDragOffsetRef.current <= -72) {
+      setDragOffset(-window.innerWidth);
+      closeTimerRef.current = setTimeout(() => {
+        setOpen(false);
+        setDragOffset(0);
+        currentDragOffsetRef.current = 0;
+        triggerRef.current?.focus();
+      }, 220);
+      return;
+    }
+
+    currentDragOffsetRef.current = 0;
+    setDragOffset(0);
+  };
 
   return (
     <>
@@ -73,10 +117,19 @@ export function MobileMenu({ navigation }: MobileMenuProps) {
         <div
           aria-label="Site navigation"
           aria-modal="true"
-          className="fixed inset-0 z-[70] overflow-y-auto bg-background"
+          className="fixed inset-0 z-[70] overflow-y-auto bg-background transition-transform duration-300 ease-out will-change-transform"
           id="mobile-navigation"
+          onTouchCancel={finishSwipe}
+          onTouchEnd={finishSwipe}
+          onTouchMove={handleTouchMove}
+          onTouchStart={handleTouchStart}
           ref={panelRef}
           role="dialog"
+          style={{
+            touchAction: "pan-y",
+            transform: `translate3d(${dragOffset}px, 0, 0)`,
+            transition: dragging ? "none" : undefined,
+          }}
         >
           <div className="flex h-20 items-center justify-between border-b border-border px-5 sm:px-8">
             <BrandLogo imageClassName="size-16" onClick={() => setOpen(false)} />
@@ -97,9 +150,8 @@ export function MobileMenu({ navigation }: MobileMenuProps) {
 
           <nav className="flex min-h-[calc(100svh-5rem)] flex-col justify-between px-5 py-10 sm:px-8" aria-label="Mobile navigation">
             <div>
-              {navigation.map((item, index) => (
-                <Link className="group flex items-baseline gap-5 border-b border-border py-5 font-display text-5xl leading-none tracking-[-0.03em] transition-[color,border-color,transform] duration-300 ease-out hover:translate-x-2 hover:border-gold/60 hover:text-gold motion-reduce:transform-none" href={item.href} key={item.href} onClick={() => setOpen(false)}>
-                  <span className="font-sans text-[10px] text-gold transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transform-none">0{index + 1}</span>
+              {navigation.map((item) => (
+                <Link className="group flex border-b border-border py-4 font-display text-3xl leading-none tracking-[-0.025em] transition-[color,border-color,transform] duration-300 ease-out hover:translate-x-2 hover:border-gold/60 hover:text-gold sm:text-4xl motion-reduce:transform-none" href={item.href} key={item.href} onClick={() => setOpen(false)}>
                   {item.label}
                 </Link>
               ))}
