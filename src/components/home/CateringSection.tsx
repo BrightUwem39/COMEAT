@@ -7,7 +7,7 @@ const occasions = ["Weddings", "Birthdays", "Corporate events", "Family gatherin
 export function CateringSection() {
   return (
     <section className="relative min-h-[760px] overflow-hidden border-y border-border">
-      <Image alt="A Nigerian feast arranged for sharing" className="object-cover" fill sizes="100vw" src="/images/hero-feast.webp" />
+      <Image alt="A bowl of ComEat local rice" className="object-cover object-center" fill sizes="100vw" src="/images/menu/local-rice.webp" />
       <div className="absolute inset-0 bg-background/65" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.96),rgba(5,5,5,0.35))]" />
       <Container className="relative flex min-h-[760px] items-center py-20">

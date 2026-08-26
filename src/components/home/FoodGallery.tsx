@@ -2,10 +2,10 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 
 const gallery = [
-  { src: "/images/puff-puff.webp", alt: "Golden Nigerian puff-puff", className: "sm:col-span-5 sm:row-span-2" },
-  { src: "/images/jollof-rice.webp", alt: "Nigerian jollof rice", className: "sm:col-span-7" },
-  { src: "/images/egusi.webp", alt: "Nigerian egusi soup", className: "sm:col-span-4" },
-  { src: "/images/asun.webp", alt: "Spicy grilled Nigerian asun", className: "sm:col-span-3" },
+  { src: "/images/menu/puff-puff.webp", alt: "Golden Nigerian puff-puff", className: "sm:col-span-5 sm:row-span-2" },
+  { src: "/images/menu/jollof-rice.webp", alt: "Nigerian jollof rice", className: "sm:col-span-7" },
+  { src: "/images/menu/egusi.webp", alt: "Nigerian egusi soup", className: "sm:col-span-4" },
+  { src: "/images/menu/asun.webp", alt: "Spicy grilled Nigerian asun", className: "sm:col-span-3" },
 ];
 
 export function FoodGallery() {

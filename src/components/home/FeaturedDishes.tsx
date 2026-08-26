@@ -4,9 +4,9 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const dishes = [
-  { name: "Jollof Rice", image: "/images/jollof-rice.webp", className: "lg:col-span-7 lg:row-span-2", number: "01" },
-  { name: "Egusi", image: "/images/egusi.webp", className: "lg:col-span-5", number: "02" },
-  { name: "Asun", image: "/images/asun.webp", className: "lg:col-span-5", number: "03" },
+  { name: "Jollof Rice", image: "/images/menu/jollof-rice.webp", className: "lg:col-span-7 lg:row-span-2", number: "01" },
+  { name: "Egusi", image: "/images/menu/egusi.webp", className: "lg:col-span-5", number: "02" },
+  { name: "Asun", image: "/images/menu/asun.webp", className: "lg:col-span-5", number: "03" },
 ];
 
 export function FeaturedDishes() {
@@ -30,7 +30,6 @@ export function FeaturedDishes() {
             </Link>
           ))}
         </div>
-        <p className="mt-4 text-xs text-muted">Development photography placeholders — final client images are still required.</p>
       </Container>
     </section>
   );

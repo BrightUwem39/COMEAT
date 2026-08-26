@@ -15,7 +15,7 @@ export function BrandStory() {
             </div>
           </div>
           <div className="relative min-h-[520px] overflow-hidden lg:col-span-6 lg:min-h-[700px]">
-            <Image alt="Spicy Nigerian asun on a dark ceramic plate" className="object-cover" fill sizes="(min-width: 1024px) 50vw, 100vw" src="/images/asun.webp" />
+            <Image alt="ComEat efo riro with meat" className="object-cover" fill sizes="(min-width: 1024px) 50vw, 100vw" src="/images/menu/efo-riro.webp" />
             <div className="absolute bottom-0 left-0 bg-orange px-5 py-4 text-xs font-bold uppercase tracking-[0.18em] text-background">Made to be shared</div>
           </div>
         </div>
