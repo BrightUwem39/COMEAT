@@ -7,22 +7,19 @@ import { Hero } from "@/components/home/Hero";
 import { MenuPreview } from "@/components/home/MenuPreview";
 import { OrderingSteps } from "@/components/home/OrderingSteps";
 import { Testimonials } from "@/components/home/Testimonials";
-import AuraBackground from "@/components/ui/AuraBackground";
 
 export default function Home() {
   return (
     <main id="main-content">
-      <AuraBackground>
-        <Hero />
-        <FeaturedDishes />
-        <BrandStory />
-        <MenuPreview />
-        <CateringSection />
-        <OrderingSteps />
-        <FoodGallery />
-        <Testimonials />
-        <FinalCTA />
-      </AuraBackground>
+      <Hero />
+      <FeaturedDishes />
+      <BrandStory />
+      <MenuPreview />
+      <CateringSection />
+      <OrderingSteps />
+      <FoodGallery />
+      <Testimonials />
+      <FinalCTA />
     </main>
   );
 }
