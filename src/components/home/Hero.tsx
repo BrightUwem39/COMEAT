@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/Container";
 export function Hero() {
   return (
     <section className="relative min-h-[calc(100svh-5rem)] overflow-hidden border-b border-border">
-      <Image alt="ComEat jollof rice served with plantain and meat" className="object-cover object-[62%_68%]" fill priority sizes="100vw" src="/images/menu/jollof-rice.webp" />
+      <Image alt="A bowl of ComEat local rice" className="object-cover object-[50%_70%]" fill priority sizes="100vw" src="/images/menu/local-rice.webp" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.98)_0%,rgba(5,5,5,0.9)_34%,rgba(5,5,5,0.25)_72%,rgba(5,5,5,0.12)_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(5,5,5,0.85)_0%,transparent_35%)] lg:hidden" />
 
