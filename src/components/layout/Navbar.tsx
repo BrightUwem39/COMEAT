@@ -12,7 +12,7 @@ const navigation = [
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md transition-[background-color,box-shadow] duration-300">
+    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-[background-color,box-shadow] duration-300">
       <Container className="flex h-20 items-center justify-between gap-6">
         <div className="hidden lg:block">
           <BrandLogo
