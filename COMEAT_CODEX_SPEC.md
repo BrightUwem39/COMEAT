@@ -60,7 +60,7 @@
 - Local Rice
 - Asaro
 - Ikokore
-- Imoye
+- Imoyo
 
 ## Soups & Sauces
 
@@ -554,7 +554,7 @@ Fried Rice
 Local Rice
 Asaro
 Ikokore
-Imoye
+Imoyo
 
 SOUPS & SAUCES
 ...

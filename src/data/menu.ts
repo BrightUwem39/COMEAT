@@ -8,7 +8,7 @@ export const menuCategories: readonly MenuCategory[] = [
   {
     id: "rice-and-mains",
     name: "Rice & Mains",
-    items: ["Jollof Rice", "Fried Rice", "Local Rice", "Asaro", "Ikokore", "Imoye"],
+    items: ["Jollof Rice", "Fried Rice", "Local Rice", "Asaro", "Ikokore", "Imoyo"],
   },
   {
     id: "soups-and-sauces",
