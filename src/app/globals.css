@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Clash Display";
+  src: url("/fonts/clash-display-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #050505;
   --surface: #111111;
@@ -10,8 +18,8 @@
   --gold-light: #ffc83d;
   --orange: #f26a00;
   --border: #292929;
-  --font-manrope: "Manrope Variable";
-  --font-instrument-serif: "Instrument Serif";
+  --font-inter: "Inter";
+  --font-clash-display: "Clash Display";
 }
 
 @theme inline {
@@ -24,8 +32,8 @@
   --color-gold-light: var(--gold-light);
   --color-orange: var(--orange);
   --color-border: var(--border);
-  --font-sans: var(--font-manrope);
-  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-clash-display);
 }
 
 * {
@@ -44,7 +52,7 @@ body {
   overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
 }
 
