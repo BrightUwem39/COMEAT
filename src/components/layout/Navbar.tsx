@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Container } from "@/components/ui/Container";
 import { MobileMenu } from "./MobileMenu";
 
@@ -13,9 +14,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95">
       <Container className="flex h-20 items-center justify-between gap-6">
-        <Link className="font-display text-3xl tracking-[-0.04em] text-foreground" href="/" aria-label="ComEat home">
-          ComEat<span className="text-gold">.</span>
-        </Link>
+        <BrandLogo imageClassName="size-16" priority />
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary navigation">
           {navigation.map((item) => (

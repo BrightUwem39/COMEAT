@@ -13,6 +13,10 @@ export const metadata: Metadata = {
     template: "%s | ComEat",
   },
   description: "Authentic Nigerian food, made to bring people together.",
+  icons: {
+    icon: "/images/comeat-logo.png",
+    apple: "/images/comeat-logo.png",
+  },
 };
 
 export default function RootLayout({

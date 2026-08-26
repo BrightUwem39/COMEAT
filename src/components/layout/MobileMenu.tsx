@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 type MobileMenuProps = {
   navigation: readonly { href: string; label: string }[];
@@ -78,9 +79,7 @@ export function MobileMenu({ navigation }: MobileMenuProps) {
           role="dialog"
         >
           <div className="flex h-20 items-center justify-between border-b border-border px-5 sm:px-8">
-            <Link className="font-display text-3xl tracking-[-0.04em]" href="/" onClick={() => setOpen(false)}>
-              ComEat<span className="text-gold">.</span>
-            </Link>
+            <BrandLogo imageClassName="size-16" onClick={() => setOpen(false)} />
             <button
               aria-label="Close menu"
               className="p-2 text-foreground"

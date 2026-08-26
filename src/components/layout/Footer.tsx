@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Container } from "@/components/ui/Container";
 
 const links = [
@@ -15,9 +16,7 @@ export function Footer() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr]">
           <div>
-            <Link className="font-display text-5xl tracking-[-0.04em]" href="/">
-              ComEat<span className="text-gold">.</span>
-            </Link>
+            <BrandLogo imageClassName="size-36" />
             <p className="mt-5 max-w-sm text-sm leading-6 text-muted">Authentic Nigerian food, made to bring people together.</p>
           </div>
 
