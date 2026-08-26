@@ -29,7 +29,7 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 export function Button(props: ButtonProps | LinkButtonProps) {
-  const { children, className = "", variant = "primary" } = props;
+  const { children, className = "", variant = "primary", ...rest } = props;
   const styles = `${baseStyles} ${variantStyles[variant]} ${className}`;
 
   if ("href" in props && props.href) {
@@ -40,10 +40,10 @@ export function Button(props: ButtonProps | LinkButtonProps) {
     );
   }
 
-  const { type = "button", ...buttonProps } = props as ButtonProps;
+  const buttonProps = rest as ButtonHTMLAttributes<HTMLButtonElement>;
 
   return (
-    <button className={styles} type={type} {...buttonProps}>
+    <button {...buttonProps} className={styles} type={buttonProps.type ?? "button"}>
       {children}
     </button>
   );

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "@fontsource/instrument-serif/400.css";
 import "@fontsource-variable/manrope";
+import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +20,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <a
+          className="sr-only z-[100] bg-gold px-4 py-3 font-semibold text-background focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+          href="#main-content"
+        >
+          Skip to content
+        </a>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
