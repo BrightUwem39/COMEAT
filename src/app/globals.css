@@ -9,7 +9,7 @@
 }
 
 :root {
-  --background: #050505;
+  --background: #100e0b;
   --surface: #111111;
   --surface-elevated: #171717;
   --foreground: #f7f3ea;
@@ -40,6 +40,12 @@
   border-color: var(--border);
 }
 
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
 html {
   background: var(--background);
   color-scheme: dark;
@@ -48,9 +54,8 @@ html {
 }
 
 body {
-  min-height: 100vh;
   overflow-x: hidden;
-  background: var(--background);
+  background-color: #100e0b;
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
