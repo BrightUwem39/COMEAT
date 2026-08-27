@@ -2,7 +2,6 @@ import { BrandStory } from "@/components/home/BrandStory";
 import { CateringSection } from "@/components/home/CateringSection";
 import { FeaturedDishes } from "@/components/home/FeaturedDishes";
 import { FinalCTA } from "@/components/home/FinalCTA";
-import { FoodGallery } from "@/components/home/FoodGallery";
 import { Hero } from "@/components/home/Hero";
 import { MenuPreview } from "@/components/home/MenuPreview";
 import { OrderingSteps } from "@/components/home/OrderingSteps";
@@ -27,9 +26,6 @@ export default function Home() {
       </ScrollReveal>
       <ScrollReveal direction="left">
         <OrderingSteps />
-      </ScrollReveal>
-      <ScrollReveal direction="right">
-        <FoodGallery />
       </ScrollReveal>
       <ScrollReveal direction="left">
         <Testimonials />
