@@ -13,24 +13,28 @@ export default function Home() {
   return (
     <main id="main-content">
       <Hero />
-      <ScrollReveal>
+      <ScrollReveal direction="left">
         <FeaturedDishes />
       </ScrollReveal>
-      <ScrollReveal>
+      <ScrollReveal direction="right">
         <BrandStory />
       </ScrollReveal>
-      <ScrollReveal>
+      <ScrollReveal direction="left">
         <MenuPreview />
       </ScrollReveal>
-      <ScrollReveal>
+      <ScrollReveal direction="right">
         <CateringSection />
       </ScrollReveal>
-      <OrderingSteps />
-      <FoodGallery />
-      <ScrollReveal>
+      <ScrollReveal direction="left">
+        <OrderingSteps />
+      </ScrollReveal>
+      <ScrollReveal direction="right">
+        <FoodGallery />
+      </ScrollReveal>
+      <ScrollReveal direction="left">
         <Testimonials />
       </ScrollReveal>
-      <ScrollReveal>
+      <ScrollReveal direction="right">
         <FinalCTA />
       </ScrollReveal>
     </main>

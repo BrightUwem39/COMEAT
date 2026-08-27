@@ -1,6 +1,5 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ScrollReveal } from "@/components/home/ScrollReveal";
 import { OrderingStep } from "@/components/home/OrderingStep";
 
 const steps = [
@@ -14,9 +13,7 @@ export function OrderingSteps() {
   return (
     <section className="bg-surface py-12 sm:py-16 lg:py-20">
       <Container>
-        <ScrollReveal>
-          <SectionHeading eyebrow="How it works" singleLine title="From our kitchen to your table." />
-        </ScrollReveal>
+        <SectionHeading eyebrow="How it works" singleLine title="From our kitchen to your table." />
         <ol className="mt-10 grid border-t border-border lg:mt-14 lg:grid-cols-4">
           {steps.map((step, index) => <OrderingStep {...step} index={index} key={step.title} showArrow={index < steps.length - 1} />)}
         </ol>
