@@ -125,35 +125,20 @@ button {
   animation-delay: 440ms;
 }
 
-@keyframes page-scroll-reveal {
-  0%,
-  8% {
-    opacity: 0;
-    transform: translate3d(var(--reveal-enter-x), 0, 0);
-  }
-
-  24%,
-  80% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate3d(var(--reveal-exit-x), 0, 0);
-  }
-}
-
-@keyframes gallery-card-enter {
+@keyframes menu-image-shimmer {
   from {
-    opacity: 0;
-    transform: translate3d(0, 2rem, 0) scale(0.97);
+    background-position: 200% 0;
   }
 
   to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    background-position: -200% 0;
   }
+}
+
+.menu-image-shimmer {
+  background: linear-gradient(100deg, var(--surface) 20%, var(--surface-elevated) 42%, var(--surface) 64%);
+  background-size: 200% 100%;
+  animation: menu-image-shimmer 1.1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 @keyframes final-cta-orb-drift {
@@ -172,45 +157,6 @@ button {
 .final-cta-orb {
   animation: final-cta-orb-drift 7s ease-in-out infinite;
   will-change: opacity, transform;
-}
-
-.scroll-reveal-left {
-  --reveal-enter-x: -3.5rem;
-  --reveal-exit-x: 3.5rem;
-}
-
-.scroll-reveal-viewport {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: clip;
-}
-
-.scroll-reveal-right {
-  --reveal-enter-x: 3.5rem;
-  --reveal-exit-x: -3.5rem;
-}
-
-@supports (animation-timeline: view()) {
-  .scroll-reveal {
-    animation-name: page-scroll-reveal;
-    animation-duration: 1ms;
-    animation-fill-mode: both;
-    animation-timing-function: linear;
-    animation-timeline: view(block);
-    animation-range: entry 0% exit 100%;
-    will-change: opacity, transform;
-  }
-
-  .gallery-card-reveal {
-    opacity: 0;
-    animation-name: gallery-card-enter;
-    animation-duration: 1ms;
-    animation-fill-mode: both;
-    animation-timing-function: linear;
-    animation-timeline: view(block);
-    animation-range: entry 0% entry 65%;
-    will-change: opacity, transform;
-  }
 }
 
 ::selection {
@@ -242,9 +188,7 @@ button {
   }
 
   .hero-image-reveal,
-  .hero-reveal,
-  .scroll-reveal,
-  .gallery-card-reveal {
+  .hero-reveal {
     opacity: 1;
     transform: none;
     animation: none;
@@ -255,17 +199,5 @@ button {
     opacity: 0.4;
     transform: none;
     animation: none;
-  }
-}
-
-@media (max-width: 639px) {
-  .scroll-reveal-left {
-    --reveal-enter-x: -1.75rem;
-    --reveal-exit-x: 1.75rem;
-  }
-
-  .scroll-reveal-right {
-    --reveal-enter-x: 1.75rem;
-    --reveal-exit-x: -1.75rem;
   }
 }

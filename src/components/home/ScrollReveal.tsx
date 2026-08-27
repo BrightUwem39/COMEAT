@@ -1,14 +1,25 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { scrollRevealVariants } from "@/lib/animations";
 
 type ScrollRevealProps = {
   children: ReactNode;
-  direction?: "left" | "right";
+  amount?: number;
 };
 
-export function ScrollReveal({ children, direction = "left" }: ScrollRevealProps) {
+export function ScrollReveal({ children, amount = 0.3 }: ScrollRevealProps) {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <div className="scroll-reveal-viewport">
-      <div className={`scroll-reveal scroll-reveal-${direction}`}>{children}</div>
-    </div>
+    <motion.div
+      initial={reduceMotion ? false : "hidden"}
+      variants={reduceMotion ? undefined : scrollRevealVariants}
+      viewport={{ amount, once: true }}
+      whileInView={reduceMotion ? undefined : "visible"}
+    >
+      {children}
+    </motion.div>
   );
 }

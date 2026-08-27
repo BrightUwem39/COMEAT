@@ -1,30 +1,8 @@
 import Link from "next/link";
-import { menuCategories } from "@/data/menu";
+import { allMenuItems } from "@/data/menu";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { MenuCarousel } from "@/components/home/MenuCarousel";
-
-const dishImages: Record<string, string> = {
-  "Jollof Rice": "/images/hero.jpg",
-  "Fried Rice": "/images/menu/fried-rice.webp",
-  "Local Rice": "/images/menu/local-rice.webp",
-  Asaro: "/images/menu/asaro.webp",
-  Ikokore: "/images/menu/ikokore.webp",
-  Imoyo: "/images/menu/imoyo.webp",
-  Egusi: "/images/menu/egusi.webp",
-  "Efo Riro": "/images/menu/efo-riro.webp",
-  Ayamase: "/images/menu/ayamase.webp",
-  "Ata Dindin": "/images/menu/ata-dindin.webp",
-  "Pepper Soup": "/images/menu/pepper-soup.webp",
-  "Spaghetti Bolognese": "/images/menu/spaghetti-bolognese.webp",
-  Asun: "/images/menu/asun.webp",
-  "Naija Buns": "/images/menu/naija-buns.webp",
-  "Puff-Puff": "/images/menu/puff-puff.webp",
-  "Moi-Moi": "/images/menu/moi-moi.webp",
-  "Ewa Agoyin": "/images/menu/ewa-agoyin.webp",
-};
-
-const menuItems = menuCategories.flatMap((category) => category.items).map((name) => ({ name, image: dishImages[name] }));
+import { MenuPreviewGrid } from "@/components/home/MenuPreviewGrid";
 
 export function MenuPreview() {
   return (
@@ -38,7 +16,7 @@ export function MenuPreview() {
           </svg>
           <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left bg-orange transition-transform duration-300 ease-out group-hover:scale-x-75 group-focus-visible:scale-x-75" />
         </Link>
-        <MenuCarousel items={menuItems} />
+        <MenuPreviewGrid items={allMenuItems.slice(0, 5)} />
       </Container>
     </section>
   );
