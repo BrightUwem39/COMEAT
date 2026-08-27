@@ -4,28 +4,32 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const dishes = [
-  { name: "Jollof Rice", image: "/images/menu/jollof-rice.webp", className: "lg:col-span-7 lg:row-span-2", number: "01" },
-  { name: "Egusi", image: "/images/menu/egusi.webp", className: "lg:col-span-5", number: "02" },
-  { name: "Asun", image: "/images/menu/asun.webp", className: "lg:col-span-5", number: "03" },
+  { name: "Jollof Rice", image: "/images/hero.jpg" },
+  { name: "Egusi", image: "/images/menu/egusi.webp" },
+  { name: "Asun", image: "/images/menu/asun.webp" },
+  { name: "Ayamase", image: "/images/menu/ayamase.webp" },
 ];
 
 export function FeaturedDishes() {
   return (
-    <section className="py-20 sm:py-28 lg:py-36">
+    <section className="py-12 sm:py-16 lg:py-20">
       <Container>
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading eyebrow="From the kitchen" title="Start with the favorites." />
-          <Link className="w-fit border-b border-gold pb-1 text-xs font-bold uppercase tracking-[0.18em] text-foreground transition-colors hover:text-gold" href="/menu">See the full menu</Link>
-        </div>
+        <SectionHeading eyebrow="From the kitchen" singleLine title="Start with the favorites" />
+        <Link className="group relative mt-8 inline-flex min-h-12 items-center gap-3 overflow-hidden whitespace-nowrap text-xs font-bold uppercase tracking-[0.18em] text-orange transition-[color,transform] duration-300 ease-out hover:-translate-y-0.5 hover:text-gold-light" href="/menu">
+          <span>See the full menu</span>
+          <svg aria-hidden="true" className="size-4 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 group-focus-visible:translate-x-1 group-focus-visible:-translate-y-1 motion-reduce:transform-none" fill="none" viewBox="0 0 20 20">
+            <path d="M6 14 14 6m-6 0h6v6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+          </svg>
+          <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left bg-orange transition-transform duration-300 ease-out group-hover:scale-x-75 group-focus-visible:scale-x-75" />
+        </Link>
 
-        <div className="mt-12 grid gap-4 sm:mt-16 lg:grid-cols-12 lg:grid-rows-2">
-          {dishes.map((dish, index) => (
-            <Link className={`group relative min-h-[420px] overflow-hidden border border-border ${dish.className} ${index === 0 ? "lg:min-h-[780px]" : "lg:min-h-0"}`} href="/menu" key={dish.name}>
-              <Image alt="" className="image-zoom object-cover" fill sizes={index === 0 ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 1024px) 42vw, 100vw"} src={dish.image} />
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-14">
+          {dishes.map((dish) => (
+            <Link className="group relative min-h-[240px] overflow-hidden border border-border sm:min-h-[360px] lg:min-h-[520px]" href="/menu" key={dish.name}>
+              <Image alt="" className="image-zoom object-cover" fill sizes="(min-width: 1440px) 696px, 50vw" src={dish.image} />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 sm:p-8">
-                <h3 className="font-display text-4xl tracking-[-0.03em] sm:text-5xl">{dish.name}</h3>
-                <span aria-hidden="true" className="text-xs font-bold tracking-[0.18em] text-gold">{dish.number}</span>
+              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-8">
+                <h3 className="font-display text-2xl tracking-[-0.03em] sm:text-4xl lg:text-5xl">{dish.name}</h3>
               </div>
             </Link>
           ))}

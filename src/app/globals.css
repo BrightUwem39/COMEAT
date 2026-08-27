@@ -41,6 +41,8 @@
 }
 
 html {
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--background);
   color-scheme: dark;
   scroll-padding-top: 5rem;
@@ -48,8 +50,10 @@ html {
 }
 
 body {
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
@@ -72,6 +76,141 @@ button {
 .group:hover .image-zoom,
 .group:focus-within .image-zoom {
   transform: scale(1.035);
+}
+
+@keyframes hero-image-enter {
+  from {
+    opacity: 0.45;
+    transform: scale(1.06);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-content-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(-3rem, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.hero-image-reveal {
+  animation: hero-image-enter 1400ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+  transform-origin: center;
+}
+
+.hero-reveal {
+  opacity: 0;
+  animation: hero-content-enter 850ms cubic-bezier(0.2, 0.75, 0.25, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.hero-reveal-1 {
+  animation-delay: 160ms;
+}
+
+.hero-reveal-2 {
+  animation-delay: 300ms;
+}
+
+.hero-reveal-3 {
+  animation-delay: 440ms;
+}
+
+@keyframes page-scroll-reveal {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translate3d(var(--reveal-enter-x), 0, 0);
+  }
+
+  24%,
+  80% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--reveal-exit-x), 0, 0);
+  }
+}
+
+@keyframes gallery-card-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2rem, 0) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes final-cta-orb-drift {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    opacity: 0.65;
+    transform: translate3d(-4rem, 2rem, 0) scale(1.15);
+  }
+}
+
+.final-cta-orb {
+  animation: final-cta-orb-drift 7s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-left {
+  --reveal-enter-x: -3.5rem;
+  --reveal-exit-x: 3.5rem;
+}
+
+.scroll-reveal-viewport {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.scroll-reveal-right {
+  --reveal-enter-x: 3.5rem;
+  --reveal-exit-x: -3.5rem;
+}
+
+@supports (animation-timeline: view()) {
+  .scroll-reveal {
+    animation-name: page-scroll-reveal;
+    animation-duration: 1ms;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+    animation-timeline: view(block);
+    animation-range: entry 0% exit 100%;
+    will-change: opacity, transform;
+  }
+
+  .gallery-card-reveal {
+    opacity: 0;
+    animation-name: gallery-card-enter;
+    animation-duration: 1ms;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+    animation-timeline: view(block);
+    animation-range: entry 0% entry 65%;
+    will-change: opacity, transform;
+  }
 }
 
 ::selection {
@@ -100,5 +239,33 @@ button {
 
   .image-zoom {
     transform: none !important;
+  }
+
+  .hero-image-reveal,
+  .hero-reveal,
+  .scroll-reveal,
+  .gallery-card-reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
+  }
+
+  .final-cta-orb {
+    opacity: 0.4;
+    transform: none;
+    animation: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .scroll-reveal-left {
+    --reveal-enter-x: -1.75rem;
+    --reveal-exit-x: 1.75rem;
+  }
+
+  .scroll-reveal-right {
+    --reveal-enter-x: 1.75rem;
+    --reveal-exit-x: -1.75rem;
   }
 }
