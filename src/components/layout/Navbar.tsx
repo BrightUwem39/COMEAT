@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Container } from "@/components/ui/Container";
+import { ProfileIcon } from "@/components/ui/ProfileIcon";
 import { MobileMenu } from "./MobileMenu";
 
 const navigation = [
@@ -34,6 +35,9 @@ export function Navbar() {
           <Link className="transform-gpu border border-gold bg-gold px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,border-color,box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 hover:border-gold-light hover:bg-gold-light hover:shadow-[0_8px_28px_rgba(230,165,26,0.28)] active:translate-y-0 active:scale-[0.98] motion-reduce:transform-none" href="/menu">
             Order now
           </Link>
+          <Link aria-label="View profile" className="group/profile rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/profile">
+            <ProfileIcon className="size-[23px] transition-transform duration-200 ease-out group-hover/profile:scale-105 motion-reduce:transform-none" />
+          </Link>
           <Link className="group/cart relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-foreground transition-[color,transform] duration-300 ease-out after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 hover:-translate-y-0.5 hover:text-gold hover:after:scale-x-100 focus-visible:text-gold focus-visible:after:scale-x-100 motion-reduce:transform-none motion-reduce:after:transition-none" href="/cart">
             Cart <span className="text-muted transition-colors duration-300 group-hover/cart:text-gold-light">(0)</span>
           </Link>
@@ -50,9 +54,14 @@ export function Navbar() {
             priority
           />
 
-          <Link className="group justify-self-end rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/cart" aria-label="View cart">
-            <BagIcon />
-          </Link>
+          <div className="flex items-center justify-self-end">
+            <Link aria-label="View profile" className="group/profile rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-200 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/profile">
+              <ProfileIcon className="size-[22px] transition-transform duration-200 ease-out group-hover/profile:scale-105 motion-reduce:transform-none" />
+            </Link>
+            <Link className="group rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/cart" aria-label="View cart">
+              <BagIcon />
+            </Link>
+          </div>
         </div>
       </Container>
     </header>
