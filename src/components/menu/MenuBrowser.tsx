@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { MenuCategory } from "@/data/menu";
 import { menuCardVariants, menuGridVariants } from "@/lib/animations";
@@ -12,6 +12,8 @@ type MenuBrowserProps = {
 
 export function MenuBrowser({ categories }: MenuBrowserProps) {
   const reduceMotion = useReducedMotion();
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [showAllMobile, setShowAllMobile] = useState(false);
@@ -22,6 +24,18 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
     return items.filter((item) => item.name.toLowerCase().includes(normalizedQuery));
   }, [items, query]);
   const mobileLimit = showAllMobile || query.trim() ? filteredItems.length : 6;
+
+  useEffect(() => {
+    const dismissSearchKeyboard = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Node && !searchContainerRef.current?.contains(target)) {
+        searchInputRef.current?.blur();
+      }
+    };
+
+    document.addEventListener("pointerdown", dismissSearchKeyboard);
+    return () => document.removeEventListener("pointerdown", dismissSearchKeyboard);
+  }, []);
 
   return (
     <section aria-labelledby="all-dishes-title" className="mt-10 border-t border-border pt-8 lg:mt-14 lg:pt-10">
@@ -35,6 +49,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
       <motion.div
         animate={reduceMotion ? undefined : { y: searchFocused ? -2 : 0 }}
         className="relative mt-7 border-b border-border bg-transparent sm:max-w-xl"
+        ref={searchContainerRef}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.div
@@ -51,7 +66,11 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
             onBlur={() => setSearchFocused(false)}
             onChange={(event) => { setQuery(event.target.value); setShowAllMobile(false); }}
             onFocus={() => setSearchFocused(true)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") event.currentTarget.blur();
+            }}
             placeholder="Search for a dish..."
+            ref={searchInputRef}
             type="search"
             value={query}
           />
