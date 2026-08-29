@@ -13,6 +13,7 @@ type MenuBrowserProps = {
 export function MenuBrowser({ categories }: MenuBrowserProps) {
   const reduceMotion = useReducedMotion();
   const [query, setQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const [showAllMobile, setShowAllMobile] = useState(false);
   const items = useMemo(() => categories.flatMap((category) => category.items), [categories]);
   const filteredItems = useMemo(() => {
@@ -29,31 +30,44 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
           <h2 className="font-display text-4xl leading-none tracking-[-0.03em] text-foreground sm:text-5xl" id="all-dishes-title">All dishes</h2>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">Choose any meal, select its available size, add a protein where offered, and set your required pepper level.</p>
         </div>
-        <span className="text-xs font-bold uppercase tracking-[0.16em] text-gold">{filteredItems.length} dishes</span>
       </div>
 
-      <label className="relative mt-7 block sm:max-w-md">
-        <span className="sr-only">Search dishes</span>
-        <svg aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.6" />
-          <path d="m16.25 16.25 4 4" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" />
-        </svg>
-        <input
-          className="min-h-12 w-full rounded-xl border border-border bg-surface pl-12 pr-4 text-sm text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted focus:border-gold focus:shadow-[0_0_0_3px_rgba(230,165,26,0.12)]"
-          onChange={(event) => { setQuery(event.target.value); setShowAllMobile(false); }}
-          placeholder="Search the menu"
-          type="search"
-          value={query}
+      <motion.div
+        animate={reduceMotion ? undefined : { y: searchFocused ? -2 : 0 }}
+        className="relative mt-7 border-b border-border bg-transparent sm:max-w-xl"
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <motion.div
+          animate={{ opacity: searchFocused || query ? 1 : 0 }}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_50%,rgba(230,165,26,0.12),transparent_38%)]"
+          transition={{ duration: reduceMotion ? 0 : 0.25 }}
         />
-      </label>
-
-      <aside className="mt-7 rounded-xl border border-border bg-surface px-5 py-4 text-sm leading-relaxed text-muted" aria-label="Menu preparation notes">
-        Rice can be made with basmati or long-grain on request. Soups are made with assorted meat, while local sauces are made with seafood and assorted meat.
-      </aside>
+        <div className="relative flex min-h-16 items-center gap-3 px-3">
+          <label className="sr-only" htmlFor="menu-search">Search dishes</label>
+          <input
+            className="min-w-0 flex-1 appearance-none bg-transparent py-4 text-sm font-medium text-foreground outline-none placeholder:text-muted"
+            id="menu-search"
+            onBlur={() => setSearchFocused(false)}
+            onChange={(event) => { setQuery(event.target.value); setShowAllMobile(false); }}
+            onFocus={() => setSearchFocused(true)}
+            placeholder="Search for a dish..."
+            type="search"
+            value={query}
+          />
+          <AnimateSearchAction
+            query={query}
+            reduceMotion={Boolean(reduceMotion)}
+            resultCount={filteredItems.length}
+            totalCount={items.length}
+            onClear={() => setQuery("")}
+          />
+        </div>
+      </motion.div>
 
       <motion.div
         animate="visible"
-        className="mt-8 grid items-stretch gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+        className="mt-7 grid items-stretch gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
         initial={reduceMotion ? false : "hidden"}
         variants={reduceMotion ? undefined : menuGridVariants}
       >
@@ -78,5 +92,23 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
         </button>
       ) : null}
     </section>
+  );
+}
+
+function AnimateSearchAction({ onClear, query, reduceMotion, resultCount, totalCount }: { onClear: () => void; query: string; reduceMotion: boolean; resultCount: number; totalCount: number }) {
+  if (!query) return <span className="hidden shrink-0 rounded-full bg-background px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted sm:block">{totalCount} dishes</span>;
+
+  return (
+    <motion.button
+      animate={{ opacity: 1, scale: 1 }}
+      aria-label={`Clear search showing ${resultCount} results`}
+      className="grid size-9 shrink-0 place-items-center rounded-full bg-background text-lg leading-none text-muted transition-colors hover:text-gold"
+      initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
+      onClick={onClear}
+      type="button"
+      whileTap={reduceMotion ? undefined : { scale: 0.9 }}
+    >
+      ×
+    </motion.button>
   );
 }

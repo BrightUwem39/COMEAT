@@ -119,3 +119,21 @@ export const menuImageVariants: Variants = {
     },
   },
 };
+
+export const menuControlVariants: Variants = {
+  hover: {
+    y: -2,
+    transition: {
+      duration: 0.2,
+      ease: easeOutExpo,
+    },
+  },
+  tap: {
+    scale: 0.96,
+    y: 0,
+    transition: {
+      duration: 0.15,
+      ease: easeOutExpo,
+    },
+  },
+};

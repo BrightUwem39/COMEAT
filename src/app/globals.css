@@ -195,9 +195,20 @@ button {
   color: var(--background);
 }
 
+:focus,
 :focus-visible {
-  outline: 2px solid var(--gold-light);
-  outline-offset: 3px;
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+  border-color: var(--border) !important;
+  box-shadow: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

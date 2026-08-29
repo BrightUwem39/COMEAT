@@ -6,7 +6,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCart } from "@/components/cart/CartProvider";
 import type { MenuItem, MenuPrice } from "@/data/menu";
-import { menuCardVariants, menuImageVariants } from "@/lib/animations";
+import { menuCardVariants, menuControlVariants, menuImageVariants } from "@/lib/animations";
 
 type MenuCardProps = {
   item: MenuItem;
@@ -84,15 +84,18 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
               <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">Select size</p>
               <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
                 {item.pricing.map((option) => (
-                  <button
+                  <motion.button
                     aria-pressed={selectedSizeId === option.id}
-                    className={`min-h-10 rounded-lg border px-2 text-[11px] font-semibold transition-[background-color,border-color,color,transform] duration-200 active:scale-[0.98] ${selectedSizeId === option.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
+                    className={`min-h-10 rounded-lg border px-2 text-[11px] font-semibold transition-[background-color,border-color,color] duration-200 ${selectedSizeId === option.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
                     key={option.id}
                     onClick={() => { setSelectedSizeId(option.id); setAdded(false); }}
                     type="button"
+                    variants={reduceMotion ? undefined : menuControlVariants}
+                    whileHover={reduceMotion ? undefined : "hover"}
+                    whileTap={reduceMotion ? undefined : "tap"}
                   >
                     {option.label}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -100,15 +103,23 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
             <p className="mt-3 text-xs text-muted sm:mt-5 sm:text-sm">Price awaiting confirmation.</p>
           )}
 
-          <button
-            className="mt-4 min-h-10 w-full rounded-lg border border-gold bg-transparent px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-gold transition-[background-color,color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:bg-gold hover:text-background hover:shadow-[0_10px_28px_rgba(230,165,26,0.2)] disabled:cursor-not-allowed disabled:border-border disabled:text-muted disabled:shadow-none sm:mt-5 sm:min-h-12 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
+          <motion.button
+            className="group/order mt-4 flex min-h-10 w-full items-center justify-center gap-2 overflow-hidden rounded-lg border border-gold bg-transparent px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-gold transition-[background-color,color,box-shadow] duration-300 hover:bg-gold hover:text-background hover:shadow-[0_10px_28px_rgba(230,165,26,0.2)] disabled:cursor-not-allowed disabled:border-border disabled:text-muted disabled:shadow-none sm:mt-5 sm:min-h-12 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
             disabled={!selectedSize}
             onClick={() => setPanelOpen(true)}
             type="button"
+            variants={reduceMotion ? undefined : menuControlVariants}
+            whileHover={reduceMotion ? undefined : "hover"}
+            whileTap={reduceMotion ? undefined : "tap"}
           >
             <span className="sm:hidden">{selectedSize ? added ? "Add another" : "Order" : "Unavailable"}</span>
             <span className="hidden sm:inline">{selectedSize ? added ? "Add another" : "Customize order" : "Unavailable"}</span>
-          </button>
+            {selectedSize ? (
+              <svg aria-hidden="true" className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover/order:translate-x-1 motion-reduce:transform-none" fill="none" viewBox="0 0 20 20">
+                <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
+              </svg>
+            ) : null}
+          </motion.button>
         </div>
       </motion.article>
 
@@ -178,7 +189,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
             <h3 className="mt-2 font-display text-4xl leading-none text-foreground" id={`${item.id}-order-title`}>{item.name}</h3>
             <p className="mt-2 text-sm text-muted">{selectedSize.label}</p>
           </div>
-          <button aria-label="Close order panel" className="grid size-10 shrink-0 place-items-center rounded-full border border-border text-xl text-muted transition-colors hover:border-gold hover:text-foreground" onClick={onClose} type="button">×</button>
+          <motion.button aria-label="Close order panel" className="grid size-10 shrink-0 place-items-center rounded-full border border-border text-xl text-muted transition-colors hover:border-gold hover:text-foreground" onClick={onClose} type="button" variants={reduceMotion ? undefined : menuControlVariants} whileHover={reduceMotion ? undefined : "hover"} whileTap={reduceMotion ? undefined : "tap"}>×</motion.button>
         </div>
 
         {item.pricing ? (
@@ -186,13 +197,16 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
             <legend className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose size</legend>
             <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
               {item.pricing.map((option) => (
-                <button
+                <motion.button
                   aria-pressed={selectedSize.id === option.id}
                   className={`min-h-11 rounded-lg border px-2 text-[11px] font-semibold transition-colors ${selectedSize.id === option.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted"}`}
                   key={option.id}
                   onClick={() => setSelectedSizeId(option.id)}
                   type="button"
-                >{option.label}</button>
+                  variants={reduceMotion ? undefined : menuControlVariants}
+                  whileHover={reduceMotion ? undefined : "hover"}
+                  whileTap={reduceMotion ? undefined : "tap"}
+                >{option.label}</motion.button>
               ))}
             </div>
           </fieldset>
@@ -203,13 +217,16 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
             <legend className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose rice type <span className="text-gold">Required</span></legend>
             <div className="grid grid-cols-2 gap-2">
               {item.grainOptions.map((grain) => (
-                <button
+                <motion.button
                   aria-pressed={selectedGrainId === grain.id}
-                  className={`min-h-12 rounded-lg border px-3 text-sm font-semibold transition-[background-color,border-color,color,transform] active:scale-[0.98] ${selectedGrainId === grain.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
+                  className={`min-h-12 rounded-lg border px-3 text-sm font-semibold transition-[background-color,border-color,color] ${selectedGrainId === grain.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
                   key={grain.id}
                   onClick={() => setSelectedGrainId(grain.id)}
                   type="button"
-                >{grain.label}</button>
+                  variants={reduceMotion ? undefined : menuControlVariants}
+                  whileHover={reduceMotion ? undefined : "hover"}
+                  whileTap={reduceMotion ? undefined : "tap"}
+                >{grain.label}</motion.button>
               ))}
             </div>
           </fieldset>
@@ -218,7 +235,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
         {item.proteins ? (
           <label className="mt-6 block">
             <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose protein</span>
-            <select className="min-h-12 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground outline-none transition-colors focus:border-gold" onChange={(event) => setSelectedProteinId(event.target.value)} required value={selectedProteinId}>
+            <select className="min-h-12 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground outline-none" onChange={(event) => setSelectedProteinId(event.target.value)} required value={selectedProteinId}>
               <option value="">Select a protein</option>
               {item.proteins.map((protein) => <option key={protein.id} value={protein.id}>{protein.label}</option>)}
             </select>
@@ -229,14 +246,17 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
           <legend className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Pepper tolerance <span className="text-orange">Required</span></legend>
           <div className="grid grid-cols-5 gap-2">
             {[1, 2, 3, 4, 5].map((level) => (
-              <button
+              <motion.button
                 aria-label={`Pepper tolerance ${level} of 5`}
                 aria-pressed={pepperTolerance === level}
-                className={`grid min-h-11 place-items-center rounded-lg border text-sm font-bold transition-[background-color,border-color,color,transform] active:scale-95 ${pepperTolerance === level ? "border-orange bg-orange text-white" : "border-border bg-background text-muted hover:border-orange/70 hover:text-foreground"}`}
+                className={`grid min-h-11 place-items-center rounded-lg border text-sm font-bold transition-[background-color,border-color,color] ${pepperTolerance === level ? "border-orange bg-orange text-white" : "border-border bg-background text-muted hover:border-orange/70 hover:text-foreground"}`}
                 key={level}
                 onClick={() => setPepperTolerance(level)}
                 type="button"
-              >{level}</button>
+                variants={reduceMotion ? undefined : menuControlVariants}
+                whileHover={reduceMotion ? undefined : "hover"}
+                whileTap={reduceMotion ? undefined : "tap"}
+              >{level}</motion.button>
             ))}
           </div>
           <div className="mt-2 flex justify-between text-[10px] uppercase tracking-[0.12em] text-muted"><span>Mild</span><span>Hot</span></div>
@@ -246,7 +266,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
           <span className="text-sm text-muted">Order total</span>
           <strong className="font-display text-4xl leading-none text-gold">{unitPrice === undefined ? "—" : currency.format(unitPrice)}</strong>
         </div>
-        <button className="mt-5 min-h-12 w-full rounded-lg bg-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light disabled:cursor-not-allowed disabled:bg-border disabled:text-muted" disabled={!ready || unitPrice === undefined} onClick={onAdd} type="button">Add to cart</button>
+        <motion.button className="mt-5 min-h-12 w-full rounded-lg bg-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:bg-border disabled:text-muted" disabled={!ready || unitPrice === undefined} onClick={onAdd} type="button" variants={reduceMotion ? undefined : menuControlVariants} whileHover={reduceMotion ? undefined : "hover"} whileTap={reduceMotion ? undefined : "tap"}>Add to cart</motion.button>
       </motion.section>
     </motion.div>
   );

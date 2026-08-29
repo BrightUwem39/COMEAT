@@ -73,7 +73,7 @@ export function CartPageClient() {
             <label className="mt-5 block">
               <span className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-foreground">Describe the allergies <span className="text-orange">Required</span></span>
               <textarea
-                className="min-h-28 w-full resize-y rounded-lg border border-border bg-background px-4 py-3 text-sm leading-relaxed text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted focus:border-orange focus:shadow-[0_0_0_3px_rgba(242,106,0,0.12)]"
+                className="min-h-28 w-full resize-y rounded-lg border border-border bg-background px-4 py-3 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted"
                 onChange={(event) => updateAllergyInfo({ ...allergyInfo, details: event.target.value })}
                 placeholder="Example: Severe peanut allergy. Please avoid peanut oil and contact with peanuts."
                 required
