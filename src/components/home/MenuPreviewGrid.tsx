@@ -24,7 +24,7 @@ export function MenuPreviewGrid({ items }: MenuPreviewGridProps) {
     >
       {items.map((item) => (
         <div className="w-[82vw] max-w-[21rem] shrink-0 snap-start md:w-auto md:max-w-none md:shrink" key={item.id}>
-          <MenuCard href="/menu" item={item} />
+          <MenuCard href="/menu" item={item} size="tall" />
         </div>
       ))}
     </motion.div>

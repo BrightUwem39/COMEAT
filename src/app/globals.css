@@ -141,6 +141,37 @@ button {
   animation: menu-image-shimmer 1.1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
+@keyframes allergy-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.allergy-marquee {
+  width: 100%;
+  overflow: hidden;
+}
+
+.allergy-marquee-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: allergy-marquee-scroll 26s linear infinite;
+  will-change: transform;
+}
+
+.allergy-marquee-message {
+  padding-right: 4rem;
+}
+
+.allergy-marquee:hover .allergy-marquee-track {
+  animation-play-state: paused;
+}
+
 @keyframes final-cta-orb-drift {
   0%,
   100% {
@@ -199,5 +230,21 @@ button {
     opacity: 0.4;
     transform: none;
     animation: none;
+  }
+
+  .allergy-marquee-track {
+    width: auto;
+    white-space: normal;
+    animation: none;
+    transform: none;
+  }
+
+  .allergy-marquee-message {
+    padding: 0 1.25rem;
+    text-align: center;
+  }
+
+  .allergy-marquee-message[aria-hidden="true"] {
+    display: none;
   }
 }

@@ -3,6 +3,7 @@ import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Container } from "@/components/ui/Container";
 import { ProfileIcon } from "@/components/ui/ProfileIcon";
 import { MobileMenu } from "./MobileMenu";
+import { CartCount } from "@/components/cart/CartCount";
 
 const navigation = [
   { href: "/menu", label: "Menu" },
@@ -39,7 +40,7 @@ export function Navbar() {
             <ProfileIcon className="size-[23px] transition-transform duration-200 ease-out group-hover/profile:scale-105 motion-reduce:transform-none" />
           </Link>
           <Link className="group/cart relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-foreground transition-[color,transform] duration-300 ease-out after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 hover:-translate-y-0.5 hover:text-gold hover:after:scale-x-100 focus-visible:text-gold focus-visible:after:scale-x-100 motion-reduce:transform-none motion-reduce:after:transition-none" href="/cart">
-            Cart <span className="text-muted transition-colors duration-300 group-hover/cart:text-gold-light">(0)</span>
+            Cart <CartCount />
           </Link>
         </div>
 
@@ -58,8 +59,9 @@ export function Navbar() {
             <Link aria-label="View profile" className="group/profile rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-200 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/profile">
               <ProfileIcon className="size-[22px] transition-transform duration-200 ease-out group-hover/profile:scale-105 motion-reduce:transform-none" />
             </Link>
-            <Link className="group rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/cart" aria-label="View cart">
+            <Link className="group relative rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/cart" aria-label="View cart">
               <BagIcon />
+              <CartCount compact />
             </Link>
           </div>
         </div>
