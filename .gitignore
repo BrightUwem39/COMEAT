@@ -8,6 +8,9 @@
 # production
 /build
 
+# Prisma generated client
+/src/generated/prisma/
+
 # local environment files
 .env*
 !.env.example
@@ -26,4 +29,3 @@ pnpm-debug.log*
 Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
-
