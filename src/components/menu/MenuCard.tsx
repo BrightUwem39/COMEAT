@@ -62,7 +62,7 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
   return (
     <>
       <motion.article
-        className="group grid h-full grid-cols-[7rem_minmax(0,1fr)] overflow-hidden rounded-2xl border border-white/10 bg-surface shadow-[0_14px_36px_rgba(0,0,0,0.24)] transition-[border-color,box-shadow] duration-300 hover:border-gold/30 hover:shadow-[0_22px_48px_rgba(0,0,0,0.4)] sm:flex sm:flex-col"
+        className="group grid h-full grid-cols-[5.75rem_minmax(0,1fr)] overflow-hidden rounded-xl border border-white/10 bg-surface shadow-[0_14px_36px_rgba(0,0,0,0.24)] transition-[border-color,box-shadow] duration-300 hover:border-gold/30 hover:shadow-[0_22px_48px_rgba(0,0,0,0.4)] min-[360px]:grid-cols-[6.5rem_minmax(0,1fr)] min-[400px]:grid-cols-[7rem_minmax(0,1fr)] sm:flex sm:flex-col sm:rounded-2xl"
         variants={reduceMotion ? undefined : menuCardVariants}
         whileHover={reduceMotion ? undefined : "hover"}
       >
@@ -73,10 +73,10 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
-          <div className="flex items-baseline justify-between gap-4">
-            <h3 className="font-display text-2xl leading-none tracking-[-0.03em] text-foreground sm:text-3xl">{item.name}</h3>
-            {unitPrice !== undefined ? <strong className="shrink-0 text-base text-gold sm:text-lg">{currency.format(unitPrice)}</strong> : null}
+        <div className="flex min-w-0 flex-1 flex-col p-3 min-[360px]:p-4 sm:p-5">
+          <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-1">
+            <h3 className="min-w-0 flex-1 font-display text-xl leading-none tracking-[-0.03em] text-foreground min-[360px]:text-2xl sm:text-3xl">{item.name}</h3>
+            {unitPrice !== undefined ? <strong className="shrink-0 text-sm text-gold min-[360px]:text-base sm:text-lg">{currency.format(unitPrice)}</strong> : null}
           </div>
 
           {item.pricing ? (
@@ -100,11 +100,11 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
               </div>
             </div>
           ) : (
-            <p className="mt-3 text-xs text-muted sm:mt-5 sm:text-sm">Price awaiting confirmation.</p>
+            <p className="mt-2 text-[11px] leading-snug text-muted min-[360px]:mt-3 min-[360px]:text-xs sm:mt-5 sm:text-sm">Price awaiting confirmation.</p>
           )}
 
           <motion.button
-            className="group/order mt-4 flex min-h-10 w-full items-center justify-center gap-2 overflow-hidden rounded-lg border border-gold bg-transparent px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-gold transition-[background-color,color,box-shadow] duration-300 hover:bg-gold hover:text-background hover:shadow-[0_10px_28px_rgba(230,165,26,0.2)] disabled:cursor-not-allowed disabled:border-border disabled:text-muted disabled:shadow-none sm:mt-5 sm:min-h-12 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
+            className="group/order mt-3 flex min-h-10 w-full items-center justify-center gap-1.5 overflow-hidden rounded-lg border border-gold bg-transparent px-2 text-[9px] font-bold uppercase tracking-[0.1em] text-gold transition-[background-color,color,box-shadow] duration-300 hover:bg-gold hover:text-background hover:shadow-[0_10px_28px_rgba(230,165,26,0.2)] disabled:cursor-not-allowed disabled:border-border disabled:text-muted disabled:shadow-none min-[360px]:mt-4 min-[360px]:gap-2 min-[360px]:px-3 min-[360px]:text-[10px] min-[360px]:tracking-[0.12em] sm:mt-5 sm:min-h-12 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
             disabled={!selectedSize}
             onClick={() => setPanelOpen(true)}
             type="button"
@@ -176,7 +176,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
       <motion.section
         aria-labelledby={`${item.id}-order-title`}
         aria-modal="true"
-        className="max-h-[92svh] w-full overflow-y-auto rounded-t-2xl border border-border bg-surface p-6 shadow-[0_30px_90px_rgba(0,0,0,0.6)] sm:max-w-lg sm:rounded-2xl sm:p-7"
+        className="max-h-[calc(100svh-1rem)] w-full overflow-y-auto rounded-t-2xl border border-border bg-surface p-4 shadow-[0_30px_90px_rgba(0,0,0,0.6)] min-[360px]:p-5 sm:max-h-[92svh] sm:max-w-lg sm:rounded-2xl sm:p-7"
         initial={reduceMotion ? false : { opacity: 0, y: 35, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 24, scale: 0.98 }}
@@ -186,7 +186,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
         <div className="flex items-start justify-between gap-5 border-b border-border pb-5">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gold">Customize order</p>
-            <h3 className="mt-2 font-display text-4xl leading-none text-foreground" id={`${item.id}-order-title`}>{item.name}</h3>
+            <h3 className="mt-2 font-display text-3xl leading-none text-foreground min-[360px]:text-4xl" id={`${item.id}-order-title`}>{item.name}</h3>
             <p className="mt-2 text-sm text-muted">{selectedSize.label}</p>
           </div>
           <motion.button aria-label="Close order panel" className="grid size-10 shrink-0 place-items-center rounded-full border border-border text-xl text-muted transition-colors hover:border-gold hover:text-foreground" onClick={onClose} type="button" variants={reduceMotion ? undefined : menuControlVariants} whileHover={reduceMotion ? undefined : "hover"} whileTap={reduceMotion ? undefined : "tap"}>×</motion.button>

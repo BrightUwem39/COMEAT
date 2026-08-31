@@ -38,10 +38,10 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
   }, []);
 
   return (
-    <section aria-labelledby="all-dishes-title" className="mt-10 border-t border-border pt-8 lg:mt-14 lg:pt-10">
+    <section aria-labelledby="all-dishes-title" className="mt-8 border-t border-border pt-7 sm:mt-10 sm:pt-8 lg:mt-14 lg:pt-10">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-4xl leading-none tracking-[-0.03em] text-foreground sm:text-5xl" id="all-dishes-title">All dishes</h2>
+          <h2 className="font-display text-3xl leading-none tracking-[-0.03em] text-foreground min-[360px]:text-4xl sm:text-5xl" id="all-dishes-title">All dishes</h2>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">Choose any meal, select its available size, add a protein where offered, and set your required pepper level.</p>
         </div>
       </div>
@@ -58,7 +58,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_50%,rgba(230,165,26,0.12),transparent_38%)]"
           transition={{ duration: reduceMotion ? 0 : 0.25 }}
         />
-        <div className="relative flex min-h-16 items-center gap-3 px-3">
+        <div className="relative flex min-h-14 items-center gap-3 px-2 min-[360px]:px-3 sm:min-h-16">
           <label className="sr-only" htmlFor="menu-search">Search dishes</label>
           <input
             className="min-w-0 flex-1 appearance-none bg-transparent py-4 text-sm font-medium text-foreground outline-none placeholder:text-muted"
@@ -86,7 +86,7 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
 
       <motion.div
         animate="visible"
-        className="mt-7 grid items-stretch gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+        className="mt-6 grid items-stretch gap-2.5 min-[360px]:gap-3 sm:mt-7 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
         initial={reduceMotion ? false : "hidden"}
         variants={reduceMotion ? undefined : menuGridVariants}
       >

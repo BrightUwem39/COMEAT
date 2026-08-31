@@ -17,19 +17,19 @@ export default function MenuPage() {
           <span aria-hidden="true" className="allergy-marquee-message">Food allergy warning: Menu items may contain or come into contact with peanuts, tree nuts, sesame, soy, eggs, wheat, dairy, shellfish, or fish. Please tell us about all allergies and dietary requirements before ordering.</span>
         </div>
       </aside>
-      <section className="border-b border-border py-12 sm:py-16 lg:py-20">
-        <Container>
+      <section className="border-b border-border py-8 sm:py-16 lg:py-20">
+        <Container className="px-4 min-[360px]:px-5 sm:px-8 lg:px-12">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">The ComEat menu</p>
-          <h1 className="mt-5 font-display text-[clamp(3.5rem,9vw,8rem)] leading-[0.82] tracking-[-0.045em] text-foreground">Find your favorite.</h1>
-          <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border lg:grid-cols-2">
-            <article className="bg-surface p-6 sm:p-7">
+          <h1 className="mt-4 font-display text-[clamp(3rem,15vw,8rem)] leading-[0.84] tracking-[-0.045em] text-foreground sm:mt-5 sm:text-[clamp(3.5rem,9vw,8rem)]">Find your favorite.</h1>
+          <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:mt-10 lg:grid-cols-2">
+            <article className="bg-surface p-5 sm:p-7">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Plan ahead</p>
-              <h2 className="mt-3 font-display text-3xl leading-none text-foreground">Order 48 hours ahead.</h2>
+              <h2 className="mt-3 font-display text-[1.7rem] leading-none text-foreground sm:text-3xl">Order 48 hours ahead.</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">Choose your meal, tray size, protein where applicable, and pepper tolerance from 1–5. Full payment confirms your order.</p>
             </article>
-            <article className="bg-surface p-6 sm:p-7">
+            <article className="bg-surface p-5 sm:p-7">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Delivery</p>
-              <h2 className="mt-3 font-display text-3xl leading-none text-foreground">Delivery runs 9AM–3PM.</h2>
+              <h2 className="mt-3 font-display text-[1.7rem] leading-none text-foreground sm:text-3xl">Delivery runs 9AM–3PM.</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">Out-of-state orders ship Monday through Wednesday, with Friday as the weekly order cut-off.</p>
             </article>
           </div>
