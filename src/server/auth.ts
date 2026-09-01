@@ -2,9 +2,11 @@ import "server-only";
 
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { betterAuth } from "better-auth";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { after } from "next/server";
 
 import {
+  accountPasswordSchema,
   firstNameSchema,
   lastNameSchema,
   phoneSchema,
@@ -64,9 +66,35 @@ export const auth = betterAuth({
     provider: "postgresql",
     transaction: true,
   }),
+  hooks: {
+    before: createAuthMiddleware(async (context) => {
+      const body = context.body as
+        | { newPassword?: unknown; password?: unknown }
+        | undefined;
+      const password =
+        context.path === "/sign-up/email"
+          ? body?.password
+          : context.path === "/reset-password"
+            ? body?.newPassword
+            : undefined;
+
+      if (typeof password !== "string") return;
+
+      const result = accountPasswordSchema.safeParse(password);
+
+      if (!result.success) {
+        throw APIError.from("BAD_REQUEST", {
+          code: "INVALID_PASSWORD_FORMAT",
+          message:
+            result.error.issues[0]?.message ??
+            "Enter a password that meets all requirements.",
+        });
+      }
+    }),
+  },
   emailAndPassword: {
     enabled: true,
-    minPasswordLength: 10,
+    minPasswordLength: 8,
     maxPasswordLength: 128,
     autoSignIn: false,
     requireEmailVerification: true,

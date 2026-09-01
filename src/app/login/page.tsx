@@ -18,9 +18,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
 
   return (
     <AuthPageShell
-      description="Sign in to manage your details, preferences, and ComEat orders."
-      eyebrow="Welcome back"
-      title="Your table is waiting."
+      description="Sign in to your ComEat account."
+      eyebrow=""
+      title="Sign in"
     >
       <LoginForm returnTo={returnTo} />
     </AuthPageShell>

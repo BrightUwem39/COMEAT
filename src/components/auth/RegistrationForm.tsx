@@ -47,7 +47,7 @@ function registrationErrorMessage(status: number, code?: string) {
   }
 
   if (code === "PASSWORD_TOO_SHORT") {
-    return "Your password must contain at least 10 characters.";
+    return "Your password must contain at least 8 characters.";
   }
 
   if (code === "PASSWORD_TOO_LONG") {
@@ -124,31 +124,31 @@ export function RegistrationForm() {
     return (
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className="border border-gold/30 bg-gold/[0.06] p-7 sm:p-9"
+        className="rounded-2xl border border-background/10 bg-white/45 p-7 sm:p-9"
         initial={reduceMotion ? false : { opacity: 0, y: 20 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="grid size-12 place-items-center rounded-full bg-gold text-2xl text-background" aria-hidden="true">
+        <div className="grid size-12 place-items-center rounded-full bg-background text-2xl text-foreground" aria-hidden="true">
           ✓
         </div>
         <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-gold">
           Check your inbox
         </p>
-        <h2 className="mt-3 font-display text-3xl leading-none tracking-[-0.025em] text-foreground sm:text-4xl">
+        <h2 className="mt-3 font-display text-3xl leading-none tracking-[-0.025em] text-background sm:text-4xl">
           Verify your email.
         </h2>
-        <p className="mt-5 max-w-md text-sm leading-7 text-muted">
+        <p className="mt-5 max-w-md text-sm leading-7 text-background/60">
           If the address can receive a ComEat account email, a verification link is on its way. It expires after 24 hours.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            className="inline-flex min-h-12 items-center justify-center bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors duration-200 hover:bg-gold-light"
+            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-background px-6 text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-colors duration-200 hover:bg-surface"
             href="/login"
           >
             Go to sign in
           </Link>
           <button
-            className="min-h-12 border border-border px-6 text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-colors duration-200 hover:border-foreground"
+            className="min-h-12 rounded-xl border border-background/15 px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors duration-200 hover:border-background/40"
             onClick={() => setComplete(false)}
             type="button"
           >
@@ -162,13 +162,13 @@ export function RegistrationForm() {
   return (
     <motion.form
       animate="visible"
-      className="space-y-6"
+      className="space-y-4"
       initial={reduceMotion ? false : "hidden"}
       noValidate
       onSubmit={handleSubmit}
       variants={reduceMotion ? undefined : authFormVariants}
     >
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3">
         <AuthField
           autoComplete="given-name"
           error={fieldErrors.firstName}
@@ -235,16 +235,16 @@ export function RegistrationForm() {
       />
 
       <motion.p
-        className="text-xs leading-5 text-muted"
+        className="text-[0.68rem] leading-5 text-background/55"
         variants={reduceMotion ? undefined : authFieldVariants}
       >
-        Use at least 10 characters. Pasted passwords and password managers are supported.
+        Use at least 8 characters, begin with a capital letter, and include a number.
       </motion.p>
 
       {formError ? (
         <motion.p
           aria-live="polite"
-          className="border-l-2 border-orange bg-orange/10 px-4 py-3 text-sm leading-6 text-foreground"
+          className="border-l-2 border-orange bg-orange/10 px-4 py-3 text-sm leading-6 text-background"
           initial={reduceMotion ? false : { opacity: 0, x: -12 }}
           role="alert"
           animate={{ opacity: 1, x: 0 }}
@@ -255,7 +255,7 @@ export function RegistrationForm() {
 
       <motion.div variants={reduceMotion ? undefined : authFieldVariants}>
         <motion.button
-          className="flex min-h-14 w-full items-center justify-center rounded-xl bg-gold px-6 text-xs font-bold uppercase tracking-[0.18em] text-background shadow-[0_12px_35px_rgba(221,164,72,0.16)] transition-[background-color,box-shadow] duration-300 hover:bg-gold-light hover:shadow-[0_16px_42px_rgba(221,164,72,0.24)] disabled:cursor-wait disabled:bg-gold/60"
+          className="group relative flex min-h-11 w-full items-center justify-center rounded-lg bg-background px-12 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-foreground shadow-[0_12px_26px_rgba(5,5,5,0.13)] transition-[background-color,box-shadow] duration-300 hover:bg-surface hover:shadow-[0_16px_34px_rgba(5,5,5,0.18)] disabled:cursor-wait disabled:bg-background/60"
           disabled={pending}
           type="submit"
           variants={reduceMotion ? undefined : menuControlVariants}
@@ -263,15 +263,18 @@ export function RegistrationForm() {
           whileTap={reduceMotion || pending ? undefined : "tap"}
         >
           {pending ? "Creating account…" : "Create account"}
+          <span aria-hidden="true" className="absolute right-5 text-xl font-normal transition-transform duration-300 group-hover:translate-x-1">
+            →
+          </span>
         </motion.button>
       </motion.div>
 
       <motion.p
-        className="border-t border-border pt-6 text-center text-sm text-muted"
+        className="border-t border-background/10 pt-4 text-left text-xs text-background/55"
         variants={reduceMotion ? undefined : authFieldVariants}
       >
         Already have an account?{" "}
-        <Link className="font-semibold text-gold transition-colors hover:text-gold-light" href="/login">
+        <Link className="font-semibold text-orange transition-colors hover:text-background" href="/login">
           Sign in
         </Link>
       </motion.p>
@@ -294,18 +297,18 @@ function AuthField({ error, label, optional, ...inputProps }: AuthFieldProps) {
       className="block"
       variants={reduceMotion ? undefined : authFieldVariants}
     >
-      <span className="mb-2.5 flex items-center justify-between text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-muted">
+      <span className="mb-1.5 flex items-center justify-between text-[0.6rem] font-semibold uppercase tracking-[0.13em] text-background/55 sm:text-[0.62rem] sm:tracking-[0.15em]">
         {label}
         {optional ? (
-          <span className="font-normal normal-case tracking-normal text-muted">Optional</span>
+          <span className="font-normal normal-case tracking-normal text-background/45">Optional</span>
         ) : null}
       </span>
       <input
         {...inputProps}
         aria-describedby={errorId}
         aria-invalid={Boolean(error)}
-        className={`min-h-14 w-full rounded-xl border bg-background/60 px-4 text-base text-foreground transition-[border-color,background-color] duration-300 placeholder:text-muted/50 ${
-          error ? "border-orange" : "border-border hover:border-gold/35"
+        className={`min-h-11 w-full min-w-0 rounded-lg border bg-white/55 px-3.5 text-sm text-background transition-[border-color,background-color] duration-300 placeholder:text-background/35 ${
+          error ? "border-orange" : "border-background/15 hover:border-background/30"
         }`}
       />
       {error ? (
@@ -336,7 +339,7 @@ function PasswordField({
 
   return (
     <motion.div className="block" variants={reduceMotion ? undefined : authFieldVariants}>
-      <label className="mb-2.5 block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-muted" htmlFor={inputId}>
+      <label className="mb-1.5 block text-[0.62rem] font-semibold uppercase tracking-[0.15em] text-background/55" htmlFor={inputId}>
         {label}
       </label>
       <span className="relative block">
@@ -344,15 +347,15 @@ function PasswordField({
           {...inputProps}
           aria-describedby={errorId}
           aria-invalid={Boolean(error)}
-          className={`min-h-14 w-full rounded-xl border bg-background/60 px-4 pr-14 text-base text-foreground transition-[border-color,background-color] duration-300 ${
-            error ? "border-orange" : "border-border hover:border-gold/35"
+          className={`min-h-11 w-full rounded-lg border bg-white/55 px-3.5 pr-12 text-sm text-background transition-[border-color,background-color] duration-300 ${
+            error ? "border-orange" : "border-background/15 hover:border-background/30"
           }`}
           id={inputId}
           type={shown ? "text" : "password"}
         />
         <button
           aria-label={shown ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
-          className="absolute inset-y-0 right-0 grid w-13 place-items-center rounded-r-xl text-muted transition-colors duration-300 hover:text-gold"
+          className="absolute inset-y-0 right-0 grid w-11 place-items-center rounded-r-lg text-background/45 transition-colors duration-300 hover:text-orange"
           onClick={onToggle}
           type="button"
         >

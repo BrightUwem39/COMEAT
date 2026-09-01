@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 export default function ForgotPasswordPage() {
   return (
     <AuthPageShell
-      description="Enter your account email and we will send a secure, time-limited recovery link."
+      description="Enter your account email and we’ll send you a secure recovery link."
       eyebrow="Account recovery"
-      title="Let’s get you back."
+      title="Reset your password"
     >
       <ForgotPasswordForm />
     </AuthPageShell>

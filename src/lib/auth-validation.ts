@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const PERSON_NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}' -]*$/u;
 const PHONE_PATTERN = /^[0-9+().\-\s]+$/;
+const PASSWORD_START_PATTERN = /^[A-Z]/;
+const PASSWORD_NUMBER_PATTERN = /[0-9]/;
 
 const personNameSchema = z
   .string()
@@ -19,16 +21,20 @@ export const phoneSchema = z
   .max(25, "Enter a valid phone number.")
   .regex(PHONE_PATTERN, "Enter a valid phone number.");
 
+export const accountPasswordSchema = z
+  .string()
+  .min(8, "Password must contain at least 8 characters.")
+  .max(128, "Password must contain no more than 128 characters.")
+  .regex(PASSWORD_START_PATTERN, "Password must start with a capital letter.")
+  .regex(PASSWORD_NUMBER_PATTERN, "Password must include at least one number.");
+
 export const registrationSchema = z
   .object({
     firstName: firstNameSchema,
     lastName: lastNameSchema,
     email: z.string().trim().email("Enter a valid email address."),
     phone: z.union([phoneSchema, z.literal("")]),
-    password: z
-      .string()
-      .min(10, "Use at least 10 characters.")
-      .max(128, "Use no more than 128 characters."),
+    password: accountPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((values) => values.password === values.confirmPassword, {
@@ -56,10 +62,7 @@ export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z
   .object({
-    password: z
-      .string()
-      .min(10, "Use at least 10 characters.")
-      .max(128, "Use no more than 128 characters."),
+    password: accountPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((values) => values.password === values.confirmPassword, {

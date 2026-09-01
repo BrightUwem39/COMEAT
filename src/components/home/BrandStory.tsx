@@ -4,7 +4,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function BrandStory() {
   return (
-    <section className="bg-foreground py-20 sm:py-28 lg:py-36">
+    <section className="bg-foreground py-8 sm:py-10 lg:py-12">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">

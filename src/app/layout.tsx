@@ -5,6 +5,7 @@ import "@fontsource/inter/latin-600.css";
 import "@fontsource/inter/latin-700.css";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { RouteChrome } from "@/components/layout/RouteChrome";
 import { CartProvider } from "@/components/cart/CartProvider";
 import "./globals.css";
 
@@ -35,9 +36,9 @@ export default function RootLayout({
           Skip to content
         </a>
         <CartProvider>
-          <Navbar />
-          {children}
-          <Footer />
+          <RouteChrome footer={<Footer />} header={<Navbar />}>
+            {children}
+          </RouteChrome>
         </CartProvider>
       </body>
     </html>

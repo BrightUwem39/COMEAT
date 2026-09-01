@@ -15,9 +15,9 @@ export default async function RegisterPage() {
 
   return (
     <AuthPageShell
-      description="Create one secure account for smoother checkout, saved preferences, and order history."
+      description="Create an account for easier checkout and order history."
       eyebrow="Join the table"
-      title="Good food, made easier."
+      title="Create an account"
       wide
     >
       <RegistrationForm />

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { authClient, useSession } from "@/lib/auth-client";
@@ -20,6 +20,8 @@ const initialValues: LoginValues = {
   email: "",
   password: "",
 };
+
+const subscribeToHydration = () => () => {};
 
 function loginErrorMessage(status: number, code?: string) {
   if (status === 429) {
@@ -45,6 +47,11 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
   const [notice, setNotice] = useState("");
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
 
   function updateField(field: keyof LoginValues, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -124,7 +131,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
     }
   }
 
-  if (sessionPending) {
+  if (!hydrated || sessionPending) {
     return (
       <div aria-busy="true" aria-label="Checking account session" className="space-y-4">
         <div className="menu-image-shimmer h-12" />
@@ -138,38 +145,38 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
     return (
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className="border border-gold/30 bg-gold/[0.06] p-7 sm:p-9"
+        className="rounded-2xl border border-background/10 bg-white/45 p-7 sm:p-9"
         initial={reduceMotion ? false : { opacity: 0, y: 20 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="grid size-12 place-items-center rounded-full bg-gold text-xl font-bold text-background" aria-hidden="true">
+        <div className="grid size-12 place-items-center rounded-full bg-background text-xl font-bold text-foreground" aria-hidden="true">
           {session.user.name.charAt(0).toUpperCase()}
         </div>
         <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-gold">
           Signed in
         </p>
-        <h2 className="mt-3 font-display text-3xl leading-none tracking-[-0.025em] text-foreground sm:text-4xl">
+        <h2 className="mt-3 font-display text-3xl leading-none tracking-[-0.025em] text-background sm:text-4xl">
           Welcome back, {session.user.firstName}.
         </h2>
-        <p className="mt-5 text-sm leading-7 text-muted">
+        <p className="mt-5 text-sm leading-7 text-background/60">
           You are signed in as {session.user.email}.
         </p>
 
         {formError ? (
-          <p className="mt-5 border-l-2 border-orange bg-orange/10 px-4 py-3 text-sm text-foreground" role="alert">
+          <p className="mt-5 border-l-2 border-orange bg-orange/10 px-4 py-3 text-sm text-background" role="alert">
             {formError}
           </p>
         ) : null}
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            className="inline-flex min-h-12 items-center justify-center bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors duration-200 hover:bg-gold-light"
+            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-background px-6 text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-colors duration-200 hover:bg-surface"
             href="/profile"
           >
             View profile
           </Link>
           <motion.button
-            className="min-h-12 border border-border px-6 text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-colors duration-200 hover:border-foreground disabled:cursor-wait disabled:text-muted"
+            className="min-h-12 rounded-xl border border-background/15 px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors duration-200 hover:border-background/40 disabled:cursor-wait disabled:text-background/40"
             disabled={pending}
             onClick={handleLogout}
             type="button"
@@ -187,7 +194,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
   return (
     <motion.form
       animate="visible"
-      className="space-y-6"
+      className="space-y-4"
       initial={reduceMotion ? false : "hidden"}
       noValidate
       onSubmit={handleSubmit}
@@ -197,7 +204,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
         <motion.p
           animate={{ opacity: 1, x: 0 }}
           aria-live="polite"
-          className="border-l-2 border-gold bg-gold/10 px-4 py-3 text-sm leading-6 text-foreground"
+          className="border-l-2 border-gold bg-gold/10 px-4 py-3 text-sm leading-6 text-background"
           initial={reduceMotion ? false : { opacity: 0, x: -12 }}
         >
           {notice}
@@ -205,14 +212,14 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
       ) : null}
 
       <motion.label className="block" htmlFor="login-email" variants={reduceMotion ? undefined : authFieldVariants}>
-        <span className="mb-2.5 block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-muted">
+        <span className="mb-1.5 block text-[0.62rem] font-semibold uppercase tracking-[0.15em] text-background/55">
           Email address
         </span>
         <input
           aria-describedby={errors.email ? "login-email-error" : undefined}
           aria-invalid={Boolean(errors.email)}
           autoComplete="email"
-          className={`min-h-14 w-full rounded-xl border bg-background/60 px-4 text-base text-foreground transition-[border-color,background-color] duration-300 placeholder:text-muted/50 ${errors.email ? "border-orange" : "border-border hover:border-gold/35"}`}
+          className={`min-h-11 w-full rounded-lg border bg-white/55 px-3.5 text-sm text-background transition-[border-color,background-color] duration-300 placeholder:text-background/35 ${errors.email ? "border-orange" : "border-background/15 hover:border-background/30"}`}
           id="login-email"
           inputMode="email"
           name="email"
@@ -228,11 +235,11 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
       </motion.label>
 
       <motion.div className="block" variants={reduceMotion ? undefined : authFieldVariants}>
-        <span className="mb-2.5 flex items-center justify-between gap-4">
-          <label className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-muted" htmlFor="login-password">
+        <span className="mb-1.5 flex items-center justify-between gap-4">
+          <label className="text-[0.62rem] font-semibold uppercase tracking-[0.15em] text-background/55" htmlFor="login-password">
             Password
           </label>
-          <Link className="text-xs font-semibold text-gold transition-colors duration-300 hover:text-gold-light" href="/forgot-password">
+          <Link className="text-xs font-semibold text-orange transition-colors duration-300 hover:text-background" href="/forgot-password">
             Forgot password?
           </Link>
         </span>
@@ -241,7 +248,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
             aria-describedby={errors.password ? "login-password-error" : undefined}
             aria-invalid={Boolean(errors.password)}
             autoComplete="current-password"
-            className={`min-h-14 w-full rounded-xl border bg-background/60 px-4 pr-14 text-base text-foreground transition-[border-color,background-color] duration-300 ${errors.password ? "border-orange" : "border-border hover:border-gold/35"}`}
+            className={`min-h-11 w-full rounded-lg border bg-white/55 px-3.5 pr-12 text-sm text-background transition-[border-color,background-color] duration-300 ${errors.password ? "border-orange" : "border-background/15 hover:border-background/30"}`}
             id="login-password"
             name="password"
             onChange={(event) => updateField("password", event.target.value)}
@@ -250,7 +257,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
           />
           <button
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute inset-y-0 right-0 grid w-13 place-items-center rounded-r-xl text-muted transition-colors duration-300 hover:text-gold"
+            className="absolute inset-y-0 right-0 grid w-11 place-items-center rounded-r-lg text-background/45 transition-colors duration-300 hover:text-orange"
             onClick={() => setShowPassword((shown) => !shown)}
             type="button"
           >
@@ -268,7 +275,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
         <motion.p
           animate={{ opacity: 1, x: 0 }}
           aria-live="polite"
-          className="border-l-2 border-orange bg-orange/10 px-4 py-3 text-sm leading-6 text-foreground"
+          className="border-l-2 border-orange bg-orange/10 px-4 py-3 text-sm leading-6 text-background"
           initial={reduceMotion ? false : { opacity: 0, x: -12 }}
           role="alert"
         >
@@ -278,7 +285,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
 
       <motion.div variants={reduceMotion ? undefined : authFieldVariants}>
         <motion.button
-          className="flex min-h-14 w-full items-center justify-center rounded-xl bg-gold px-6 text-xs font-bold uppercase tracking-[0.18em] text-background shadow-[0_12px_35px_rgba(221,164,72,0.16)] transition-[background-color,box-shadow] duration-300 hover:bg-gold-light hover:shadow-[0_16px_42px_rgba(221,164,72,0.24)] disabled:cursor-wait disabled:bg-gold/60"
+          className="group relative flex min-h-11 w-full items-center justify-center rounded-lg bg-background px-12 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-foreground shadow-[0_12px_26px_rgba(5,5,5,0.13)] transition-[background-color,box-shadow] duration-300 hover:bg-surface hover:shadow-[0_16px_34px_rgba(5,5,5,0.18)] disabled:cursor-wait disabled:bg-background/60"
           disabled={pending}
           type="submit"
           variants={reduceMotion ? undefined : menuControlVariants}
@@ -286,12 +293,15 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
           whileTap={reduceMotion || pending ? undefined : "tap"}
         >
           {pending ? "Signing in…" : "Sign in"}
+          <span aria-hidden="true" className="absolute right-5 text-xl font-normal transition-transform duration-300 group-hover:translate-x-1">
+            →
+          </span>
         </motion.button>
       </motion.div>
 
-      <motion.p className="border-t border-border pt-6 text-center text-sm text-muted" variants={reduceMotion ? undefined : authFieldVariants}>
+      <motion.p className="border-t border-background/10 pt-4 text-left text-xs text-background/55" variants={reduceMotion ? undefined : authFieldVariants}>
         New to ComEat?{" "}
-        <Link className="font-semibold text-gold transition-colors hover:text-gold-light" href="/register">
+        <Link className="font-semibold text-orange transition-colors hover:text-background" href="/register">
           Create an account
         </Link>
       </motion.p>
