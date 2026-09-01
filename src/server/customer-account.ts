@@ -119,3 +119,80 @@ export const getCustomerOrders = cache(async () => {
   });
   return orders.map(toOrderDTO);
 });
+
+export const getCustomerOrderDetail = cache(async (publicReference: string) => {
+  const customer = await requireCurrentCustomer(`/profile/orders/${encodeURIComponent(publicReference)}`);
+  const order = await db.order.findFirst({
+    where: { publicReference, userId: customer.userId },
+    select: {
+      publicReference: true,
+      status: true,
+      createdAt: true,
+      currency: true,
+      subtotalCents: true,
+      deliveryFeeCents: true,
+      taxCents: true,
+      totalCents: true,
+      fulfillmentMethod: true,
+      requestedFulfillmentAt: true,
+      deliveryWindowStart: true,
+      deliveryWindowEnd: true,
+      deliveryRecipientName: true,
+      deliveryPhone: true,
+      deliveryStreetLine1: true,
+      deliveryStreetLine2: true,
+      deliveryCity: true,
+      deliveryState: true,
+      deliveryPostalCode: true,
+      deliveryCountryCode: true,
+      deliveryNotes: true,
+      allergyDeclared: true,
+      allergyNotes: true,
+      items: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          id: true,
+          productName: true,
+          productImageUrl: true,
+          variantLabel: true,
+          unitPriceCents: true,
+          quantity: true,
+          lineTotalCents: true,
+          modifiers: {
+            select: {
+              id: true,
+              modifierName: true,
+              optionLabel: true,
+              priceAdjustmentCents: true,
+            },
+          },
+        },
+      },
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          id: true,
+          previousStatus: true,
+          newStatus: true,
+          note: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+
+  if (!order) return null;
+  return {
+    ...order,
+    statusLabel: orderStatusLabels[order.status],
+    createdAt: order.createdAt.toISOString(),
+    requestedFulfillmentAt: order.requestedFulfillmentAt.toISOString(),
+    deliveryWindowStart: order.deliveryWindowStart?.toISOString() ?? null,
+    deliveryWindowEnd: order.deliveryWindowEnd?.toISOString() ?? null,
+    statusHistory: order.statusHistory.map((entry) => ({
+      ...entry,
+      createdAt: entry.createdAt.toISOString(),
+      newStatusLabel: orderStatusLabels[entry.newStatus],
+    })),
+  };
+});

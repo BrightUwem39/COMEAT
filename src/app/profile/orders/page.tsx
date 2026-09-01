@@ -20,7 +20,7 @@ export default async function CustomerOrdersPage() {
         <Container>
           <Link className="text-xs font-bold uppercase tracking-[0.14em] text-gold hover:text-gold-light" href="/profile">← Back to profile</Link>
           <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-gold">Your account</p>
-          <h1 className="mt-4 max-w-5xl font-display text-[clamp(3rem,8vw,6.5rem)] leading-[0.86] tracking-[-0.045em] text-foreground">Order history.</h1>
+          <h1 className="mt-4 max-w-5xl font-display text-[2rem] leading-[1.02] tracking-[-0.045em] text-foreground sm:text-[2.5rem] lg:text-5xl">Order history.</h1>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-muted">Only orders attached to your verified ComEat account appear here.</p>
         </Container>
       </section>
@@ -30,11 +30,12 @@ export default async function CustomerOrdersPage() {
           {orders.length ? (
             <div className="grid gap-4">
               {orders.map((order) => (
-                <article className="grid gap-5 rounded-[1.4rem] border border-border bg-surface p-6 transition-colors hover:border-gold/40 sm:grid-cols-[1.1fr_0.8fr_0.8fr_auto] sm:items-center sm:p-7" key={order.publicReference}>
+                <article className="grid gap-5 rounded-[1.4rem] border border-border bg-surface p-6 transition-colors hover:border-gold/40 sm:grid-cols-[1.1fr_0.8fr_0.8fr_auto_auto] sm:items-center sm:p-7" key={order.publicReference}>
                   <div><p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-orange">Order</p><h2 className="mt-2 font-display text-2xl text-foreground">{order.publicReference}</h2></div>
                   <div><p className="text-xs text-muted">Status</p><p className="mt-1 text-sm font-semibold text-foreground">{order.statusLabel}</p></div>
                   <div><p className="text-xs text-muted">Placed</p><p className="mt-1 text-sm font-semibold text-foreground">{dateFormatter.format(new Date(order.createdAt))}</p></div>
                   <p className="text-lg font-semibold text-gold">{formatMoney(order.totalCents, order.currency)}</p>
+                  <Link className="text-xs font-bold uppercase tracking-[0.13em] text-gold transition-colors hover:text-gold-light" href={`/profile/orders/${encodeURIComponent(order.publicReference)}`}>Track order →</Link>
                 </article>
               ))}
             </div>

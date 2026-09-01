@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import type { CartValidationResponse } from "@/lib/cart-validation";
 import { useCart } from "./CartProvider";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -12,11 +14,67 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export function CartPageClient() {
-  const { allergyInfo, items, itemCount, removeItem, subtotal, updateAllergyInfo, updateQuantity } = useCart();
+  const { allergyInfo, items, itemCount, removeItem, updateAllergyInfo, updateQuantity } = useCart();
   const reduceMotion = useReducedMotion();
+  const requestBody = useMemo(() => JSON.stringify({
+    items: items.map((item) => ({
+      key: item.key,
+      itemId: item.itemId,
+      sizeId: item.sizeId,
+      proteinId: item.proteinId,
+      grainId: item.grainId,
+      pepperTolerance: item.pepperTolerance,
+      quantity: item.quantity,
+      unitPriceCents: Math.round(item.unitPrice * 100),
+    })),
+  }), [items]);
+  const [validationAttempt, setValidationAttempt] = useState<{
+    requestBody: string;
+    result: CartValidationResponse | null;
+    failed: boolean;
+  } | null>(null);
+  const currentAttempt = validationAttempt?.requestBody === requestBody ? validationAttempt : null;
+  const validation = currentAttempt?.result ?? null;
+  const validationStatus: "idle" | "checking" | "ready" | "error" = items.length === 0
+    ? "idle"
+    : !currentAttempt
+      ? "checking"
+      : currentAttempt.failed
+        ? "error"
+        : "ready";
+  const validatedLines = useMemo(
+    () => new Map(validation?.lines.map((line) => [line.key, line]) ?? []),
+    [validation],
+  );
   const allergyComplete = allergyInfo.status !== "unanswered"
     && allergyInfo.acknowledged
     && (allergyInfo.status === "none" || Boolean(allergyInfo.details.trim()));
+
+  useEffect(() => {
+    if (items.length === 0) return;
+
+    const controller = new AbortController();
+    fetch("/api/cart/validate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: requestBody,
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Cart validation failed");
+        return response.json() as Promise<CartValidationResponse>;
+      })
+      .then((result) => {
+        setValidationAttempt({ requestBody, result, failed: false });
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setValidationAttempt({ requestBody, result: null, failed: true });
+      });
+
+    return () => controller.abort();
+  }, [items.length, requestBody]);
 
   if (items.length === 0) {
     return (
@@ -37,6 +95,8 @@ export function CartPageClient() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.45, delay: 0.08 }}
       >
+        <CartValidationNotice status={validationStatus} validation={validation} />
+
         <section className="rounded-2xl border border-orange/35 bg-orange/5 p-5 sm:p-6" aria-labelledby="allergy-details-title">
           <div className="flex items-start gap-4">
             <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-orange text-sm font-bold text-white">!</span>
@@ -103,11 +163,15 @@ export function CartPageClient() {
           className="lg:hidden"
           itemCount={itemCount}
           reduceMotion={Boolean(reduceMotion)}
-          subtotal={subtotal}
+          subtotal={validationStatus === "ready" && validation?.valid ? validation.subtotalCents / 100 : null}
+          validationStatus={validationStatus}
         />
 
-        {items.map((item) => (
-          <article className="grid grid-cols-[5.75rem_minmax(0,1fr)] overflow-hidden rounded-xl border border-border bg-surface min-[360px]:grid-cols-[6.5rem_minmax(0,1fr)] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5 sm:rounded-2xl sm:p-5" key={item.key}>
+        {items.map((item) => {
+          const validatedLine = validatedLines.get(item.key);
+          const linePrice = validatedLine?.lineTotalCents;
+          return (
+          <article className={`grid grid-cols-[5.75rem_minmax(0,1fr)] overflow-hidden rounded-xl border bg-surface min-[360px]:grid-cols-[6.5rem_minmax(0,1fr)] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5 sm:rounded-2xl sm:p-5 ${validatedLine && !validatedLine.valid ? "border-orange/70" : "border-border"}`} key={item.key}>
             <div className="relative min-h-full overflow-hidden bg-surface-elevated sm:min-h-36 sm:rounded-xl">
               <Image alt={item.name} className="object-cover" fill sizes="144px" src={item.image} />
             </div>
@@ -118,8 +182,18 @@ export function CartPageClient() {
                   <p className="mt-1.5 text-[11px] leading-snug text-muted sm:mt-2 sm:text-sm">{item.sizeLabel}{item.grainLabel ? ` · ${item.grainLabel}` : ""}{item.proteinLabel ? ` · ${item.proteinLabel}` : ""}</p>
                   <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-orange sm:text-xs sm:tracking-[0.12em]">Pepper level {item.pepperTolerance}/5</p>
                 </div>
-                <strong className="shrink-0 text-sm text-gold min-[360px]:text-base sm:text-lg">{currency.format(item.unitPrice * item.quantity)}</strong>
+                <strong className="shrink-0 text-sm text-gold min-[360px]:text-base sm:text-lg">
+                  {linePrice !== undefined ? currency.format(linePrice / 100) : validationStatus === "checking" ? "Checking…" : "—"}
+                </strong>
               </div>
+              {validatedLine?.priceChanged && validatedLine.authoritativeUnitPriceCents !== undefined ? (
+                <p className="text-xs font-semibold text-gold">Price updated to {currency.format(validatedLine.authoritativeUnitPriceCents / 100)} each.</p>
+              ) : null}
+              {validatedLine && !validatedLine.valid ? (
+                <div className="space-y-1" role="alert">
+                  {validatedLine.issues.map((issue) => <p className="text-xs leading-relaxed text-orange" key={issue.code}>{issue.message}</p>)}
+                </div>
+              ) : null}
               <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4">
                 <div className="inline-flex items-center overflow-hidden rounded-lg border border-border bg-background" aria-label={`Quantity for ${item.name}`}>
                   <button aria-label={`Decrease ${item.name} quantity`} className="grid size-8 place-items-center text-base text-muted transition-colors hover:bg-surface-elevated hover:text-foreground sm:size-10 sm:text-lg" onClick={() => updateQuantity(item.key, item.quantity - 1)} type="button">−</button>
@@ -130,7 +204,8 @@ export function CartPageClient() {
               </div>
             </div>
           </article>
-        ))}
+          );
+        })}
       </motion.div>
 
       <OrderSummary
@@ -140,21 +215,50 @@ export function CartPageClient() {
         className="hidden lg:sticky lg:top-28 lg:block"
         itemCount={itemCount}
         reduceMotion={Boolean(reduceMotion)}
-        subtotal={subtotal}
+        subtotal={validationStatus === "ready" && validation?.valid ? validation.subtotalCents / 100 : null}
+        validationStatus={validationStatus}
       />
     </div>
   );
 }
 
-function OrderSummary({ allergyComplete, allergyDetails, allergyStatus, className, itemCount, reduceMotion, subtotal }: {
+function CartValidationNotice({ status, validation }: {
+  status: "idle" | "checking" | "ready" | "error";
+  validation: CartValidationResponse | null;
+}) {
+  if (status === "idle") return null;
+  const valid = status === "ready" && validation?.valid;
+  const text = status === "checking"
+    ? "Checking current prices and availability…"
+    : status === "error"
+      ? "We could not verify this cart. Please try again before checkout."
+      : valid
+        ? "Prices and meal options verified."
+        : "Some cart items need attention before checkout.";
+
+  return (
+    <div
+      aria-live="polite"
+      className={`rounded-xl border px-4 py-3 text-xs font-semibold ${valid ? "border-gold/40 bg-gold/5 text-gold" : "border-orange/45 bg-orange/5 text-orange"}`}
+      role={status === "error" || (status === "ready" && !validation?.valid) ? "alert" : "status"}
+    >
+      {text}
+    </div>
+  );
+}
+
+function OrderSummary({ allergyComplete, allergyDetails, allergyStatus, className, itemCount, reduceMotion, subtotal, validationStatus }: {
   allergyComplete: boolean;
   allergyDetails: string;
   allergyStatus: "has-allergies" | "none" | "unanswered";
   className: string;
   itemCount: number;
   reduceMotion: boolean;
-  subtotal: number;
+  subtotal: number | null;
+  validationStatus: "idle" | "checking" | "ready" | "error";
 }) {
+  const subtotalLabel = subtotal === null ? "—" : currency.format(subtotal);
+  const checkoutReady = allergyComplete && validationStatus === "ready" && subtotal !== null;
   return (
     <motion.aside
       animate={{ opacity: 1, x: 0 }}
@@ -165,12 +269,13 @@ function OrderSummary({ allergyComplete, allergyDetails, allergyStatus, classNam
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Order summary</p>
       <div className="mt-5 flex items-center justify-between border-b border-border pb-5 text-sm text-muted">
         <span>{itemCount} {itemCount === 1 ? "item" : "items"}</span>
-        <span>{currency.format(subtotal)}</span>
+        <span>{subtotalLabel}</span>
       </div>
       <div className="flex items-end justify-between gap-4 py-5">
         <span className="font-semibold text-foreground">Subtotal</span>
-        <strong className="font-display text-3xl leading-none text-gold sm:text-[2rem]">{currency.format(subtotal)}</strong>
+        <strong className="font-display text-3xl leading-none text-gold sm:text-[2rem]">{subtotalLabel}</strong>
       </div>
+      {validationStatus !== "ready" || subtotal === null ? <p className="mb-5 text-xs leading-relaxed text-orange">The subtotal will appear after every item is verified.</p> : null}
       <div className="mb-5 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center justify-between gap-4">
           <span className="text-xs font-bold uppercase tracking-[0.12em] text-muted">Allergy information</span>
@@ -179,7 +284,15 @@ function OrderSummary({ allergyComplete, allergyDetails, allergyStatus, classNam
         {allergyStatus === "has-allergies" && allergyDetails.trim() ? <p className="mt-3 text-xs leading-relaxed text-foreground/80">{allergyDetails.trim()}</p> : null}
       </div>
       <p className="text-xs leading-relaxed text-muted">Delivery fees and any applicable taxes will be calculated during checkout. Full payment is required before an order is confirmed.</p>
-      <div className="mt-6 rounded-lg border border-dashed border-border px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.12em] text-muted">Checkout setup is the next step</div>
+      {checkoutReady ? (
+        <Link className="mt-6 flex min-h-12 items-center justify-center rounded-lg bg-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light" href="/checkout">
+          Proceed to checkout
+        </Link>
+      ) : (
+        <div className="mt-6 rounded-lg border border-dashed border-border px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.12em] text-muted">
+          Complete verification and allergy details
+        </div>
+      )}
       <Link className="mt-3 flex min-h-11 items-center justify-center text-xs font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:text-gold-light" href="/menu">Add more dishes</Link>
     </motion.aside>
   );
