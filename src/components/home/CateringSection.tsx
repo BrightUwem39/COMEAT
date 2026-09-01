@@ -11,7 +11,7 @@ export function CateringSection() {
       <Container className="relative py-12 sm:py-16 lg:py-20">
         <div className="w-full max-w-6xl">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Catering by ComEat</p>
-          <h2 className="mt-5 whitespace-nowrap font-display text-[clamp(1.4rem,7vw,6.5rem)] leading-[0.86] tracking-[-0.04em]">Bring everyone to the table.</h2>
+          <h2 className="mt-5 whitespace-nowrap font-display text-[clamp(1.3rem,6.5vw,3rem)] leading-[0.96] tracking-[-0.04em]">Bring everyone to the table.</h2>
           <p className="mt-8 whitespace-nowrap text-[clamp(0.35rem,1.7vw,0.75rem)] font-semibold uppercase tracking-[0.06em] text-foreground/70 sm:tracking-[0.1em]">
             Weddings · Birthdays · Corporate events · Family gatherings · Private events
           </p>

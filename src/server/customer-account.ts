@@ -49,9 +49,20 @@ export const getCustomerAccountOverview = cache(async () => {
       phone: true,
       _count: { select: { addresses: true, orders: true } },
       addresses: {
-        where: { isDefault: true },
-        take: 1,
-        select: { city: true, label: true, state: true },
+        orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+        select: {
+          city: true,
+          countryCode: true,
+          id: true,
+          isDefault: true,
+          label: true,
+          phone: true,
+          postalCode: true,
+          recipientName: true,
+          state: true,
+          streetLine1: true,
+          streetLine2: true,
+        },
       },
       orders: {
         orderBy: { createdAt: "desc" },
@@ -69,9 +80,16 @@ export const getCustomerAccountOverview = cache(async () => {
     },
   });
 
+  const addresses = account.addresses.map((address) => ({
+    ...address,
+    label: address.label ?? undefined,
+    streetLine2: address.streetLine2 ?? undefined,
+  }));
+
   return {
     addressCount: account._count.addresses,
-    defaultAddress: account.addresses[0] ?? null,
+    addresses,
+    defaultAddress: addresses.find((address) => address.isDefault) ?? null,
     email: account.email,
     firstName: account.firstName,
     initials: `${account.firstName.charAt(0)}${account.lastName.charAt(0)}`.toUpperCase(),

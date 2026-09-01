@@ -61,6 +61,18 @@ const operationalSettings = [
 
 async function seed() {
   await prisma.$transaction(async (transaction) => {
+    const [legacySpaghetti, jollofSpaghetti] = await Promise.all([
+      transaction.product.findUnique({ where: { slug: "spaghetti-bolognese" }, select: { id: true } }),
+      transaction.product.findUnique({ where: { slug: "jollof-spaghetti" }, select: { id: true } }),
+    ]);
+
+    if (legacySpaghetti && !jollofSpaghetti) {
+      await transaction.product.update({
+        where: { id: legacySpaghetti.id },
+        data: { slug: "jollof-spaghetti" },
+      });
+    }
+
     let productSortOrder = 0;
 
     for (const [categorySortOrder, category] of menuCategories.entries()) {
@@ -113,6 +125,15 @@ async function seed() {
         productSortOrder += 1;
 
         const variantsByCode = new Map<string, string>();
+        const activeVariantCodes = (item.pricing ?? []).map((price) => price.id);
+
+        await transaction.productVariant.updateMany({
+          where: {
+            productId: product.id,
+            ...(activeVariantCodes.length ? { code: { notIn: activeVariantCodes } } : {}),
+          },
+          data: { active: false },
+        });
 
         for (const [variantSortOrder, price] of (item.pricing ?? []).entries()) {
           const variant = await transaction.productVariant.upsert({

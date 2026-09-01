@@ -22,7 +22,7 @@ export function CartPageClient() {
     return (
       <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center sm:px-10">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Nothing here yet</p>
-        <h2 className="mt-4 font-display text-4xl tracking-[-0.03em] text-foreground sm:text-5xl">Your cart is ready when you are.</h2>
+        <h2 className="mt-4 font-display text-[1.75rem] tracking-[-0.03em] text-foreground sm:text-[2rem] lg:text-[2.5rem]">Your cart is ready when you are.</h2>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-muted">Choose a meal, tray size, protein where applicable, and pepper tolerance from the menu.</p>
         <Link className="mt-7 inline-flex min-h-12 items-center justify-center rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light" href="/menu">Explore the menu</Link>
       </div>
@@ -42,7 +42,7 @@ export function CartPageClient() {
             <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-orange text-sm font-bold text-white">!</span>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-orange">Required order information</p>
-              <h2 className="mt-2 font-display text-3xl leading-none text-foreground" id="allergy-details-title">Food allergies</h2>
+              <h2 className="mt-2 font-display text-2xl leading-none text-foreground sm:text-[1.75rem]" id="allergy-details-title">Food allergies</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">Tell us about allergies for everyone sharing this order. This information will be attached to the order for the kitchen.</p>
             </div>
           </div>
@@ -104,7 +104,7 @@ export function CartPageClient() {
             <div className="flex min-w-0 flex-col justify-between gap-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="font-display text-3xl leading-none tracking-[-0.03em] text-foreground">{item.name}</h2>
+                  <h2 className="font-display text-2xl leading-none tracking-[-0.03em] text-foreground sm:text-[1.75rem]">{item.name}</h2>
                   <p className="mt-2 text-sm text-muted">{item.sizeLabel}{item.grainLabel ? ` · ${item.grainLabel}` : ""}{item.proteinLabel ? ` · ${item.proteinLabel}` : ""}</p>
                   <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-orange">Pepper level {item.pepperTolerance}/5</p>
                 </div>
@@ -136,7 +136,7 @@ export function CartPageClient() {
         </div>
         <div className="flex items-end justify-between gap-4 py-5">
           <span className="font-semibold text-foreground">Subtotal</span>
-          <strong className="font-display text-4xl leading-none text-gold">{currency.format(subtotal)}</strong>
+          <strong className="font-display text-3xl leading-none text-gold sm:text-[2rem]">{currency.format(subtotal)}</strong>
         </div>
         <div className="mb-5 rounded-lg border border-border bg-background/60 p-4">
           <div className="flex items-center justify-between gap-4">

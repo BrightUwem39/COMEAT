@@ -84,8 +84,26 @@ export const menuCategories: readonly MenuCategory[] = [
           { id: "24-tray", label: "24\u2033 tray", price: 220 },
         ],
       },
-      { id: "ikokore", name: "Ikokore", image: "/images/menu/ikokore.webp" },
-      { id: "imoyo", name: "Imoyo", image: "/images/menu/imoyo.webp" },
+      {
+        id: "ikokore",
+        name: "Ikokore",
+        image: "/images/menu/ikokore.webp",
+        pricing: [
+          { id: "2l", label: "2L", price: 100 },
+          { id: "12-tray", label: "12\u2033 tray", price: 125 },
+          { id: "24-tray", label: "24\u2033 tray", price: 250 },
+        ],
+      },
+      {
+        id: "imoyo",
+        name: "Imoyo",
+        image: "/images/menu/imoyo.webp",
+        pricing: [
+          { id: "2l", label: "2L", price: 100 },
+          { id: "12-tray", label: "12\u2033 tray", price: 125 },
+          { id: "24-tray", label: "24\u2033 tray", price: 250 },
+        ],
+      },
     ],
   },
   {
@@ -127,7 +145,22 @@ export const menuCategories: readonly MenuCategory[] = [
         ],
         priceNote: "Made with seafood and assorted meat.",
       },
-      { id: "ata-dindin", name: "Ata Dindin", image: "/images/menu/ata-dindin.webp" },
+      {
+        id: "ata-dindin",
+        name: "Ata Dindin",
+        image: "/images/menu/ata-dindin.webp",
+        pricing: [
+          { id: "2l", label: "2L", price: 120 },
+          { id: "12-tray", label: "12\u2033 tray", price: 150 },
+          { id: "24-tray", label: "24\u2033 tray", price: 300 },
+        ],
+      },
+      {
+        id: "ewa-agoyin-sauce",
+        name: "Ewa Agoyin Sauce",
+        image: "/images/menu/ewa-agoyin-sauce.webp",
+        pricing: [{ id: "2l", label: "2L", price: 100 }],
+      },
       {
         id: "pepper-soup",
         name: "Pepper Soup",
@@ -153,7 +186,16 @@ export const menuCategories: readonly MenuCategory[] = [
         ],
         priceNote: "Yam, plantain, or potato add-ons are available.",
       },
-      { id: "spaghetti-bolognese", name: "Spaghetti Bolognese", image: "/images/menu/spaghetti-bolognese.webp" },
+      {
+        id: "jollof-spaghetti",
+        name: "Jollof Spaghetti",
+        image: "/images/menu/spaghetti-bolognese.webp",
+        pricing: [
+          { id: "2l", label: "2L", price: 60 },
+          { id: "12-tray", label: "12\u2033 tray", price: 80 },
+          { id: "24-tray", label: "24\u2033 tray", price: 160 },
+        ],
+      },
     ],
   },
   {
@@ -167,12 +209,19 @@ export const menuCategories: readonly MenuCategory[] = [
         name: "Asun",
         image: "/images/menu/asun.webp",
         pricing: [
-          { id: "2l", label: "2L", price: 140 },
-          { id: "12-tray", label: "12\u2033 tray", price: 180 },
-          { id: "24-tray", label: "24\u2033 tray", price: 360 },
+          { id: "12-tray", label: "12\u2033 tray", price: 200 },
+          { id: "24-tray", label: "24\u2033 tray", price: 400 },
         ],
       },
-      { id: "naija-buns", name: "Naija Buns", image: "/images/menu/naija-buns.webp" },
+      {
+        id: "naija-buns",
+        name: "Naija Buns",
+        image: "/images/menu/naija-buns.webp",
+        pricing: [
+          { id: "12-tray", label: "12\u2033 tray", price: 50 },
+          { id: "24-tray", label: "24\u2033 tray", price: 100 },
+        ],
+      },
       {
         id: "puff-puff",
         name: "Puff-Puff",
@@ -191,7 +240,16 @@ export const menuCategories: readonly MenuCategory[] = [
           { id: "24-pieces", label: "24 pieces", price: 120 },
         ],
       },
-      { id: "ewa-agoyin", name: "Ewa Agoyin", image: "/images/menu/ewa-agoyin.webp" },
+      {
+        id: "ewa-agoyin",
+        name: "Ewa Agoyin",
+        image: "/images/menu/ewa-agoyin.webp",
+        pricing: [
+          { id: "2l", label: "2L", price: 60 },
+          { id: "12-tray", label: "12\u2033 tray", price: 75 },
+          { id: "24-tray", label: "24\u2033 tray", price: 150 },
+        ],
+      },
     ],
   },
 ] as const;

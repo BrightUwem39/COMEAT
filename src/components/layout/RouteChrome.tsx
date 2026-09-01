@@ -9,7 +9,13 @@ type RouteChromeProps = {
   header: ReactNode;
 };
 
-const standaloneRoutes = new Set(["/forgot-password", "/login", "/register"]);
+const standaloneRoutes = new Set([
+  "/forgot-password",
+  "/login",
+  "/register",
+  "/reset-password",
+  "/verify-email",
+]);
 
 export function RouteChrome({ children, footer, header }: RouteChromeProps) {
   const pathname = usePathname();

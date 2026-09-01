@@ -29,7 +29,7 @@ export function FeaturedDishes() {
               <Image alt="" className="image-zoom object-cover" fill sizes="(min-width: 1440px) 696px, 50vw" src={dish.image} />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4 sm:p-8">
-                <h3 className="font-display text-2xl tracking-[-0.03em] sm:text-4xl lg:text-5xl">{dish.name}</h3>
+                <h3 className="font-display text-xl tracking-[-0.03em] sm:text-2xl lg:text-3xl">{dish.name}</h3>
               </div>
             </Link>
           ))}

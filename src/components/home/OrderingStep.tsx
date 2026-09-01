@@ -22,7 +22,7 @@ export function OrderingStep({ copy, index, showArrow, title }: OrderingStepProp
       viewport={{ amount: 0.35, once: true }}
       whileInView={reduceMotion ? undefined : "visible"}
     >
-      <h3 className="font-display text-3xl leading-none tracking-[-0.025em]">{title}</h3>
+      <h3 className="font-display text-2xl leading-none tracking-[-0.025em] sm:text-[1.75rem]">{title}</h3>
       <p className="mt-4 text-sm leading-6 text-muted">{copy}</p>
       {showArrow ? (
         <span aria-hidden="true" className="absolute -bottom-5 left-1/2 z-10 grid size-10 -translate-x-1/2 rotate-90 place-items-center rounded-full border border-orange/50 bg-surface text-orange shadow-[0_8px_24px_rgba(0,0,0,0.3)] lg:-right-5 lg:bottom-auto lg:left-auto lg:top-1/2 lg:translate-x-0 lg:-translate-y-1/2 lg:rotate-0">

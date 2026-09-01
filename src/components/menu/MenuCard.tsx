@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCart } from "@/components/cart/CartProvider";
 import type { MenuItem, MenuPrice } from "@/data/menu";
@@ -29,6 +29,48 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
   const [pepperTolerance, setPepperTolerance] = useState<number | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    const firstAvailableSize = item.pricing?.[0]?.id;
+    const selectedSizeStillExists = item.pricing?.some(
+      (option) => option.id === selectedSizeId,
+    );
+
+    if (firstAvailableSize && !selectedSizeStillExists) {
+      setSelectedSizeId(firstAvailableSize);
+      setAdded(false);
+    }
+  }, [item.pricing, selectedSizeId]);
+
+  useEffect(() => {
+    if (!panelOpen) return;
+
+    const body = document.body;
+    const root = document.documentElement;
+    const scrollY = window.scrollY;
+    const previousBodyStyles = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+    };
+    const previousRootOverflow = root.style.overflow;
+
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+
+    return () => {
+      root.style.overflow = previousRootOverflow;
+      body.style.overflow = previousBodyStyles.overflow;
+      body.style.position = previousBodyStyles.position;
+      body.style.top = previousBodyStyles.top;
+      body.style.width = previousBodyStyles.width;
+      window.scrollTo(0, scrollY);
+    };
+  }, [panelOpen]);
 
   if (href) return <PreviewCard href={href} item={item} reduceMotion={Boolean(reduceMotion)} size={size} />;
 
@@ -82,7 +124,7 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
           {item.pricing ? (
             <div className="mt-5 hidden sm:block">
               <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">Select size</p>
-              <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
+              <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : item.pricing.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {item.pricing.map((option) => (
                   <motion.button
                     aria-pressed={selectedSizeId === option.id}
@@ -195,7 +237,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
         {item.pricing ? (
           <fieldset className="mt-6 sm:hidden">
             <legend className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose size</legend>
-            <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
+            <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : item.pricing.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
               {item.pricing.map((option) => (
                 <motion.button
                   aria-pressed={selectedSize.id === option.id}
