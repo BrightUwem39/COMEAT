@@ -49,10 +49,10 @@ export function CartPageClient() {
 
           <fieldset className="mt-6">
             <legend className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-foreground">Do you have any food allergies?</legend>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <button
                 aria-pressed={allergyInfo.status === "none"}
-                className={`min-h-11 rounded-lg border px-4 text-sm font-semibold transition-[background-color,border-color,color] ${allergyInfo.status === "none" ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
+                className={`min-h-11 whitespace-nowrap rounded-lg border px-2 text-[10px] font-semibold transition-[background-color,border-color,color] min-[360px]:text-[11px] sm:px-4 sm:text-sm ${allergyInfo.status === "none" ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
                 onClick={() => updateAllergyInfo({ ...allergyInfo, status: "none", details: "" })}
                 type="button"
               >
@@ -60,7 +60,7 @@ export function CartPageClient() {
               </button>
               <button
                 aria-pressed={allergyInfo.status === "has-allergies"}
-                className={`min-h-11 rounded-lg border px-4 text-sm font-semibold transition-[background-color,border-color,color] ${allergyInfo.status === "has-allergies" ? "border-orange bg-orange text-white" : "border-border bg-background text-muted hover:border-orange/70 hover:text-foreground"}`}
+                className={`min-h-11 whitespace-nowrap rounded-lg border px-2 text-[10px] font-semibold transition-[background-color,border-color,color] min-[360px]:text-[11px] sm:px-4 sm:text-sm ${allergyInfo.status === "has-allergies" ? "border-orange bg-orange text-white" : "border-border bg-background text-muted hover:border-orange/70 hover:text-foreground"}`}
                 onClick={() => updateAllergyInfo({ ...allergyInfo, status: "has-allergies" })}
                 type="button"
               >
@@ -96,59 +96,91 @@ export function CartPageClient() {
           ) : null}
         </section>
 
+        <OrderSummary
+          allergyComplete={allergyComplete}
+          allergyDetails={allergyInfo.details}
+          allergyStatus={allergyInfo.status}
+          className="lg:hidden"
+          itemCount={itemCount}
+          reduceMotion={Boolean(reduceMotion)}
+          subtotal={subtotal}
+        />
+
         {items.map((item) => (
-          <article className="grid gap-5 rounded-2xl border border-border bg-surface p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5" key={item.key}>
-            <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-elevated sm:aspect-auto sm:min-h-36">
+          <article className="grid grid-cols-[5.75rem_minmax(0,1fr)] overflow-hidden rounded-xl border border-border bg-surface min-[360px]:grid-cols-[6.5rem_minmax(0,1fr)] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5 sm:rounded-2xl sm:p-5" key={item.key}>
+            <div className="relative min-h-full overflow-hidden bg-surface-elevated sm:min-h-36 sm:rounded-xl">
               <Image alt={item.name} className="object-cover" fill sizes="144px" src={item.image} />
             </div>
-            <div className="flex min-w-0 flex-col justify-between gap-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-display text-2xl leading-none tracking-[-0.03em] text-foreground sm:text-[1.75rem]">{item.name}</h2>
-                  <p className="mt-2 text-sm text-muted">{item.sizeLabel}{item.grainLabel ? ` · ${item.grainLabel}` : ""}{item.proteinLabel ? ` · ${item.proteinLabel}` : ""}</p>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-orange">Pepper level {item.pepperTolerance}/5</p>
+            <div className="flex min-w-0 flex-col justify-between gap-3 p-3 min-[360px]:p-4 sm:gap-5 sm:p-0">
+              <div className="flex items-start justify-between gap-2 sm:gap-4">
+                <div className="min-w-0">
+                  <h2 className="font-display text-xl leading-none tracking-[-0.03em] text-foreground min-[360px]:text-2xl sm:text-[1.75rem]">{item.name}</h2>
+                  <p className="mt-1.5 text-[11px] leading-snug text-muted sm:mt-2 sm:text-sm">{item.sizeLabel}{item.grainLabel ? ` · ${item.grainLabel}` : ""}{item.proteinLabel ? ` · ${item.proteinLabel}` : ""}</p>
+                  <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-orange sm:text-xs sm:tracking-[0.12em]">Pepper level {item.pepperTolerance}/5</p>
                 </div>
-                <strong className="shrink-0 text-lg text-gold">{currency.format(item.unitPrice * item.quantity)}</strong>
+                <strong className="shrink-0 text-sm text-gold min-[360px]:text-base sm:text-lg">{currency.format(item.unitPrice * item.quantity)}</strong>
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4">
                 <div className="inline-flex items-center overflow-hidden rounded-lg border border-border bg-background" aria-label={`Quantity for ${item.name}`}>
-                  <button aria-label={`Decrease ${item.name} quantity`} className="grid size-10 place-items-center text-lg text-muted transition-colors hover:bg-surface-elevated hover:text-foreground" onClick={() => updateQuantity(item.key, item.quantity - 1)} type="button">−</button>
-                  <span className="min-w-10 text-center text-sm font-bold text-foreground">{item.quantity}</span>
-                  <button aria-label={`Increase ${item.name} quantity`} className="grid size-10 place-items-center text-lg text-muted transition-colors hover:bg-surface-elevated hover:text-foreground" onClick={() => updateQuantity(item.key, item.quantity + 1)} type="button">+</button>
+                  <button aria-label={`Decrease ${item.name} quantity`} className="grid size-8 place-items-center text-base text-muted transition-colors hover:bg-surface-elevated hover:text-foreground sm:size-10 sm:text-lg" onClick={() => updateQuantity(item.key, item.quantity - 1)} type="button">−</button>
+                  <span className="min-w-8 text-center text-xs font-bold text-foreground sm:min-w-10 sm:text-sm">{item.quantity}</span>
+                  <button aria-label={`Increase ${item.name} quantity`} className="grid size-8 place-items-center text-base text-muted transition-colors hover:bg-surface-elevated hover:text-foreground sm:size-10 sm:text-lg" onClick={() => updateQuantity(item.key, item.quantity + 1)} type="button">+</button>
                 </div>
-                <button className="text-xs font-bold uppercase tracking-[0.12em] text-muted transition-colors hover:text-orange" onClick={() => removeItem(item.key)} type="button">Remove</button>
+                <button className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted transition-colors hover:text-orange sm:text-xs sm:tracking-[0.12em]" onClick={() => removeItem(item.key)} type="button">Remove</button>
               </div>
             </div>
           </article>
         ))}
       </motion.div>
 
-      <motion.aside
-        className="rounded-2xl border border-border bg-surface p-6 lg:sticky lg:top-28"
-        initial={reduceMotion ? false : { opacity: 0, x: 28 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.45, delay: 0.16 }}
-      >
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Order summary</p>
-        <div className="mt-5 flex items-center justify-between border-b border-border pb-5 text-sm text-muted">
-          <span>{itemCount} {itemCount === 1 ? "item" : "items"}</span>
-          <span>{currency.format(subtotal)}</span>
-        </div>
-        <div className="flex items-end justify-between gap-4 py-5">
-          <span className="font-semibold text-foreground">Subtotal</span>
-          <strong className="font-display text-3xl leading-none text-gold sm:text-[2rem]">{currency.format(subtotal)}</strong>
-        </div>
-        <div className="mb-5 rounded-lg border border-border bg-background/60 p-4">
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-xs font-bold uppercase tracking-[0.12em] text-muted">Allergy information</span>
-            <span className={`text-xs font-bold uppercase tracking-[0.12em] ${allergyComplete ? "text-gold" : "text-orange"}`}>{allergyComplete ? "Complete" : "Required"}</span>
-          </div>
-          {allergyInfo.status === "has-allergies" && allergyInfo.details.trim() ? <p className="mt-3 text-xs leading-relaxed text-foreground/80">{allergyInfo.details.trim()}</p> : null}
-        </div>
-        <p className="text-xs leading-relaxed text-muted">Delivery fees and any applicable taxes will be calculated during checkout. Full payment is required before an order is confirmed.</p>
-        <div className="mt-6 rounded-lg border border-dashed border-border px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.12em] text-muted">Checkout setup is the next step</div>
-        <Link className="mt-3 flex min-h-11 items-center justify-center text-xs font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:text-gold-light" href="/menu">Add more dishes</Link>
-      </motion.aside>
+      <OrderSummary
+        allergyComplete={allergyComplete}
+        allergyDetails={allergyInfo.details}
+        allergyStatus={allergyInfo.status}
+        className="hidden lg:sticky lg:top-28 lg:block"
+        itemCount={itemCount}
+        reduceMotion={Boolean(reduceMotion)}
+        subtotal={subtotal}
+      />
     </div>
+  );
+}
+
+function OrderSummary({ allergyComplete, allergyDetails, allergyStatus, className, itemCount, reduceMotion, subtotal }: {
+  allergyComplete: boolean;
+  allergyDetails: string;
+  allergyStatus: "has-allergies" | "none" | "unanswered";
+  className: string;
+  itemCount: number;
+  reduceMotion: boolean;
+  subtotal: number;
+}) {
+  return (
+    <motion.aside
+      animate={{ opacity: 1, x: 0 }}
+      className={`rounded-2xl border border-border bg-surface p-5 sm:p-6 ${className}`}
+      initial={reduceMotion ? false : { opacity: 0, x: 28 }}
+      transition={{ duration: 0.45, delay: 0.16 }}
+    >
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Order summary</p>
+      <div className="mt-5 flex items-center justify-between border-b border-border pb-5 text-sm text-muted">
+        <span>{itemCount} {itemCount === 1 ? "item" : "items"}</span>
+        <span>{currency.format(subtotal)}</span>
+      </div>
+      <div className="flex items-end justify-between gap-4 py-5">
+        <span className="font-semibold text-foreground">Subtotal</span>
+        <strong className="font-display text-3xl leading-none text-gold sm:text-[2rem]">{currency.format(subtotal)}</strong>
+      </div>
+      <div className="mb-5 rounded-lg border border-border bg-background/60 p-4">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-xs font-bold uppercase tracking-[0.12em] text-muted">Allergy information</span>
+          <span className={`text-xs font-bold uppercase tracking-[0.12em] ${allergyComplete ? "text-gold" : "text-orange"}`}>{allergyComplete ? "Complete" : "Required"}</span>
+        </div>
+        {allergyStatus === "has-allergies" && allergyDetails.trim() ? <p className="mt-3 text-xs leading-relaxed text-foreground/80">{allergyDetails.trim()}</p> : null}
+      </div>
+      <p className="text-xs leading-relaxed text-muted">Delivery fees and any applicable taxes will be calculated during checkout. Full payment is required before an order is confirmed.</p>
+      <div className="mt-6 rounded-lg border border-dashed border-border px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.12em] text-muted">Checkout setup is the next step</div>
+      <Link className="mt-3 flex min-h-11 items-center justify-center text-xs font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:text-gold-light" href="/menu">Add more dishes</Link>
+    </motion.aside>
   );
 }
