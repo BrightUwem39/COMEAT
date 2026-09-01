@@ -2,22 +2,21 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import type { MenuCategory } from "@/data/menu";
+import type { MenuItem } from "@/data/menu";
 import { menuCardVariants, menuGridVariants } from "@/lib/animations";
 import { MenuCard } from "./MenuCard";
 
 type MenuBrowserProps = {
-  categories: readonly MenuCategory[];
+  items: readonly MenuItem[];
 };
 
-export function MenuBrowser({ categories }: MenuBrowserProps) {
+export function MenuBrowser({ items }: MenuBrowserProps) {
   const reduceMotion = useReducedMotion();
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [showAllMobile, setShowAllMobile] = useState(false);
-  const items = useMemo(() => categories.flatMap((category) => category.items), [categories]);
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     if (!normalizedQuery) return items;

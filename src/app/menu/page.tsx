@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { MenuBrowser } from "@/components/menu/MenuBrowser";
-import { menuCategories } from "@/data/menu";
+import { getStorefrontMenuItems } from "@/server/menu";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Menu",
   description: "Browse ComEat Nigerian dishes, tray sizes, and confirmed pricing.",
 };
 
-export default function MenuPage() {
+export default async function MenuPage() {
+  const menuItems = await getStorefrontMenuItems();
+
   return (
     <main className="min-h-[calc(100svh-5rem)]" id="main-content">
       <aside className="allergy-marquee sticky top-20 z-40 border-b border-orange/45 bg-orange text-white shadow-[0_8px_24px_rgba(0,0,0,0.24)]" aria-label="Food allergy warning" role="note">
@@ -33,7 +37,7 @@ export default function MenuPage() {
               <p className="mt-3 text-sm leading-relaxed text-muted">Out-of-state orders ship Monday through Wednesday, with Friday as the weekly order cut-off.</p>
             </article>
           </div>
-          <MenuBrowser categories={menuCategories} />
+          <MenuBrowser items={menuItems} />
         </Container>
       </section>
     </main>

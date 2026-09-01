@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
+import type { MenuItem, MenuPrice } from "@/data/menu";
 import { db } from "@/server/db";
 
 export type MenuVariantDTO = {
@@ -80,6 +81,11 @@ export async function getMenuCatalog(): Promise<readonly MenuProductDTO[]> {
   return products.map(toMenuProductDTO);
 }
 
+export async function getStorefrontMenuItems(): Promise<readonly MenuItem[]> {
+  const products = await getMenuCatalog();
+  return products.map(toStorefrontMenuItem);
+}
+
 export async function getFeaturedMenuProducts(): Promise<
   readonly MenuProductDTO[]
 > {
@@ -140,5 +146,67 @@ function toMenuProductDTO(product: MenuProductRecord): MenuProductDTO {
         })),
       })),
     })),
+  };
+}
+
+function toStorefrontMenuItem(product: MenuProductDTO): MenuItem {
+  const proteinGroup = product.modifierGroups.find(
+    (group) => group.kind === "PROTEIN",
+  );
+  const grainGroup = product.modifierGroups.find(
+    (group) => group.kind === "GRAIN",
+  );
+  const pricing = product.variants.flatMap<MenuPrice>((variant) => {
+    if (variant.basePriceCents === null) return [];
+
+    const proteinPrices = proteinGroup
+      ? Object.fromEntries(
+          proteinGroup.options.map((option) => {
+            const variantAdjustment = option.variantPriceAdjustments.find(
+              (price) => price.variantId === variant.id,
+            );
+            const adjustment =
+              variantAdjustment?.priceAdjustmentCents ??
+              option.defaultPriceAdjustmentCents;
+            return [
+              option.id,
+              (variant.basePriceCents! + adjustment) / 100,
+            ];
+          }),
+        )
+      : undefined;
+
+    return [
+      {
+        id: variant.id,
+        label: variant.label,
+        price: variant.basePriceCents / 100,
+        ...(proteinPrices ? { proteinPrices } : {}),
+      },
+    ];
+  });
+
+  return {
+    id: product.id,
+    name: product.name,
+    image: product.imageUrl || "/images/hero.jpg",
+    ...(pricing.length ? { pricing } : {}),
+    ...(product.priceNote ? { priceNote: product.priceNote } : {}),
+    ...(proteinGroup
+      ? {
+          proteins: proteinGroup.options.map((option) => ({
+            id: option.id,
+            label: option.label,
+          })),
+        }
+      : {}),
+    ...(grainGroup
+      ? {
+          grainOptions: grainGroup.options.map((option) => ({
+            id: option.id,
+            label: option.label,
+          })),
+        }
+      : {}),
   };
 }
