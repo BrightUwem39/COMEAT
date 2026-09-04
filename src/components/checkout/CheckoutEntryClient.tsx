@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useRef, useState, type FormEvent } from "react";
 
 import { useCart } from "@/components/cart/CartProvider";
+import { PaymentSection } from "@/components/checkout/PaymentSection";
 import type { CartValidationResponse } from "@/lib/cart-validation";
 import type { CheckoutOrderResponse } from "@/lib/checkout-order";
 import type { CheckoutAddressDTO, CheckoutRulesDTO } from "@/server/checkout";
@@ -331,24 +332,28 @@ function OrderCreated({ order }: { order: CheckoutOrderResponse["order"] }) {
   });
 
   return (
-    <motion.section animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-3xl rounded-2xl border border-gold/40 bg-surface p-6 sm:p-10" initial={{ opacity: 0, y: 18 }} transition={{ duration: 0.4 }}>
-      <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-gold text-xl font-bold text-background">✓</span>
-      <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-gold">Order created</p>
-      <h2 className="mt-3 font-display text-3xl tracking-[-0.035em] text-foreground sm:text-4xl">Pending payment.</h2>
-      <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">Your order has been saved to your account, but it is not confirmed until full payment is completed.</p>
+    <div className="mx-auto max-w-3xl space-y-6">
+      <motion.section animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-gold/40 bg-surface p-6 sm:p-10" initial={{ opacity: 0, y: 18 }} transition={{ duration: 0.4 }}>
+        <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-gold text-xl font-bold text-background">✓</span>
+        <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-gold">Order created</p>
+        <h2 className="mt-3 font-display text-3xl tracking-[-0.035em] text-foreground sm:text-4xl">Pending payment.</h2>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">Your order has been saved to your account, but it is not confirmed until full payment is completed.</p>
 
-      <dl className="mt-7 grid gap-4 sm:grid-cols-2">
-        <Detail label="Order reference" value={order.publicReference} />
-        <Detail label="Amount due" value={currency.format(order.totalCents / 100)} />
-        <Detail label="Requested date" value={fulfillmentDate} />
-        <Detail label="Delivery window" value={`${timeFormatter.format(new Date(order.deliveryWindowStart))}–${timeFormatter.format(new Date(order.deliveryWindowEnd))}`} />
-      </dl>
+        <dl className="mt-7 grid gap-4 sm:grid-cols-2">
+          <Detail label="Order reference" value={order.publicReference} />
+          <Detail label="Amount due" value={currency.format(order.totalCents / 100)} />
+          <Detail label="Requested date" value={fulfillmentDate} />
+          <Detail label="Delivery window" value={`${timeFormatter.format(new Date(order.deliveryWindowStart))}–${timeFormatter.format(new Date(order.deliveryWindowEnd))}`} />
+        </dl>
 
-      <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-        <Link className="inline-flex min-h-12 items-center justify-center rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light" href={`/profile/orders/${encodeURIComponent(order.publicReference)}`}>Track this order</Link>
-        <Link className="inline-flex min-h-12 items-center justify-center rounded-lg border border-border px-6 text-xs font-bold uppercase tracking-[0.14em] text-muted transition-colors hover:border-gold/50 hover:text-foreground" href="/menu">Return to menu</Link>
-      </div>
-    </motion.section>
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <Link className="inline-flex min-h-12 items-center justify-center rounded-lg border border-border px-6 text-xs font-bold uppercase tracking-[0.14em] text-muted transition-colors hover:border-gold/50 hover:text-foreground" href={`/profile/orders/${encodeURIComponent(order.publicReference)}`}>Track this order</Link>
+          <Link className="inline-flex min-h-12 items-center justify-center rounded-lg border border-border px-6 text-xs font-bold uppercase tracking-[0.14em] text-muted transition-colors hover:border-gold/50 hover:text-foreground" href="/menu">Return to menu</Link>
+        </div>
+      </motion.section>
+
+      <PaymentSection amountCents={order.totalCents} currency={order.currency} orderReference={order.publicReference} />
+    </div>
   );
 }
 

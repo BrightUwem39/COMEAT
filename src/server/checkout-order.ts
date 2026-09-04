@@ -7,6 +7,7 @@ import type { CustomerSessionDTO } from "@/server/auth-session";
 import { validateCart } from "@/server/cart-validation";
 import { getCheckoutRules, getFulfillmentWindow, getShippingCutoff } from "@/server/checkout";
 import { db } from "@/server/db";
+import { calculateOrderTotals } from "@/server/payment-total";
 
 export class CheckoutOrderError extends Error {
   constructor(
@@ -71,6 +72,7 @@ export async function createPendingOrder(
       }
 
       const window = getFulfillmentWindow(input.requestedDate, rules);
+      const totals = calculateOrderTotals(cart.subtotalCents);
       const order = await transaction.order.create({
         data: {
           publicReference,
@@ -99,10 +101,10 @@ export async function createPendingOrder(
           allergyDeclared: input.allergy.status === "has-allergies",
           allergyNotes: input.allergy.status === "has-allergies" ? input.allergy.details : null,
           crossContactAcknowledgedAt: new Date(),
-          subtotalCents: cart.subtotalCents,
-          deliveryFeeCents: 0,
-          taxCents: 0,
-          totalCents: cart.subtotalCents,
+          subtotalCents: totals.subtotalCents,
+          deliveryFeeCents: totals.deliveryFeeCents,
+          taxCents: totals.taxCents,
+          totalCents: totals.totalCents,
           currency: "USD",
           items: {
             create: cart.lines.map((line) => ({
