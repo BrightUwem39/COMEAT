@@ -52,8 +52,9 @@ export async function createPendingOrder(
         throw new CheckoutOrderError("DATE_INVALID", `Choose a date at least ${rules.minimumAdvanceHours} hours from now.`, 422);
       }
 
+      const fulfillmentMethod = fulfillmentMethodForState(input.address.state);
       const weekday = weekdayName(input.requestedDate);
-      if (input.fulfillmentMethod === "OUT_OF_STATE_SHIPPING") {
+      if (fulfillmentMethod === "OUT_OF_STATE_SHIPPING") {
         if (!rules.outOfStateShippingDays.includes(weekday)) {
           throw new CheckoutOrderError("DATE_INVALID", "Choose an available out-of-state shipping day.", 422);
         }
@@ -79,7 +80,7 @@ export async function createPendingOrder(
           customerLastName: customer.lastName,
           customerEmail: customer.email,
           customerPhone: input.address.phone,
-          fulfillmentMethod: input.fulfillmentMethod,
+          fulfillmentMethod,
           requestedFulfillmentAt: window.start,
           deliveryWindowStart: window.start,
           deliveryWindowEnd: window.end,
@@ -91,7 +92,10 @@ export async function createPendingOrder(
           deliveryState: input.address.state,
           deliveryPostalCode: input.address.postalCode,
           deliveryCountryCode: input.address.countryCode.toUpperCase(),
-          deliveryNotes: input.deliveryNotes || null,
+          deliveryNotes: [
+            `Delivery preference: ${input.handoffMethod === "LEAVE_AT_DOOR" ? "Leave at door" : "Hand it to me"}.`,
+            input.deliveryNotes,
+          ].filter(Boolean).join("\n"),
           allergyDeclared: input.allergy.status === "has-allergies",
           allergyNotes: input.allergy.status === "has-allergies" ? input.allergy.details : null,
           crossContactAcknowledgedAt: new Date(),
@@ -192,4 +196,9 @@ function weekdayName(value: string) {
   return ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"][
     new Date(`${value}T12:00:00Z`).getUTCDay()
   ];
+}
+
+function fulfillmentMethodForState(state: string) {
+  const normalized = state.trim().toUpperCase().replace(/[^A-Z]/g, "");
+  return normalized === "GA" || normalized === "GEORGIA" ? "LOCAL_DELIVERY" as const : "OUT_OF_STATE_SHIPPING" as const;
 }

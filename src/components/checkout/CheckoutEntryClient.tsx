@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
 import { useCart } from "@/components/cart/CartProvider";
 import type { CartValidationResponse } from "@/lib/cart-validation";
@@ -12,8 +12,10 @@ import type { CheckoutAddressDTO, CheckoutRulesDTO } from "@/server/checkout";
 
 type CheckoutCustomer = { email: string; firstName: string; lastName: string };
 type FulfillmentMethod = "LOCAL_DELIVERY" | "OUT_OF_STATE_SHIPPING";
+type HandoffMethod = "LEAVE_AT_DOOR" | "HAND_TO_ME";
 type DeliveryDraft = {
   fulfillmentMethod: FulfillmentMethod;
+  handoffMethod: HandoffMethod;
   requestedDate: string;
   deliveryNotes: string;
   address: Omit<CheckoutAddressDTO, "id" | "isDefault" | "label">;
@@ -30,8 +32,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
   const { allergyInfo, clearCart, itemCount, items } = useCart();
   const reduceMotion = useReducedMotion();
   const defaultAddress = addresses.find((address) => address.isDefault) ?? addresses[0];
-  const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("LOCAL_DELIVERY");
-  const [selectedAddressId, setSelectedAddressId] = useState(defaultAddress?.id ?? "manual");
+  const [handoffMethod, setHandoffMethod] = useState<HandoffMethod>("LEAVE_AT_DOOR");
   const [requestedDate, setRequestedDate] = useState("");
   const [formError, setFormError] = useState("");
   const [deliveryComplete, setDeliveryComplete] = useState(false);
@@ -42,7 +43,6 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
   const [orderError, setOrderError] = useState("");
   const [createdOrder, setCreatedOrder] = useState<CheckoutOrderResponse["order"] | null>(null);
   const checkoutToken = useRef<string | null>(null);
-  const selectedAddress = useMemo(() => addresses.find((address) => address.id === selectedAddressId), [addresses, selectedAddressId]);
 
   if (createdOrder) {
     return <OrderCreated order={createdOrder} />;
@@ -68,6 +68,12 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
     setFormError("");
     setDeliveryComplete(false);
     const form = new FormData(event.currentTarget);
+    if (!manualAddressComplete(form)) {
+      setFormError("Complete every required contact and delivery-address field.");
+      return;
+    }
+    const address = manualAddressSnapshot(form);
+    const fulfillmentMethod = fulfillmentMethodForState(address.state);
 
     if (!requestedDate || requestedDate < rules.earliestFulfillmentDate) {
       setFormError(`Choose a date at least ${rules.minimumAdvanceHours} hours from now.`);
@@ -82,17 +88,11 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
       }
     }
 
-    if (!selectedAddress && !manualAddressComplete(form)) {
-      setFormError("Complete every required delivery-address field.");
-      return;
-    }
-
     if (!allergyReady) {
       setFormError("Complete the required allergy details in your cart before reviewing this order.");
       return;
     }
 
-    const address = selectedAddress ? addressSnapshot(selectedAddress) : manualAddressSnapshot(form);
     setReviewPending(true);
     try {
       const response = await fetch("/api/cart/validate", {
@@ -122,6 +122,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
 
       setDeliveryDraft({
         fulfillmentMethod,
+        handoffMethod,
         requestedDate,
         deliveryNotes: formValue(form, "deliveryNotes"),
         address,
@@ -160,6 +161,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
             unitPriceCents: Math.round(item.unitPrice * 100),
           })),
           fulfillmentMethod: deliveryDraft.fulfillmentMethod,
+          handoffMethod: deliveryDraft.handoffMethod,
           requestedDate: deliveryDraft.requestedDate,
           deliveryNotes: deliveryDraft.deliveryNotes,
           address: deliveryDraft.address,
@@ -186,72 +188,54 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
   return (
     <form className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start" noValidate onChange={() => { setDeliveryComplete(false); setValidatedCart(null); }} onSubmit={handleSubmit}>
       <div className="space-y-6">
-        <section className="rounded-2xl border border-border bg-surface p-6 sm:p-8" aria-labelledby="checkout-customer-title">
-          <div className="flex items-center gap-4">
-            <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-gold font-bold text-background">✓</span>
-            <div><p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Verified account</p><h2 className="mt-2 font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]" id="checkout-customer-title">Customer details</h2></div>
-          </div>
-          <dl className="mt-7 grid gap-4 sm:grid-cols-2">
-            <Detail label="Full name" value={`${customer.firstName} ${customer.lastName}`} />
-            <Detail label="Email address" value={customer.email} />
-          </dl>
-          <p className="mt-6 text-sm leading-7 text-muted">This verified account will own the order, so its progress will appear in your order history.</p>
-        </section>
-
-        <section className="rounded-2xl border border-border bg-surface p-6 sm:p-8" aria-labelledby="delivery-details-title">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Fulfillment</p>
-          <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]" id="delivery-details-title">Delivery details</h2>
-
-          <fieldset className="mt-7">
-            <legend className="mb-3 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery method</legend>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <MethodButton active={fulfillmentMethod === "LOCAL_DELIVERY"} label="Local delivery" onClick={() => { setFulfillmentMethod("LOCAL_DELIVERY"); setDeliveryComplete(false); setValidatedCart(null); }} />
-              <MethodButton active={fulfillmentMethod === "OUT_OF_STATE_SHIPPING"} label="Out-of-state shipping" onClick={() => { setFulfillmentMethod("OUT_OF_STATE_SHIPPING"); setDeliveryComplete(false); setValidatedCart(null); }} />
+        <section className="overflow-hidden rounded-2xl border border-border bg-surface" aria-label="Checkout information">
+          <div className="p-6 sm:p-8">
+            <CheckoutSectionHeader number="01" title="Contact information" />
+            <div className="mt-7 grid gap-5 sm:grid-cols-2">
+              <CheckoutField autoComplete="name" className="sm:col-span-2" defaultValue={`${customer.firstName} ${customer.lastName}`} label="Full name" name="recipientName" required />
+              <CheckoutField defaultValue={customer.email} label="Email" name="contactEmail" readOnly required type="email" />
+              <CheckoutField autoComplete="tel" defaultValue={defaultAddress?.phone ?? ""} label="Phone number" name="phone" required type="tel" />
             </div>
-          </fieldset>
+            <p className="mt-4 text-xs leading-5 text-muted">Your verified email keeps this order connected to your account for tracking.</p>
+          </div>
 
-          {fulfillmentMethod === "OUT_OF_STATE_SHIPPING" ? (
-            <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-xs leading-6 text-muted">Shipping days are {formatDayList(rules.outOfStateShippingDays)}. Orders must be placed by {titleCase(rules.weeklyShippingCutoffDay)} for that week&apos;s shipping window.</p>
-          ) : null}
-
-          <fieldset className="mt-7">
-            <legend className="mb-3 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery address</legend>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {addresses.map((address) => (
-                <label className={`cursor-pointer border p-4 transition-colors ${selectedAddressId === address.id ? "border-gold bg-gold/5" : "border-border bg-background/40 hover:border-gold/40"}`} key={address.id}>
-                  <input checked={selectedAddressId === address.id} className="sr-only" name="savedAddress" onChange={() => { setSelectedAddressId(address.id); setDeliveryComplete(false); }} type="radio" value={address.id} />
-                  <span className="text-xs font-bold uppercase tracking-[0.13em] text-foreground">{address.label || "Saved address"}</span>
-                  {address.isDefault ? <span className="ml-2 text-[0.6rem] font-bold uppercase tracking-[0.12em] text-gold">Default</span> : null}
-                  <span className="mt-2 block text-xs leading-5 text-muted">{address.recipientName}<br />{address.streetLine1}<br />{address.city}, {address.state} {address.postalCode}</span>
-                </label>
-              ))}
-              <label className={`cursor-pointer border p-4 transition-colors ${selectedAddressId === "manual" ? "border-gold bg-gold/5" : "border-border bg-background/40 hover:border-gold/40"}`}>
-                <input checked={selectedAddressId === "manual"} className="sr-only" name="savedAddress" onChange={() => { setSelectedAddressId("manual"); setDeliveryComplete(false); }} type="radio" value="manual" />
-                <span className="text-xs font-bold uppercase tracking-[0.13em] text-foreground">Use another address</span>
-                <span className="mt-2 block text-xs leading-5 text-muted">Enter an address for this order only.</span>
+          <div className="border-t border-border p-6 sm:p-8">
+            <CheckoutSectionHeader number="02" title="Delivery address" />
+            <div className="mt-7 grid gap-5 sm:grid-cols-2">
+              <CheckoutField autoComplete="address-line1" className="sm:col-span-2" defaultValue={defaultAddress?.streetLine1 ?? ""} label="Street address" name="streetLine1" required />
+              <CheckoutField autoComplete="address-line2" defaultValue={defaultAddress?.streetLine2 ?? ""} label="Apt / Suite / Unit" name="streetLine2" />
+              <CheckoutField autoComplete="address-level2" defaultValue={defaultAddress?.city ?? ""} label="City" name="city" required />
+              <CheckoutField autoComplete="address-level1" defaultValue={defaultAddress?.state ?? ""} label="State" name="state" required />
+              <CheckoutField autoComplete="postal-code" defaultValue={defaultAddress?.postalCode ?? ""} label="ZIP code" name="postalCode" required />
+              <label className="block">
+                <span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Requested delivery date</span>
+                <input className="min-h-12 w-full border-b border-border bg-transparent px-1 text-sm text-foreground" min={rules.earliestFulfillmentDate} name="requestedDate" onChange={(event) => { setRequestedDate(event.target.value); setDeliveryComplete(false); }} required type="date" value={requestedDate} />
+                <span className="mt-2 block text-xs leading-5 text-muted">Minimum {rules.minimumAdvanceHours} hours&apos; notice.</span>
               </label>
+              <div className="border border-border bg-background/40 p-4"><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery window</p><p className="mt-3 font-semibold text-foreground">{formatTime(rules.deliveryWindowStart)}–{formatTime(rules.deliveryWindowEnd)}</p></div>
+            </div>
+            <input name="countryCode" type="hidden" value="US" />
+            <label className="mt-6 block">
+              <span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery instructions <span className="normal-case tracking-normal">(optional)</span></span>
+              <textarea className="min-h-24 w-full resize-y border-b border-border bg-transparent px-1 py-3 text-sm text-foreground" maxLength={500} name="deliveryNotes" placeholder="Gate code, building access, landmarks, or another helpful note." />
+            </label>
+            <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-xs leading-6 text-muted">Addresses outside Georgia use {formatDayList(rules.outOfStateShippingDays)} shipping and must meet the {titleCase(rules.weeklyShippingCutoffDay)} cutoff.</p>
+          </div>
+
+          <fieldset className="border-t border-border p-6 sm:p-8">
+            <legend className="sr-only">Delivery method</legend>
+            <CheckoutSectionHeader number="03" title="Delivery method" />
+            <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              <DeliveryPreference active={handoffMethod === "LEAVE_AT_DOOR"} description="Your order will be left safely at the provided address." label="Leave at door" onChange={() => setHandoffMethod("LEAVE_AT_DOOR")} value="LEAVE_AT_DOOR" />
+              <DeliveryPreference active={handoffMethod === "HAND_TO_ME"} description="The driver will hand the order directly to you." label="Hand it to me" onChange={() => setHandoffMethod("HAND_TO_ME")} value="HAND_TO_ME" />
             </div>
           </fieldset>
 
-          {selectedAddressId === "manual" ? <ManualAddressFields /> : null}
-
-          <div className="mt-7 grid gap-5 sm:grid-cols-2">
-            <label className="block">
-              <span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Requested date</span>
-              <input className="min-h-12 w-full border-b border-border bg-transparent px-1 text-sm text-foreground" min={rules.earliestFulfillmentDate} name="requestedDate" onChange={(event) => { setRequestedDate(event.target.value); setDeliveryComplete(false); }} required type="date" value={requestedDate} />
-              <span className="mt-2 block text-xs leading-5 text-muted">Minimum {rules.minimumAdvanceHours} hours&apos; notice.</span>
-            </label>
-            <div className="border border-border bg-background/40 p-4"><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery window</p><p className="mt-3 font-semibold text-foreground">{formatTime(rules.deliveryWindowStart)}–{formatTime(rules.deliveryWindowEnd)}</p></div>
+          <div className="border-t border-border p-6 sm:p-8">
+            {formError ? <p className="border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{formError}</p> : null}
+            {deliveryComplete ? <p className="border-l-2 border-gold bg-gold/5 px-4 py-3 text-sm text-gold" role="status">Delivery details and current menu prices are verified.</p> : null}
+            <button className={`${formError || deliveryComplete ? "mt-5" : ""} min-h-12 w-full rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light disabled:cursor-wait disabled:opacity-60 sm:w-auto`} disabled={reviewPending} type="submit">{reviewPending ? "Preparing review…" : "Review order"}</button>
           </div>
-
-          <label className="mt-6 block">
-            <span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery notes <span className="normal-case tracking-normal">(optional)</span></span>
-            <textarea className="min-h-24 w-full resize-y border-b border-border bg-transparent px-1 py-3 text-sm text-foreground" maxLength={500} name="deliveryNotes" placeholder="Gate code, building instructions, or another helpful note." />
-          </label>
-
-          {formError ? <p className="mt-5 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{formError}</p> : null}
-          {deliveryComplete ? <p className="mt-5 border-l-2 border-gold bg-gold/5 px-4 py-3 text-sm text-gold" role="status">Delivery details and current menu prices are verified.</p> : null}
-          <button className="mt-6 min-h-12 rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light disabled:cursor-wait disabled:opacity-60" disabled={reviewPending} type="submit">{reviewPending ? "Preparing review…" : "Review order"}</button>
         </section>
 
         {deliveryComplete && deliveryDraft && validatedCart?.valid ? (
@@ -288,6 +272,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
 
             <div className="mt-7 grid gap-4 sm:grid-cols-2">
               <ReviewBlock label="Fulfillment" value={deliveryDraft.fulfillmentMethod === "LOCAL_DELIVERY" ? "Local delivery" : "Out-of-state shipping"} />
+              <ReviewBlock label="Delivery method" value={deliveryDraft.handoffMethod === "LEAVE_AT_DOOR" ? "Leave at door" : "Hand it to me"} />
               <ReviewBlock label="Requested date" value={formatDate(deliveryDraft.requestedDate)} />
               <ReviewBlock label="Delivery window" value={`${formatTime(rules.deliveryWindowStart)}–${formatTime(rules.deliveryWindowEnd)}`} />
               <ReviewBlock label="Deliver to" value={`${deliveryDraft.address.recipientName} · ${deliveryDraft.address.streetLine1}, ${deliveryDraft.address.city}, ${deliveryDraft.address.state} ${deliveryDraft.address.postalCode}`} />
@@ -371,8 +356,8 @@ function Detail({ label, value }: { label: string; value: string }) {
   return <div className="border border-border bg-background/50 p-5"><dt className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">{label}</dt><dd className="mt-3 break-words font-semibold text-foreground">{value}</dd></div>;
 }
 
-function MethodButton({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
-  return <button aria-pressed={active} className={`min-h-12 rounded-lg border px-4 text-xs font-bold uppercase tracking-[0.12em] transition-colors ${active ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/50 hover:text-foreground"}`} onClick={onClick} type="button">{label}</button>;
+function CheckoutSectionHeader({ number, title }: { number: string; title: string }) {
+  return <div className="flex items-center gap-4"><span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full border border-gold/50 text-[0.65rem] font-bold tracking-[0.12em] text-gold">{number}</span><h2 className="font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]">{title}</h2></div>;
 }
 
 function StatusRow({ highlight = false, label, value }: { highlight?: boolean; label: string; value: string }) {
@@ -383,42 +368,18 @@ function ReviewBlock({ className = "", label, value }: { className?: string; lab
   return <div className={`border border-border bg-background/40 p-4 ${className}`}><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">{label}</p><p className="mt-3 text-sm leading-6 text-foreground">{value}</p></div>;
 }
 
-function ManualAddressFields() {
-  return (
-    <div className="mt-6 grid gap-5 sm:grid-cols-2">
-      <DeliveryField autoComplete="name" label="Recipient name" name="recipientName" required />
-      <DeliveryField autoComplete="tel" label="Phone number" name="phone" required type="tel" />
-      <DeliveryField autoComplete="address-line1" label="Street address" name="streetLine1" required />
-      <DeliveryField autoComplete="address-line2" label="Address line 2" name="streetLine2" />
-      <DeliveryField autoComplete="address-level2" label="City" name="city" required />
-      <DeliveryField autoComplete="address-level1" label="State" name="state" required />
-      <DeliveryField autoComplete="postal-code" label="ZIP / postal code" name="postalCode" required />
-      <DeliveryField autoComplete="country" defaultValue="US" label="Country code" maxLength={2} name="countryCode" required />
-    </div>
-  );
+function DeliveryPreference({ active, description, label, onChange, value }: { active: boolean; description: string; label: string; onChange: () => void; value: HandoffMethod }) {
+  return <label className={`group cursor-pointer rounded-xl border p-5 transition-[border-color,background-color,transform] hover:-translate-y-0.5 ${active ? "border-gold bg-gold/10" : "border-border bg-background/40 hover:border-gold/40"}`}><span className="flex items-center gap-3"><input checked={active} className="size-4 accent-gold" name="handoffMethod" onChange={onChange} type="radio" value={value} /><span className="font-semibold text-foreground">{label}</span></span><span className="mt-3 block pl-7 text-xs leading-5 text-muted">{description}</span></label>;
 }
 
-function DeliveryField({ label, name, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; name: string }) {
-  return <label className="block"><span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">{label}</span><input className="min-h-12 w-full border-b border-border bg-transparent px-1 text-sm text-foreground" name={name} {...props} /></label>;
+function CheckoutField({ className = "", label, name, readOnly, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { className?: string; label: string; name: string }) {
+  return <label className={`block ${className}`}><span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">{label}</span><input className={`min-h-12 w-full border-b bg-transparent px-1 text-sm text-foreground transition-colors placeholder:text-muted/50 ${readOnly ? "border-border/60 text-muted" : "border-border hover:border-gold/50"}`} name={name} readOnly={readOnly} {...props} /></label>;
 }
 
 function manualAddressComplete(form: FormData) {
   return ["recipientName", "phone", "streetLine1", "city", "state", "postalCode", "countryCode"]
     .every((key) => typeof form.get(key) === "string" && String(form.get(key)).trim().length > 0)
     && /^[A-Za-z]{2}$/.test(String(form.get("countryCode") ?? ""));
-}
-
-function addressSnapshot(address: CheckoutAddressDTO): DeliveryDraft["address"] {
-  return {
-    recipientName: address.recipientName,
-    phone: address.phone,
-    streetLine1: address.streetLine1,
-    streetLine2: address.streetLine2,
-    city: address.city,
-    state: address.state,
-    postalCode: address.postalCode,
-    countryCode: address.countryCode,
-  };
 }
 
 function manualAddressSnapshot(form: FormData): DeliveryDraft["address"] {
@@ -432,6 +393,11 @@ function manualAddressSnapshot(form: FormData): DeliveryDraft["address"] {
     postalCode: formValue(form, "postalCode"),
     countryCode: formValue(form, "countryCode").toUpperCase(),
   };
+}
+
+function fulfillmentMethodForState(state: string): FulfillmentMethod {
+  const normalized = state.trim().toUpperCase().replace(/[^A-Z]/g, "");
+  return normalized === "GA" || normalized === "GEORGIA" ? "LOCAL_DELIVERY" : "OUT_OF_STATE_SHIPPING";
 }
 
 function formValue(form: FormData, key: string) {

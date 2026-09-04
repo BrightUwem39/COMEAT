@@ -10,6 +10,7 @@ export const checkoutOrderRequestSchema = z.object({
   checkoutToken: z.string().uuid(),
   items: z.array(cartLineRequestSchema).min(1).max(50),
   fulfillmentMethod: z.enum(["LOCAL_DELIVERY", "OUT_OF_STATE_SHIPPING"]),
+  handoffMethod: z.enum(["LEAVE_AT_DOOR", "HAND_TO_ME"]),
   requestedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a valid delivery date."),
   deliveryNotes: z.string().trim().max(500, "Delivery notes are too long."),
   address: z.object({
