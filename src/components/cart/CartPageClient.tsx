@@ -228,13 +228,12 @@ function CartValidationNotice({ status, validation }: {
 }) {
   if (status === "idle") return null;
   const valid = status === "ready" && validation?.valid;
+  if (valid) return null;
   const text = status === "checking"
     ? "Checking current prices and availability…"
     : status === "error"
       ? "We could not verify this cart. Please try again before checkout."
-      : valid
-        ? "Prices and meal options verified."
-        : "Some cart items need attention before checkout.";
+      : "Some cart items need attention before checkout.";
 
   return (
     <div
