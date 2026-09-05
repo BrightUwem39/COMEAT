@@ -167,7 +167,6 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
   const [paymentComplete, setPaymentComplete] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
-  const [succeeded, setSucceeded] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -175,10 +174,11 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
 
     setSubmitting(true);
     setMessage("");
-    const returnUrl = new URL(`/profile/orders/${encodeURIComponent(orderReference)}`, window.location.origin).toString();
+    const resultUrl = new URL("/checkout/payment-result", window.location.origin);
+    resultUrl.searchParams.set("orderReference", orderReference);
     const result = await stripe.confirmPayment({
       elements,
-      confirmParams: { return_url: returnUrl },
+      confirmParams: { return_url: resultUrl.toString() },
       redirect: "if_required",
     });
 
@@ -188,12 +188,13 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
       return;
     }
 
-    if (result.paymentIntent?.status === "succeeded") {
-      setSucceeded(true);
-      setMessage("Payment received by Stripe. Your order status will update after secure verification.");
-    } else {
-      setMessage("Payment is processing. Your order status will update after secure verification.");
+    if (result.paymentIntent) {
+      resultUrl.searchParams.set("payment_intent", result.paymentIntent.id);
+      window.location.assign(resultUrl.toString());
+      return;
     }
+
+    setMessage("Payment could not be verified. Try again.");
     setSubmitting(false);
   }
 
@@ -216,16 +217,16 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
         />
       </div>
 
-      {message ? <p className={`mt-5 border-l-2 px-4 py-3 text-sm leading-6 ${succeeded ? "border-gold bg-gold/5 text-gold" : "border-orange bg-orange/5 text-orange"}`} aria-live="polite">{message}</p> : null}
+      {message ? <p className="mt-5 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm leading-6 text-orange" aria-live="polite">{message}</p> : null}
 
       <motion.button
         className="mt-6 min-h-12 w-full rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-50"
-        disabled={!stripe || !elements || !elementReady || !paymentComplete || submitting || succeeded}
+        disabled={!stripe || !elements || !elementReady || !paymentComplete || submitting}
         type="submit"
         whileHover={reduceMotion || submitting ? undefined : { y: -2 }}
         whileTap={reduceMotion || submitting ? undefined : { scale: 0.985 }}
       >
-        {submitting ? "Processing securely…" : succeeded ? "Payment received" : `Pay ${currencyFormatter.format(amountCents / 100)} ${currency.toUpperCase()}`}
+        {submitting ? "Processing securely…" : `Pay ${currencyFormatter.format(amountCents / 100)} ${currency.toUpperCase()}`}
       </motion.button>
       <p className="mt-4 text-center text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted">Secured by Stripe</p>
     </form>
