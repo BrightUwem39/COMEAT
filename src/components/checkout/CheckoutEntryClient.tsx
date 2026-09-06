@@ -275,7 +275,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
                     <div className="min-w-0">
                       <h3 className="font-semibold text-foreground">{line.productName ?? cartItem.name}</h3>
                       <p className="mt-1 text-xs leading-5 text-muted">{line.variantLabel ?? cartItem.sizeLabel}{line.grainLabel ? ` · ${line.grainLabel}` : ""}{line.proteinLabel ? ` · ${line.proteinLabel}` : ""}</p>
-                      <p className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-orange">Pepper {cartItem.pepperTolerance}/5 · Quantity {line.quantity}</p>
+                      <p className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-orange">{cartItem.pepperTolerance !== undefined ? `Pepper ${cartItem.pepperTolerance}/5 · ` : ""}Quantity {line.quantity}</p>
                       {line.priceChanged ? <p className="mt-1 text-xs text-gold">Price updated during verification.</p> : null}
                     </div>
                     <strong className="col-start-2 text-sm text-gold sm:col-start-auto sm:text-base">{currency.format(line.lineTotalCents / 100)}</strong>

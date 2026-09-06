@@ -55,6 +55,18 @@ enum PaymentStatus {
   PARTIALLY_REFUNDED
 }
 
+enum OrderEmailKind {
+  CUSTOMER_CONFIRMATION
+  ADMIN_NOTIFICATION
+}
+
+enum EmailDeliveryStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+}
+
 enum InquiryStatus {
   NEW
   IN_REVIEW
@@ -314,15 +326,38 @@ model Order {
   createdAt                  DateTime          @default(now()) @db.Timestamptz(3)
   updatedAt                  DateTime          @updatedAt @db.Timestamptz(3)
 
-  user          User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
-  items         OrderItem[]
-  payments      Payment[]
-  statusHistory OrderStatusHistory[]
+  user            User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items           OrderItem[]
+  payments        Payment[]
+  statusHistory   OrderStatusHistory[]
+  emailDeliveries OrderEmailDelivery[]
 
   @@index([userId, createdAt])
   @@index([status, createdAt])
   @@index([customerEmail, createdAt])
   @@index([requestedFulfillmentAt])
+}
+
+model OrderEmailDelivery {
+  id                String              @id @default(uuid()) @db.Uuid
+  orderId           String              @db.Uuid
+  kind              OrderEmailKind
+  recipient         String
+  subject           String
+  status            EmailDeliveryStatus @default(PENDING)
+  attemptCount      Int                 @default(0)
+  claimToken        String?
+  lastAttemptAt     DateTime?           @db.Timestamptz(3)
+  sentAt            DateTime?           @db.Timestamptz(3)
+  providerMessageId String?
+  lastError         String?             @db.Text
+  createdAt         DateTime            @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime            @updatedAt @db.Timestamptz(3)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, kind])
+  @@index([status, lastAttemptAt])
 }
 
 model OrderItem {

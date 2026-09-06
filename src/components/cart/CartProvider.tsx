@@ -13,7 +13,7 @@ export type CartItem = {
   proteinLabel?: string;
   grainId?: string;
   grainLabel?: string;
-  pepperTolerance: number;
+  pepperTolerance?: number;
   unitPrice: number;
   quantity: number;
 };
@@ -49,7 +49,7 @@ const defaultAllergyInfo: AllergyInfo = {
 };
 
 function buildCartKey(item: NewCartItem) {
-  return [item.itemId, item.sizeId, item.proteinId ?? "none", item.grainId ?? "none", item.pepperTolerance].join(":");
+  return [item.itemId, item.sizeId, item.proteinId ?? "none", item.grainId ?? "none", item.pepperTolerance ?? "none"].join(":");
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {

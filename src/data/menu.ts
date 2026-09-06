@@ -6,6 +6,7 @@ export type MenuItem = {
   priceNote?: string;
   proteins?: readonly MenuProtein[];
   grainOptions?: readonly MenuGrain[];
+  requiresPepperTolerance?: boolean;
 };
 
 export type MenuPrice = {
@@ -217,6 +218,7 @@ export const menuCategories: readonly MenuCategory[] = [
         id: "naija-buns",
         name: "Naija Buns",
         image: "/images/menu/naija-buns.webp",
+        requiresPepperTolerance: false,
         pricing: [
           { id: "12-tray", label: "12\u2033 tray", price: 50 },
           { id: "24-tray", label: "24\u2033 tray", price: 100 },
@@ -226,6 +228,7 @@ export const menuCategories: readonly MenuCategory[] = [
         id: "puff-puff",
         name: "Puff-Puff",
         image: "/images/menu/puff-puff.webp",
+        requiresPepperTolerance: false,
         pricing: [
           { id: "12-tray", label: "12\u2033 tray", price: 50 },
           { id: "24-tray", label: "24\u2033 tray", price: 100 },

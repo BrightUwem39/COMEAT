@@ -294,6 +294,15 @@ async function seed() {
           }
         }
 
+        const requiresPepperTolerance = item.requiresPepperTolerance !== false;
+
+        if (!requiresPepperTolerance) {
+          await transaction.modifierGroup.deleteMany({
+            where: { productId: product.id, code: "pepper" },
+          });
+          continue;
+        }
+
         const pepperGroup = await transaction.modifierGroup.upsert({
           where: {
             productId_code: { productId: product.id, code: "pepper" },
@@ -376,9 +385,13 @@ async function seed() {
     );
   }
 
-  if (pepperGroups !== allMenuItems.length) {
+  const expectedPepperGroups = allMenuItems.filter(
+    (item) => item.requiresPepperTolerance !== false,
+  ).length;
+
+  if (pepperGroups !== expectedPepperGroups) {
     throw new Error(
-      `Expected ${allMenuItems.length} required pepper groups, found ${pepperGroups}.`,
+      `Expected ${expectedPepperGroups} required pepper groups, found ${pepperGroups}.`,
     );
   }
 

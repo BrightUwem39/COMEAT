@@ -31,18 +31,6 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
-    const firstAvailableSize = item.pricing?.[0]?.id;
-    const selectedSizeStillExists = item.pricing?.some(
-      (option) => option.id === selectedSizeId,
-    );
-
-    if (firstAvailableSize && !selectedSizeStillExists) {
-      setSelectedSizeId(firstAvailableSize);
-      setAdded(false);
-    }
-  }, [item.pricing, selectedSizeId]);
-
-  useEffect(() => {
     if (!panelOpen) return;
 
     const body = document.body;
@@ -74,13 +62,17 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
 
   if (href) return <PreviewCard href={href} item={item} reduceMotion={Boolean(reduceMotion)} size={size} />;
 
-  const selectedSize = item.pricing?.find((option) => option.id === selectedSizeId);
+  const selectedSize = item.pricing?.find((option) => option.id === selectedSizeId)
+    ?? item.pricing?.[0];
   const selectedProtein = item.proteins?.find((protein) => protein.id === selectedProteinId);
   const selectedGrain = item.grainOptions?.find((grain) => grain.id === selectedGrainId);
   const unitPrice = getUnitPrice(selectedSize, selectedProteinId);
+  const requiresPepperTolerance = item.requiresPepperTolerance !== false;
+  const hasCustomizations = requiresPepperTolerance || Boolean(item.proteins) || Boolean(item.grainOptions);
 
   const addConfiguredItem = () => {
-    if (!selectedSize || unitPrice === undefined || pepperTolerance === null) return;
+    if (!selectedSize || unitPrice === undefined) return;
+    if (requiresPepperTolerance && pepperTolerance === null) return;
     if (item.proteins && !selectedProtein) return;
     if (item.grainOptions && !selectedGrain) return;
 
@@ -94,7 +86,7 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
       proteinLabel: selectedProtein?.label,
       grainId: selectedGrain?.id,
       grainLabel: selectedGrain?.label,
-      pepperTolerance,
+      pepperTolerance: requiresPepperTolerance ? pepperTolerance ?? undefined : undefined,
       unitPrice,
     });
     setAdded(true);
@@ -122,13 +114,13 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
           </div>
 
           {item.pricing ? (
-            <div className="mt-5 hidden sm:block">
+            <div className={`mt-5 ${hasCustomizations ? "hidden sm:block" : "block"}`}>
               <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">Select size</p>
               <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : item.pricing.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {item.pricing.map((option) => (
                   <motion.button
-                    aria-pressed={selectedSizeId === option.id}
-                    className={`min-h-10 rounded-lg border px-2 text-[11px] font-semibold transition-[background-color,border-color,color] duration-200 ${selectedSizeId === option.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
+                    aria-pressed={selectedSize?.id === option.id}
+                    className={`min-h-10 rounded-lg border px-2 text-[11px] font-semibold transition-[background-color,border-color,color] duration-200 ${selectedSize?.id === option.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
                     key={option.id}
                     onClick={() => { setSelectedSizeId(option.id); setAdded(false); }}
                     type="button"
@@ -148,14 +140,14 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
           <motion.button
             className="group/order mt-3 flex min-h-10 w-full items-center justify-center gap-1.5 overflow-hidden rounded-lg border border-gold bg-transparent px-2 text-[9px] font-bold uppercase tracking-[0.1em] text-gold transition-[background-color,color,box-shadow] duration-300 hover:bg-gold hover:text-background hover:shadow-[0_10px_28px_rgba(230,165,26,0.2)] disabled:cursor-not-allowed disabled:border-border disabled:text-muted disabled:shadow-none min-[360px]:mt-4 min-[360px]:gap-2 min-[360px]:px-3 min-[360px]:text-[10px] min-[360px]:tracking-[0.12em] sm:mt-5 sm:min-h-12 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
             disabled={!selectedSize}
-            onClick={() => setPanelOpen(true)}
+            onClick={() => hasCustomizations ? setPanelOpen(true) : addConfiguredItem()}
             type="button"
             variants={reduceMotion ? undefined : menuControlVariants}
             whileHover={reduceMotion ? undefined : "hover"}
             whileTap={reduceMotion ? undefined : "tap"}
           >
-            <span className="sm:hidden">{selectedSize ? added ? "Add another" : "Order" : "Unavailable"}</span>
-            <span className="hidden sm:inline">{selectedSize ? added ? "Add another" : "Customize order" : "Unavailable"}</span>
+            <span className="sm:hidden">{selectedSize ? added ? "Add another" : hasCustomizations ? "Order" : "Add to cart" : "Unavailable"}</span>
+            <span className="hidden sm:inline">{selectedSize ? added ? "Add another" : hasCustomizations ? "Customize order" : "Add to cart" : "Unavailable"}</span>
             {selectedSize ? (
               <svg aria-hidden="true" className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover/order:translate-x-1 motion-reduce:transform-none" fill="none" viewBox="0 0 20 20">
                 <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
@@ -203,7 +195,8 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
   setSelectedSizeId: (id: string) => void;
   unitPrice: number | undefined;
 }) {
-  const ready = pepperTolerance !== null
+  const requiresPepperTolerance = item.requiresPepperTolerance !== false;
+  const ready = (!requiresPepperTolerance || pepperTolerance !== null)
     && (!item.proteins || Boolean(selectedProteinId))
     && (!item.grainOptions || Boolean(selectedGrainId));
 
@@ -284,7 +277,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
           </label>
         ) : null}
 
-        <fieldset className="mt-6">
+        {requiresPepperTolerance ? <fieldset className="mt-6">
           <legend className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Pepper tolerance <span className="text-orange">Required</span></legend>
           <div className="grid grid-cols-5 gap-2">
             {[1, 2, 3, 4, 5].map((level) => (
@@ -302,7 +295,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
             ))}
           </div>
           <div className="mt-2 flex justify-between text-[10px] uppercase tracking-[0.12em] text-muted"><span>Mild</span><span>Hot</span></div>
-        </fieldset>
+        </fieldset> : null}
 
         <div className="mt-7 flex items-center justify-between border-t border-border pt-5">
           <span className="text-sm text-muted">Order total</span>

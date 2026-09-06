@@ -3,7 +3,8 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { Resend } from "resend";
+
+import { isEmailDeliveryConfigured, sendTransactionalEmail } from "@/server/email-delivery";
 
 type AuthEmailKind = "password-reset" | "verification";
 
@@ -86,10 +87,8 @@ export async function sendAuthEmail(input: SendAuthEmailInput) {
   assertTrustedActionUrl(input.actionUrl);
 
   const html = renderEmail(input);
-  const apiKey = process.env.RESEND_API_KEY?.trim();
-  const from = process.env.AUTH_EMAIL_FROM?.trim();
 
-  if (!apiKey || !from) {
+  if (!isEmailDeliveryConfigured()) {
     if (process.env.NODE_ENV === "production") {
       throw new Error("Authentication email delivery is not configured.");
     }
@@ -98,15 +97,9 @@ export async function sendAuthEmail(input: SendAuthEmailInput) {
     return;
   }
 
-  const resend = new Resend(apiKey);
-  const { error } = await resend.emails.send({
-    from,
-    to: input.to,
-    subject: input.subject,
+  await sendTransactionalEmail({
     html,
+    subject: input.subject,
+    to: input.to,
   });
-
-  if (error) {
-    throw new Error("Authentication email delivery failed.");
-  }
 }

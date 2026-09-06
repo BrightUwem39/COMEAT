@@ -41,7 +41,7 @@ export function MenuBrowser({ items }: MenuBrowserProps) {
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="font-display text-3xl leading-none tracking-[-0.03em] text-foreground sm:text-4xl" id="all-dishes-title">All dishes</h2>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">Choose any meal, select its available size, add a protein where offered, and set your required pepper level.</p>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">Choose any meal, select its available size, add a protein where offered, and set a pepper level where available.</p>
         </div>
       </div>
 

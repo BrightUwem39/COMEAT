@@ -29,7 +29,7 @@ export default async function MenuPage() {
             <article className="bg-surface p-5 sm:p-7">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Plan ahead</p>
               <h2 className="mt-3 font-display text-2xl leading-none text-foreground sm:text-[1.75rem]">Order 48 hours ahead.</h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted">Choose your meal, tray size, protein where applicable, and pepper tolerance from 1–5. Full payment confirms your order.</p>
+              <p className="mt-3 text-sm leading-relaxed text-muted">Choose your meal, tray size, protein where applicable, and pepper tolerance where offered. Full payment confirms your order.</p>
             </article>
             <article className="bg-surface p-5 sm:p-7">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Delivery</p>

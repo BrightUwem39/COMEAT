@@ -81,7 +81,7 @@ export function CartPageClient() {
       <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center sm:px-10">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Nothing here yet</p>
         <h2 className="mt-4 font-display text-[1.75rem] tracking-[-0.03em] text-foreground sm:text-[2rem] lg:text-[2.5rem]">Your cart is ready when you are.</h2>
-        <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-muted">Choose a meal, tray size, protein where applicable, and pepper tolerance from the menu.</p>
+        <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-muted">Choose a meal, tray size, protein where applicable, and pepper tolerance where offered.</p>
         <Link className="mt-7 inline-flex min-h-12 items-center justify-center rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light" href="/menu">Explore the menu</Link>
       </div>
     );
@@ -180,7 +180,7 @@ export function CartPageClient() {
                 <div className="min-w-0">
                   <h2 className="font-display text-xl leading-none tracking-[-0.03em] text-foreground min-[360px]:text-2xl sm:text-[1.75rem]">{item.name}</h2>
                   <p className="mt-1.5 text-[11px] leading-snug text-muted sm:mt-2 sm:text-sm">{item.sizeLabel}{item.grainLabel ? ` · ${item.grainLabel}` : ""}{item.proteinLabel ? ` · ${item.proteinLabel}` : ""}</p>
-                  <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-orange sm:text-xs sm:tracking-[0.12em]">Pepper level {item.pepperTolerance}/5</p>
+                  {item.pepperTolerance !== undefined ? <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-orange sm:text-xs sm:tracking-[0.12em]">Pepper level {item.pepperTolerance}/5</p> : null}
                 </div>
                 <strong className="shrink-0 text-sm text-gold min-[360px]:text-base sm:text-lg">
                   {linePrice !== undefined ? currency.format(linePrice / 100) : validationStatus === "checking" ? "Checking…" : "—"}

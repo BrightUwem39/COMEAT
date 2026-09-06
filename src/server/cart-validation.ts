@@ -48,7 +48,9 @@ export async function validateCart(input: CartValidationRequest, client: Prisma.
     const grainOption = item.grainId
       ? grainGroup?.options.find((option) => option.id === item.grainId)
       : undefined;
-    const pepperOption = pepperGroup?.options.find((option) => option.code === `level-${item.pepperTolerance}`);
+    const pepperOption = item.pepperTolerance === undefined
+      ? undefined
+      : pepperGroup?.options.find((option) => option.code === `level-${item.pepperTolerance}`);
 
     if (proteinGroup?.required && !item.proteinId) {
       issues.push({ code: "protein_required", message: "Choose a protein for this dish." });
@@ -62,7 +64,9 @@ export async function validateCart(input: CartValidationRequest, client: Prisma.
       issues.push({ code: "grain_unavailable", message: "The selected rice option is no longer available." });
     }
 
-    if (!pepperGroup || !pepperOption) {
+    if (pepperGroup?.required && item.pepperTolerance === undefined) {
+      issues.push({ code: "pepper_required", message: "Choose a pepper level for this dish." });
+    } else if (item.pepperTolerance !== undefined && (!pepperGroup || !pepperOption)) {
       issues.push({ code: "pepper_unavailable", message: "The selected pepper level is unavailable." });
     }
 

@@ -156,6 +156,9 @@ function toStorefrontMenuItem(product: MenuProductDTO): MenuItem {
   const grainGroup = product.modifierGroups.find(
     (group) => group.kind === "GRAIN",
   );
+  const pepperGroup = product.modifierGroups.find(
+    (group) => group.kind === "PEPPER",
+  );
   const pricing = product.variants.flatMap<MenuPrice>((variant) => {
     if (variant.basePriceCents === null) return [];
 
@@ -190,6 +193,7 @@ function toStorefrontMenuItem(product: MenuProductDTO): MenuItem {
     id: product.id,
     name: product.name,
     image: product.imageUrl || "/images/hero.jpg",
+    requiresPepperTolerance: Boolean(pepperGroup?.required),
     ...(pricing.length ? { pricing } : {}),
     ...(product.priceNote ? { priceNote: product.priceNote } : {}),
     ...(proteinGroup

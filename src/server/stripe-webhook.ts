@@ -4,6 +4,7 @@ import type Stripe from "stripe";
 
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/server/db";
+import { sendPaidOrderEmails } from "@/server/order-confirmation";
 
 export class StripeWebhookDataError extends Error {}
 
@@ -18,7 +19,11 @@ export async function processStripeWebhookEvent(
   if (paymentIntent.object !== "payment_intent") return "ignored";
 
   if (event.type === "payment_intent.succeeded") {
-    return recordSuccessfulPayment(paymentIntent, event.created);
+    const result = await recordSuccessfulPayment(paymentIntent, event.created);
+    if (result.orderId) {
+      await sendPaidOrderEmails(result.orderId);
+    }
+    return result.outcome;
   }
 
   if (event.type === "payment_intent.payment_failed") {
@@ -39,14 +44,14 @@ export async function processStripeWebhookEvent(
 async function recordSuccessfulPayment(
   paymentIntent: Stripe.PaymentIntent,
   eventCreatedAt: number,
-): Promise<StripeWebhookOutcome> {
+): Promise<{ orderId: string | null; outcome: StripeWebhookOutcome }> {
   if (paymentIntent.status !== "succeeded") {
     throw new StripeWebhookDataError("Successful event contains an invalid payment status.");
   }
 
   return db.$transaction(async (transaction) => {
     const payment = await getVerifiedPayment(transaction, paymentIntent);
-    if (!payment) return "ignored";
+    if (!payment) return { orderId: null, outcome: "ignored" as const };
 
     if (paymentIntent.amount_received !== payment.amountCents) {
       throw new StripeWebhookDataError("The received payment amount does not match the order.");
@@ -85,7 +90,10 @@ async function recordSuccessfulPayment(
       });
     }
 
-    return paymentUpdate.count > 0 || orderUpdate.count > 0 ? "processed" : "duplicate";
+    return {
+      orderId: payment.order.id,
+      outcome: paymentUpdate.count > 0 || orderUpdate.count > 0 ? "processed" : "duplicate",
+    };
   });
 }
 

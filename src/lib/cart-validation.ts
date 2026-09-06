@@ -6,7 +6,7 @@ export const cartLineRequestSchema = z.object({
   sizeId: z.string().min(1).max(100),
   proteinId: z.string().min(1).max(100).optional(),
   grainId: z.string().min(1).max(100).optional(),
-  pepperTolerance: z.number().int().min(1).max(5),
+  pepperTolerance: z.number().int().min(1).max(5).optional(),
   quantity: z.number().int().min(1).max(99),
   unitPriceCents: z.number().int().min(0).max(10_000_000),
 });
@@ -26,6 +26,7 @@ export type CartValidationIssue = {
     | "protein_unavailable"
     | "grain_required"
     | "grain_unavailable"
+    | "pepper_required"
     | "pepper_unavailable"
     | "configuration_unavailable";
   message: string;
