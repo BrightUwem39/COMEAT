@@ -187,9 +187,9 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
   }
 
   return (
-    <form className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start" noValidate onChange={() => { setDeliveryComplete(false); setValidatedCart(null); }} onSubmit={handleSubmit}>
-      <div className="space-y-4">
-        <section className="rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6" aria-labelledby="contact-information-title">
+    <form className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start" noValidate onChange={() => { setDeliveryComplete(false); setValidatedCart(null); }} onSubmit={handleSubmit}>
+      <div className="min-w-0 space-y-4">
+        <section className="min-w-0 rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6" aria-labelledby="contact-information-title">
           <CheckoutSectionHeader description="Where we can reach you about this order." id="contact-information-title" title="Contact information" />
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <CheckoutField autoComplete="name" className="sm:col-span-2" defaultValue={`${customer.firstName} ${customer.lastName}`} label="Full name" name="recipientName" required />
@@ -198,7 +198,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
           </div>
         </section>
 
-        <section className="rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6" aria-labelledby="delivery-address-title">
+        <section className="min-w-0 rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6" aria-labelledby="delivery-address-title">
           <CheckoutSectionHeader description="Tell us where and when your food should arrive." id="delivery-address-title" title="Delivery address" />
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <CheckoutField autoComplete="address-line1" className="sm:col-span-2" defaultValue={defaultAddress?.streetLine1 ?? ""} label="Street address" name="streetLine1" required />
@@ -206,9 +206,9 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
             <CheckoutField autoComplete="address-level2" defaultValue={defaultAddress?.city ?? ""} label="City" name="city" required />
             <CheckoutField autoComplete="address-level1" defaultValue={defaultAddress?.state ?? ""} label="State" name="state" required />
             <CheckoutField autoComplete="postal-code" defaultValue={defaultAddress?.postalCode ?? ""} label="ZIP code" name="postalCode" required />
-            <label className="group rounded-lg border border-border bg-background/55 px-3 py-2 transition-colors hover:border-gold/35">
+            <label className="group min-w-0 rounded-lg border border-border bg-background/55 px-3 py-2 transition-colors hover:border-gold/35">
               <span className="block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">Requested delivery date</span>
-              <input className="mt-1 min-h-7 w-full bg-transparent text-sm text-foreground" min={rules.earliestFulfillmentDate} name="requestedDate" onChange={(event) => { setRequestedDate(event.target.value); setDeliveryComplete(false); }} required type="date" value={requestedDate} />
+              <input className="mt-1 min-h-7 w-full min-w-0 max-w-full bg-transparent text-base text-foreground sm:text-sm" min={rules.earliestFulfillmentDate} name="requestedDate" onChange={(event) => { setRequestedDate(event.target.value); setDeliveryComplete(false); }} required type="date" value={requestedDate} />
               <span className="mt-1 block text-[0.65rem] leading-4 text-muted">Minimum {rules.minimumAdvanceHours} hours&apos; notice</span>
             </label>
             <div className="rounded-lg border border-gold/20 bg-gold/5 px-3 py-2">
@@ -217,14 +217,14 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
             </div>
           </div>
           <input name="countryCode" type="hidden" value="US" />
-          <label className="mt-3 block rounded-lg border border-border bg-background/55 px-3 py-2 transition-colors hover:border-gold/35">
+          <label className="mt-3 block min-w-0 rounded-lg border border-border bg-background/55 px-3 py-2 transition-colors hover:border-gold/35">
             <span className="block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery instructions <span className="normal-case tracking-normal">(optional)</span></span>
-            <textarea className="mt-1.5 min-h-16 w-full resize-y bg-transparent text-sm leading-5 text-foreground placeholder:text-muted/50" maxLength={500} name="deliveryNotes" placeholder="Gate code, building access, landmarks, or another helpful note." />
+            <textarea className="mt-1.5 min-h-16 w-full min-w-0 max-w-full resize-y bg-transparent text-base leading-5 text-foreground placeholder:text-muted/50 sm:text-sm" maxLength={500} name="deliveryNotes" placeholder="Gate code, building access, landmarks, or another helpful note." />
           </label>
           <p className="mt-3 rounded-lg border border-orange/25 bg-orange/5 px-3 py-2.5 text-xs leading-5 text-muted"><span className="font-semibold text-orange">Outside Georgia?</span> Shipping is available {formatDayList(rules.outOfStateShippingDays)} and must meet the {titleCase(rules.weeklyShippingCutoffDay)} cutoff.</p>
         </section>
 
-        <fieldset className="rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6">
+        <fieldset className="min-w-0 rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6">
           <legend className="sr-only">Delivery method</legend>
           <CheckoutSectionHeader description="Choose how you would like to receive the order." id="delivery-method-title" title="Delivery method" />
           <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
@@ -386,7 +386,7 @@ function DeliveryPreference({ active, description, label, onChange, value }: { a
 }
 
 function CheckoutField({ className = "", label, name, readOnly, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { className?: string; label: string; name: string }) {
-  return <label className={`block rounded-lg border bg-background/55 px-3 py-2 transition-colors ${readOnly ? "border-border/70" : "border-border hover:border-gold/35"} ${className}`}><span className="block text-[0.58rem] font-bold uppercase tracking-[0.15em] text-muted">{label}</span><input className={`mt-0.5 min-h-7 w-full bg-transparent text-sm text-foreground placeholder:text-muted/50 ${readOnly ? "text-muted" : ""}`} name={name} readOnly={readOnly} {...props} /></label>;
+  return <label className={`block min-w-0 rounded-lg border bg-background/55 px-3 py-2 transition-colors ${readOnly ? "border-border/70" : "border-border hover:border-gold/35"} ${className}`}><span className="block text-[0.58rem] font-bold uppercase tracking-[0.15em] text-muted">{label}</span><input className={`mt-0.5 min-h-7 w-full min-w-0 max-w-full bg-transparent text-base text-foreground placeholder:text-muted/50 sm:text-sm ${readOnly ? "text-muted" : ""}`} name={name} readOnly={readOnly} {...props} /></label>;
 }
 
 function manualAddressComplete(form: FormData) {

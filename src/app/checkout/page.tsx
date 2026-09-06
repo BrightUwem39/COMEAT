@@ -13,7 +13,7 @@ export default async function CheckoutPage() {
   const { addresses, customer, rules } = await getCheckoutEntryData();
 
   return (
-    <main className="min-h-[calc(100svh-5rem)] bg-background py-8 sm:py-10 lg:py-12" id="main-content">
+    <main className="min-h-[calc(100svh-5rem)] overflow-x-clip bg-background py-8 sm:py-10 lg:py-12" id="main-content">
       <Container>
         <header>
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-gold">Checkout</p>
