@@ -187,55 +187,55 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
   }
 
   return (
-    <form className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start" noValidate onChange={() => { setDeliveryComplete(false); setValidatedCart(null); }} onSubmit={handleSubmit}>
-      <div className="space-y-6">
-        <section className="rounded-[1.5rem] border border-border bg-surface p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:p-8" aria-labelledby="contact-information-title">
+    <form className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start" noValidate onChange={() => { setDeliveryComplete(false); setValidatedCart(null); }} onSubmit={handleSubmit}>
+      <div className="space-y-4">
+        <section className="rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6" aria-labelledby="contact-information-title">
           <CheckoutSectionHeader description="Where we can reach you about this order." id="contact-information-title" title="Contact information" />
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <CheckoutField autoComplete="name" className="sm:col-span-2" defaultValue={`${customer.firstName} ${customer.lastName}`} label="Full name" name="recipientName" required />
             <CheckoutField defaultValue={customer.email} label="Email" name="contactEmail" readOnly required type="email" />
             <CheckoutField autoComplete="tel" defaultValue={defaultAddress?.phone ?? ""} label="Phone number" name="phone" required type="tel" />
           </div>
         </section>
 
-        <section className="rounded-[1.5rem] border border-border bg-surface p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:p-8" aria-labelledby="delivery-address-title">
+        <section className="rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6" aria-labelledby="delivery-address-title">
           <CheckoutSectionHeader description="Tell us where and when your food should arrive." id="delivery-address-title" title="Delivery address" />
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <CheckoutField autoComplete="address-line1" className="sm:col-span-2" defaultValue={defaultAddress?.streetLine1 ?? ""} label="Street address" name="streetLine1" required />
             <CheckoutField autoComplete="address-line2" defaultValue={defaultAddress?.streetLine2 ?? ""} label="Apt / Suite / Unit" name="streetLine2" />
             <CheckoutField autoComplete="address-level2" defaultValue={defaultAddress?.city ?? ""} label="City" name="city" required />
             <CheckoutField autoComplete="address-level1" defaultValue={defaultAddress?.state ?? ""} label="State" name="state" required />
             <CheckoutField autoComplete="postal-code" defaultValue={defaultAddress?.postalCode ?? ""} label="ZIP code" name="postalCode" required />
-            <label className="group rounded-xl border border-border bg-background/55 px-4 py-3 transition-colors hover:border-gold/35">
+            <label className="group rounded-lg border border-border bg-background/55 px-3 py-2 transition-colors hover:border-gold/35">
               <span className="block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">Requested delivery date</span>
-              <input className="mt-1 min-h-8 w-full bg-transparent text-sm text-foreground" min={rules.earliestFulfillmentDate} name="requestedDate" onChange={(event) => { setRequestedDate(event.target.value); setDeliveryComplete(false); }} required type="date" value={requestedDate} />
+              <input className="mt-1 min-h-7 w-full bg-transparent text-sm text-foreground" min={rules.earliestFulfillmentDate} name="requestedDate" onChange={(event) => { setRequestedDate(event.target.value); setDeliveryComplete(false); }} required type="date" value={requestedDate} />
               <span className="mt-1 block text-[0.65rem] leading-4 text-muted">Minimum {rules.minimumAdvanceHours} hours&apos; notice</span>
             </label>
-            <div className="rounded-xl border border-gold/20 bg-gold/5 px-4 py-3">
+            <div className="rounded-lg border border-gold/20 bg-gold/5 px-3 py-2">
               <p className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery window</p>
-              <p className="mt-2 font-display text-xl text-foreground">{formatTime(rules.deliveryWindowStart)}–{formatTime(rules.deliveryWindowEnd)}</p>
+              <p className="mt-1.5 font-display text-lg text-foreground">{formatTime(rules.deliveryWindowStart)}–{formatTime(rules.deliveryWindowEnd)}</p>
             </div>
           </div>
           <input name="countryCode" type="hidden" value="US" />
-          <label className="mt-4 block rounded-xl border border-border bg-background/55 px-4 py-3 transition-colors hover:border-gold/35">
+          <label className="mt-3 block rounded-lg border border-border bg-background/55 px-3 py-2 transition-colors hover:border-gold/35">
             <span className="block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery instructions <span className="normal-case tracking-normal">(optional)</span></span>
-            <textarea className="mt-2 min-h-20 w-full resize-y bg-transparent text-sm leading-6 text-foreground placeholder:text-muted/50" maxLength={500} name="deliveryNotes" placeholder="Gate code, building access, landmarks, or another helpful note." />
+            <textarea className="mt-1.5 min-h-16 w-full resize-y bg-transparent text-sm leading-5 text-foreground placeholder:text-muted/50" maxLength={500} name="deliveryNotes" placeholder="Gate code, building access, landmarks, or another helpful note." />
           </label>
-          <p className="mt-4 rounded-xl border border-orange/25 bg-orange/5 px-4 py-3 text-xs leading-6 text-muted"><span className="font-semibold text-orange">Outside Georgia?</span> Shipping is available {formatDayList(rules.outOfStateShippingDays)} and must meet the {titleCase(rules.weeklyShippingCutoffDay)} cutoff.</p>
+          <p className="mt-3 rounded-lg border border-orange/25 bg-orange/5 px-3 py-2.5 text-xs leading-5 text-muted"><span className="font-semibold text-orange">Outside Georgia?</span> Shipping is available {formatDayList(rules.outOfStateShippingDays)} and must meet the {titleCase(rules.weeklyShippingCutoffDay)} cutoff.</p>
         </section>
 
-        <fieldset className="rounded-[1.5rem] border border-border bg-surface p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:p-8">
+        <fieldset className="rounded-[1.25rem] border border-border bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:p-6">
           <legend className="sr-only">Delivery method</legend>
           <CheckoutSectionHeader description="Choose how you would like to receive the order." id="delivery-method-title" title="Delivery method" />
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
             <DeliveryPreference active={handoffMethod === "LEAVE_AT_DOOR"} description="Your order will be left safely at the provided address." label="Leave at door" onChange={() => setHandoffMethod("LEAVE_AT_DOOR")} value="LEAVE_AT_DOOR" />
             <DeliveryPreference active={handoffMethod === "HAND_TO_ME"} description="The driver will hand the order directly to you." label="Hand it to me" onChange={() => setHandoffMethod("HAND_TO_ME")} value="HAND_TO_ME" />
           </div>
 
-          <div className="mt-6 border-t border-border pt-6">
+          <div className="mt-5 border-t border-border pt-5">
             {formError ? <p className="border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{formError}</p> : null}
             {deliveryComplete ? <p className="border-l-2 border-gold bg-gold/5 px-4 py-3 text-sm text-gold" role="status">Delivery details and current menu prices are verified.</p> : null}
-            <button className={`${formError || deliveryComplete ? "mt-5" : ""} min-h-12 w-full rounded-xl bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light disabled:cursor-wait disabled:opacity-60 sm:w-auto`} disabled={reviewPending} type="submit">{reviewPending ? "Preparing review…" : "Review order"}</button>
+            <button className={`${formError || deliveryComplete ? "mt-4" : ""} min-h-10 w-full rounded-lg bg-gold px-5 text-[0.65rem] font-bold uppercase tracking-[0.13em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light disabled:cursor-wait disabled:opacity-60 sm:w-auto`} disabled={reviewPending} type="submit">{reviewPending ? "Preparing review…" : "Review order"}</button>
           </div>
         </fieldset>
 
@@ -307,15 +307,15 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
         ) : null}
       </div>
 
-      <aside className="overflow-hidden rounded-[1.5rem] border border-gold/20 bg-[linear-gradient(155deg,var(--surface),rgba(230,165,26,0.055))] shadow-[0_24px_80px_rgba(0,0,0,0.24)] lg:sticky lg:top-28">
-        <div className="border-b border-border px-6 py-5">
+      <aside className="overflow-hidden rounded-[1.25rem] border border-gold/20 bg-[linear-gradient(155deg,var(--surface),rgba(230,165,26,0.055))] shadow-[0_20px_60px_rgba(0,0,0,0.22)] lg:sticky lg:top-28">
+        <div className="border-b border-border px-5 py-4">
           <div className="flex items-center justify-between gap-4">
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Order readiness</p>
             <span className="size-2 rounded-full bg-gold shadow-[0_0_16px_rgba(230,165,26,0.75)]" />
           </div>
           <p className="mt-2 font-display text-xl tracking-[-0.02em] text-foreground">Almost at the table.</p>
         </div>
-        <div className="p-6">
+        <div className="p-5">
         <StatusRow label="Cart items" value={String(itemCount)} />
         <StatusRow highlight={allergyReady} label="Allergy details" value={allergyReady ? "Complete" : "Required"} />
         <StatusRow highlight={deliveryComplete} label="Delivery details" value={deliveryComplete ? "Complete" : "Required"} />
@@ -370,7 +370,7 @@ function Detail({ label, value }: { label: string; value: string }) {
 }
 
 function CheckoutSectionHeader({ description, id, title }: { description: string; id: string; title: string }) {
-  return <div className="border-l-2 border-gold pl-4"><h2 className="font-display text-[1.4rem] tracking-[-0.03em] text-foreground sm:text-[1.65rem]" id={id}>{title}</h2><p className="mt-1 text-xs leading-5 text-muted">{description}</p></div>;
+  return <div className="border-l-2 border-gold pl-3"><h2 className="font-display text-[1.3rem] tracking-[-0.03em] text-foreground sm:text-2xl" id={id}>{title}</h2><p className="mt-0.5 text-xs leading-5 text-muted">{description}</p></div>;
 }
 
 function StatusRow({ highlight = false, label, value }: { highlight?: boolean; label: string; value: string }) {
@@ -382,11 +382,11 @@ function ReviewBlock({ className = "", label, value }: { className?: string; lab
 }
 
 function DeliveryPreference({ active, description, label, onChange, value }: { active: boolean; description: string; label: string; onChange: () => void; value: HandoffMethod }) {
-  return <label className={`group cursor-pointer rounded-xl border p-5 transition-[border-color,background-color,transform] hover:-translate-y-0.5 ${active ? "border-gold/60 bg-gold/10" : "border-border bg-background/45 hover:border-gold/35"}`}><span className="flex items-center gap-3"><input checked={active} className="sr-only" name="handoffMethod" onChange={onChange} type="radio" value={value} /><span aria-hidden="true" className={`grid size-5 place-items-center rounded-full border ${active ? "border-gold" : "border-muted/60"}`}><span className={`size-2 rounded-full transition-colors ${active ? "bg-gold" : "bg-transparent"}`} /></span><span className="font-semibold text-foreground">{label}</span></span><span className="mt-3 block pl-8 text-xs leading-5 text-muted">{description}</span></label>;
+  return <label className={`group cursor-pointer rounded-lg border p-3.5 transition-[border-color,background-color,transform] hover:-translate-y-0.5 ${active ? "border-gold/60 bg-gold/10" : "border-border bg-background/45 hover:border-gold/35"}`}><span className="flex items-center gap-2.5"><input checked={active} className="sr-only" name="handoffMethod" onChange={onChange} type="radio" value={value} /><span aria-hidden="true" className={`grid size-4 place-items-center rounded-full border ${active ? "border-gold" : "border-muted/60"}`}><span className={`size-1.5 rounded-full transition-colors ${active ? "bg-gold" : "bg-transparent"}`} /></span><span className="text-sm font-semibold text-foreground">{label}</span></span><span className="mt-1.5 block pl-6 text-[0.7rem] leading-4 text-muted">{description}</span></label>;
 }
 
 function CheckoutField({ className = "", label, name, readOnly, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { className?: string; label: string; name: string }) {
-  return <label className={`block rounded-xl border bg-background/55 px-4 py-3 transition-colors ${readOnly ? "border-border/70" : "border-border hover:border-gold/35"} ${className}`}><span className="block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">{label}</span><input className={`mt-1 min-h-8 w-full bg-transparent text-sm text-foreground placeholder:text-muted/50 ${readOnly ? "text-muted" : ""}`} name={name} readOnly={readOnly} {...props} /></label>;
+  return <label className={`block rounded-lg border bg-background/55 px-3 py-2 transition-colors ${readOnly ? "border-border/70" : "border-border hover:border-gold/35"} ${className}`}><span className="block text-[0.58rem] font-bold uppercase tracking-[0.15em] text-muted">{label}</span><input className={`mt-0.5 min-h-7 w-full bg-transparent text-sm text-foreground placeholder:text-muted/50 ${readOnly ? "text-muted" : ""}`} name={name} readOnly={readOnly} {...props} /></label>;
 }
 
 function manualAddressComplete(form: FormData) {
