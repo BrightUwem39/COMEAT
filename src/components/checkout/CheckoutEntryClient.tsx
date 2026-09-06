@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { useCart } from "@/components/cart/CartProvider";
 import { PaymentSection } from "@/components/checkout/PaymentSection";
@@ -44,6 +44,19 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
   const [orderError, setOrderError] = useState("");
   const [createdOrder, setCreatedOrder] = useState<CheckoutOrderResponse["order"] | null>(null);
   const checkoutToken = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!createdOrder) return;
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      document.getElementById("checkout-payment")?.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [createdOrder, reduceMotion]);
 
   if (createdOrder) {
     return <OrderCreated order={createdOrder} />;
@@ -301,7 +314,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
               whileHover={reduceMotion || orderPending ? undefined : { y: -2 }}
               whileTap={reduceMotion || orderPending ? undefined : { scale: 0.98 }}
             >
-              {orderPending ? "Creating order…" : "Place order — pending payment"}
+              {orderPending ? "Preparing payment…" : "Continue to payment"}
             </motion.button>
           </motion.section>
         ) : null}
@@ -360,7 +373,9 @@ function OrderCreated({ order }: { order: CheckoutOrderResponse["order"] }) {
         </div>
       </motion.section>
 
-      <PaymentSection amountCents={order.totalCents} currency={order.currency} orderReference={order.publicReference} />
+      <div className="scroll-mt-24" id="checkout-payment">
+        <PaymentSection amountCents={order.totalCents} currency={order.currency} orderReference={order.publicReference} />
+      </div>
     </div>
   );
 }
