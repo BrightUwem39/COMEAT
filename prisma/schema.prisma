@@ -158,6 +158,16 @@ model RateLimit {
   lastRequest BigInt
 }
 
+model PublicFormRateLimit {
+  key             String   @id
+  count           Int      @default(0)
+  windowStartedAt DateTime @db.Timestamptz(3)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([updatedAt])
+}
+
 model Address {
   id            String   @id @default(uuid()) @db.Uuid
   userId        String   @db.Uuid

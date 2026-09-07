@@ -5,6 +5,7 @@ import { Resend } from "resend";
 type TransactionalEmailInput = {
   html: string;
   idempotencyKey?: string;
+  replyTo?: string;
   subject: string;
   text?: string;
   to: string | string[];
@@ -51,6 +52,9 @@ export async function sendTransactionalEmail(input: TransactionalEmailInput) {
     throw new Error("Transactional email recipient is missing.");
   }
   recipients.forEach((recipient) => assertEmailAddress(recipient, "email recipient"));
+  if (input.replyTo) {
+    assertEmailAddress(input.replyTo, "reply-to address");
+  }
 
   if (input.idempotencyKey && (input.idempotencyKey.length > 256 || /\r|\n/.test(input.idempotencyKey))) {
     throw new Error("Transactional email idempotency key is invalid.");
@@ -61,6 +65,7 @@ export async function sendTransactionalEmail(input: TransactionalEmailInput) {
     {
       from,
       html: input.html,
+      replyTo: input.replyTo,
       subject: input.subject.trim(),
       text: input.text,
       to: recipients,
