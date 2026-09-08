@@ -24,13 +24,13 @@ export function ContactForm() {
   return (
     <motion.section
       animate="visible"
-      className="min-w-0 rounded-[1.5rem] border border-border bg-surface/90 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-7 lg:p-8"
+      className="mt-8 min-w-0 border-t border-border pt-7 sm:mt-10 sm:pt-8 lg:mt-14 lg:pt-10"
       initial={reduceMotion ? false : "hidden"}
       variants={reduceMotion ? undefined : authFormVariants}
     >
-      <motion.div className="border-b border-border pb-5" variants={reduceMotion ? undefined : authFieldVariants}>
+      <motion.div variants={reduceMotion ? undefined : authFieldVariants}>
         <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Send a message</p>
-        <h2 className="mt-2 font-display text-2xl leading-none tracking-[-0.03em] text-foreground sm:text-3xl">How can we help?</h2>
+        <h2 className="mt-3 font-display text-3xl leading-none tracking-[-0.03em] text-foreground sm:text-4xl">How can we help?</h2>
         <p className="mt-3 text-sm leading-6 text-muted">Share your question below and give us enough detail to respond clearly.</p>
       </motion.div>
 
@@ -66,7 +66,7 @@ export function ContactForm() {
 
         <motion.label className="min-w-0 sm:col-span-2" variants={reduceMotion ? undefined : authFieldVariants}>
           <span className={labelClassName}>Message</span>
-          <textarea aria-describedby="message-error" aria-invalid={hasError(state.fieldErrors, "message")} className="min-h-36 w-full resize-y rounded-lg border border-border bg-background/70 px-3.5 py-3 text-sm leading-6 text-foreground placeholder:text-muted/65 transition-colors hover:border-white/20" maxLength={2000} minLength={10} name="message" placeholder="Tell us how we can help" required />
+          <textarea aria-describedby="message-error" aria-invalid={hasError(state.fieldErrors, "message")} className="min-h-28 w-full resize-y rounded-lg border border-border bg-background/70 px-3.5 py-3 text-sm leading-6 text-foreground placeholder:text-muted/65 transition-colors hover:border-white/20" maxLength={2000} minLength={10} name="message" placeholder="Tell us how we can help" required />
           <FieldError errors={state.fieldErrors?.message} id="message-error" />
         </motion.label>
 

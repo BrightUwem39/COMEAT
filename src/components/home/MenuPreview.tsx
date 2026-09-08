@@ -16,7 +16,7 @@ export function MenuPreview() {
           </svg>
           <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left bg-orange transition-transform duration-300 ease-out group-hover:scale-x-75 group-focus-visible:scale-x-75" />
         </Link>
-        <MenuPreviewGrid items={allMenuItems.slice(0, 5)} />
+        <MenuPreviewGrid items={allMenuItems.slice(0, 6)} />
       </Container>
     </section>
   );

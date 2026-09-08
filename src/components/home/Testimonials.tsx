@@ -4,7 +4,7 @@ export function Testimonials() {
   return (
     <section className="border-y border-border bg-surface py-16 sm:py-20">
       <Container>
-        <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
+        <div className="grid gap-8 xl:grid-cols-[0.7fr_1.3fr] xl:items-center">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">From the community</p>
           <div>
             <h2 className="font-display text-[2rem] leading-none tracking-[-0.03em] sm:text-[2.5rem] lg:text-5xl">Real words, from real tables.</h2>

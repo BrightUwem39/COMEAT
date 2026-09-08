@@ -18,8 +18,7 @@
   --gold-light: #ffc83d;
   --orange: #f26a00;
   --border: #292929;
-  --font-inter: "Inter";
-  --font-clash-display: "Clash Display";
+  --font-inter: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 @theme inline {
@@ -33,7 +32,7 @@
   --color-orange: var(--orange);
   --color-border: var(--border);
   --font-sans: var(--font-inter);
-  --font-display: var(--font-clash-display);
+  --font-display: var(--font-inter);
 }
 
 * {
@@ -56,7 +55,7 @@ body {
   overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter);
   text-rendering: optimizeLegibility;
 }
 

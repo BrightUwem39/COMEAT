@@ -18,7 +18,7 @@ export function Navbar() {
       <Container className="flex h-20 items-center justify-between gap-6">
         <div className="hidden lg:block">
           <BrandLogo
-            imageClassName="size-16 transition-transform duration-500 ease-out group-hover/logo:-rotate-3 group-hover/logo:scale-110 group-active/logo:scale-95 motion-reduce:transform-none"
+            imageClassName="size-14 transition-transform duration-500 ease-out group-hover/logo:-rotate-3 group-hover/logo:scale-110 group-active/logo:scale-95 motion-reduce:transform-none"
             linkClassName="group/logo rounded-full transition-[filter] duration-500 hover:drop-shadow-[0_0_12px_rgba(230,165,26,0.45)]"
             priority
           />
@@ -37,8 +37,8 @@ export function Navbar() {
             Order now
           </Link>
           <AccountLink />
-          <Link className="group/cart relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-foreground transition-[color,transform] duration-300 ease-out after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 hover:-translate-y-0.5 hover:text-gold hover:after:scale-x-100 focus-visible:text-gold focus-visible:after:scale-x-100 motion-reduce:transform-none motion-reduce:after:transition-none" href="/cart">
-            Cart <CartCount />
+          <Link className="group/cart relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-foreground transition-[color,transform] duration-300 ease-out after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 hover:-translate-y-0.5 hover:text-gold hover:after:scale-x-100 focus-visible:text-gold focus-visible:after:scale-x-100 motion-reduce:transform-none motion-reduce:after:transition-none" data-order-target href="/cart">
+            Order <CartCount />
           </Link>
         </div>
 
@@ -48,14 +48,14 @@ export function Navbar() {
           </div>
 
           <BrandLogo
-            imageClassName="size-16 transition-transform duration-500 ease-out group-hover/logo:-rotate-3 group-hover/logo:scale-110 group-active/logo:scale-95 motion-reduce:transform-none"
+            imageClassName="size-12 transition-transform duration-500 ease-out group-hover/logo:-rotate-3 group-hover/logo:scale-110 group-active/logo:scale-95 motion-reduce:transform-none"
             linkClassName="group/logo rounded-full transition-[filter] duration-500 hover:drop-shadow-[0_0_12px_rgba(230,165,26,0.45)]"
             priority
           />
 
           <div className="flex items-center justify-self-end">
             <AccountLink mobile />
-            <Link className="group relative rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" href="/cart" aria-label="View cart">
+            <Link className="group relative rounded-full p-2 text-foreground transition-[background-color,color,transform] duration-300 hover:bg-gold/10 hover:text-gold active:scale-90 motion-reduce:transform-none" data-order-target href="/cart" aria-label="View order">
               <BagIcon />
               <CartCount compact />
             </Link>

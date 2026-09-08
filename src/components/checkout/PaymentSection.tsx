@@ -28,7 +28,7 @@ const appearance: NonNullable<StripeElementsOptions["appearance"]> = {
     colorText: "#f7f3ea",
     colorDanger: "#f26a00",
     colorTextSecondary: "#a7a29a",
-    fontFamily: "Inter, Arial, sans-serif",
+    fontFamily: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
     borderRadius: "10px",
     spacingUnit: "4px",
   },

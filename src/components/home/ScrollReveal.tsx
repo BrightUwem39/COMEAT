@@ -21,8 +21,8 @@ export function ScrollReveal({ children, direction = "left" }: ScrollRevealProps
     stiffness: 120,
   });
   const opacity = useTransform(delayedProgress, [0, 0.18, 0.78, 1], [0, 1, 1, 0]);
-  const start = direction === "left" ? "-4vw" : "4vw";
-  const end = direction === "left" ? "4vw" : "-4vw";
+  const start = direction === "left" ? "-1.5rem" : "1.5rem";
+  const end = direction === "left" ? "1.5rem" : "-1.5rem";
   const x = useTransform(delayedProgress, [0, 0.18, 0.78, 1], [start, "0vw", "0vw", end]);
 
   return (

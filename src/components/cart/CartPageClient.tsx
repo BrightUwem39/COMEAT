@@ -80,7 +80,7 @@ export function CartPageClient() {
     return (
       <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center sm:px-10">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Nothing here yet</p>
-        <h2 className="mt-4 font-display text-[1.75rem] tracking-[-0.03em] text-foreground sm:text-[2rem] lg:text-[2.5rem]">Your cart is ready when you are.</h2>
+        <h2 className="mt-4 font-display text-[1.75rem] tracking-[-0.03em] text-foreground sm:text-[2rem] lg:text-[2.5rem]">Your order is ready when you are.</h2>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-muted">Choose a meal, tray size, protein where applicable, and pepper tolerance where offered.</p>
         <Link className="mt-7 inline-flex min-h-12 items-center justify-center rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light" href="/menu">Explore the menu</Link>
       </div>
@@ -232,8 +232,8 @@ function CartValidationNotice({ status, validation }: {
   const text = status === "checking"
     ? "Checking current prices and availability…"
     : status === "error"
-      ? "We could not verify this cart. Please try again before checkout."
-      : "Some cart items need attention before checkout.";
+      ? "We could not verify this order. Please try again before checkout."
+      : "Some order items need attention before checkout.";
 
   return (
     <div

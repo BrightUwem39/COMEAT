@@ -17,24 +17,24 @@ export async function POST(request: Request) {
 
     const body = await request.text();
     if (body.length > 50_000) {
-      return Response.json({ error: "Cart request is too large." }, { status: 413, headers: responseHeaders });
+      return Response.json({ error: "Order request is too large." }, { status: 413, headers: responseHeaders });
     }
 
     let json: unknown;
     try {
       json = JSON.parse(body);
     } catch {
-      return Response.json({ error: "The cart data is invalid." }, { status: 400, headers: responseHeaders });
+      return Response.json({ error: "The order data is invalid." }, { status: 400, headers: responseHeaders });
     }
 
     const parsed = cartValidationRequestSchema.safeParse(json);
     if (!parsed.success) {
-      return Response.json({ error: "The cart data is invalid." }, { status: 400, headers: responseHeaders });
+      return Response.json({ error: "The order data is invalid." }, { status: 400, headers: responseHeaders });
     }
 
     const result = await validateCart(parsed.data);
     return Response.json(result, { headers: responseHeaders });
   } catch {
-    return Response.json({ error: "The cart could not be verified right now." }, { status: 500, headers: responseHeaders });
+    return Response.json({ error: "The order could not be verified right now." }, { status: 500, headers: responseHeaders });
   }
 }

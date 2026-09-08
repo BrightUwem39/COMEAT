@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
@@ -9,7 +10,12 @@ import { RouteChrome } from "@/components/layout/RouteChrome";
 import { CartProvider } from "@/components/cart/CartProvider";
 import "./globals.css";
 
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://comeat-drab.vercel.app";
+const siteUrl = (configuredSiteUrl.startsWith("http") ? configuredSiteUrl : `https://${configuredSiteUrl}`).replace(/\/+$/, "");
+const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "ComEat",
     template: "%s | ComEat",
@@ -19,6 +25,7 @@ export const metadata: Metadata = {
     icon: "/images/comeat-logo.png",
     apple: "/images/comeat-logo.png",
   },
+  verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
 };
 
 export default function RootLayout({
@@ -26,6 +33,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const configuredGaId = process.env.NEXT_PUBLIC_GA_ID?.trim();
+  const gaId = configuredGaId && /^G-[A-Z0-9]+$/.test(configuredGaId) ? configuredGaId : null;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
@@ -40,6 +50,19 @@ export default function RootLayout({
             {children}
           </RouteChrome>
         </CartProvider>
+        {gaId ? (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`} strategy="afterInteractive" />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}', { anonymize_ip: true });
+              `}
+            </Script>
+          </>
+        ) : null}
       </body>
     </html>
   );

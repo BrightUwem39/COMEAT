@@ -65,7 +65,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
   if (items.length === 0) {
     return (
       <section className="rounded-2xl border border-border bg-surface px-6 py-14 text-center sm:px-10">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Your cart is empty</p>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Your order is empty</p>
         <h2 className="mt-4 font-display text-3xl tracking-[-0.035em] text-foreground">Choose your dishes first.</h2>
         <Link className="mt-7 inline-flex min-h-12 items-center justify-center rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light" href="/menu">Explore the menu</Link>
       </section>
@@ -103,7 +103,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
     }
 
     if (!allergyReady) {
-      setFormError("Complete the required allergy details in your cart before reviewing this order.");
+      setFormError("Complete the required allergy details in your order before reviewing it.");
       return;
     }
 
@@ -130,7 +130,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
       const validation = await response.json() as CartValidationResponse;
       if (!validation.valid) {
         setValidatedCart(validation);
-        setFormError("One or more cart items changed. Return to your cart and review the highlighted items.");
+        setFormError("One or more order items changed. Return to your order and review the highlighted items.");
         return;
       }
 
@@ -329,11 +329,11 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
           <p className="mt-2 font-display text-xl tracking-[-0.02em] text-foreground">Almost at the table.</p>
         </div>
         <div className="p-5">
-        <StatusRow label="Cart items" value={String(itemCount)} />
+        <StatusRow label="Order items" value={String(itemCount)} />
         <StatusRow highlight={allergyReady} label="Allergy details" value={allergyReady ? "Complete" : "Required"} />
         <StatusRow highlight={deliveryComplete} label="Delivery details" value={deliveryComplete ? "Complete" : "Required"} />
         <StatusRow highlight={deliveryComplete && Boolean(validatedCart?.valid)} label="Order review" value={deliveryComplete && validatedCart?.valid ? "Ready" : "Required"} />
-        {!allergyReady ? <Link className="mt-5 flex min-h-11 items-center justify-center rounded-xl border border-orange/40 bg-orange/5 px-4 text-center text-xs font-bold uppercase tracking-[0.1em] text-orange transition-colors hover:bg-orange/10" href="/cart">Complete cart details</Link> : null}
+        {!allergyReady ? <Link className="mt-5 flex min-h-11 items-center justify-center rounded-xl border border-orange/40 bg-orange/5 px-4 text-center text-xs font-bold uppercase tracking-[0.1em] text-orange transition-colors hover:bg-orange/10" href="/cart">Complete order details</Link> : null}
         <p className="mt-5 border-t border-border pt-5 text-xs leading-6 text-muted">Nothing is submitted until you review the details and complete payment.</p>
         </div>
       </aside>

@@ -12,7 +12,7 @@ const helpfulLinks = [
   { href: "/contact", label: "Contact" },
   { href: "/faq", label: "FAQ" },
   { href: "/profile", label: "Profile" },
-  { href: "/cart", label: "Cart" },
+  { href: "/cart", label: "Order" },
 ];
 
 export function Footer() {
@@ -22,7 +22,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 pb-8 lg:grid-cols-[1.5fr_0.65fr_0.65fr] lg:gap-12 lg:pb-10">
           <div className="col-span-2 lg:col-span-1">
             <BrandLogo
-              imageClassName="size-20 transition-transform duration-300 ease-out group-hover/footer-logo:scale-105 motion-reduce:transform-none sm:size-24"
+              imageClassName="size-16 transition-transform duration-300 ease-out group-hover/footer-logo:scale-105 motion-reduce:transform-none sm:size-20"
               linkClassName="group/footer-logo rounded-full"
             />
             <p className="mt-3 max-w-sm text-sm leading-6 text-muted">Authentic Nigerian food, made to bring people together.</p>

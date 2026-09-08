@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCart } from "@/components/cart/CartProvider";
 import type { MenuItem, MenuPrice } from "@/data/menu";
@@ -29,6 +29,7 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
   const [pepperTolerance, setPepperTolerance] = useState<number | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [added, setAdded] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!panelOpen) return;
@@ -89,6 +90,7 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
       pepperTolerance: requiresPepperTolerance ? pepperTolerance ?? undefined : undefined,
       unitPrice,
     });
+    if (!reduceMotion) animateDishToOrder(imageRef.current, item.image);
     setAdded(true);
     setPanelOpen(false);
   };
@@ -100,7 +102,7 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
         variants={reduceMotion ? undefined : menuCardVariants}
         whileHover={reduceMotion ? undefined : "hover"}
       >
-        <div className="relative min-h-full overflow-hidden bg-surface-elevated sm:aspect-[5/4] sm:min-h-0">
+        <div className="relative min-h-full overflow-hidden bg-surface-elevated sm:aspect-[5/4] sm:min-h-0" ref={imageRef}>
           <motion.div className="absolute inset-0" variants={reduceMotion ? undefined : menuImageVariants}>
             <Image alt={item.name} className="object-cover" fill sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw" src={item.image} />
           </motion.div>
@@ -146,8 +148,8 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
             whileHover={reduceMotion ? undefined : "hover"}
             whileTap={reduceMotion ? undefined : "tap"}
           >
-            <span className="sm:hidden">{selectedSize ? added ? "Add another" : hasCustomizations ? "Order" : "Add to cart" : "Unavailable"}</span>
-            <span className="hidden sm:inline">{selectedSize ? added ? "Add another" : hasCustomizations ? "Customize order" : "Add to cart" : "Unavailable"}</span>
+            <span className="sm:hidden">{selectedSize ? added ? "Add another" : hasCustomizations ? "Order" : "Add to order" : "Unavailable"}</span>
+            <span className="hidden sm:inline">{selectedSize ? added ? "Add another" : hasCustomizations ? "Customize order" : "Add to order" : "Unavailable"}</span>
             {selectedSize ? (
               <svg aria-hidden="true" className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover/order:translate-x-1 motion-reduce:transform-none" fill="none" viewBox="0 0 20 20">
                 <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
@@ -301,10 +303,63 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
           <span className="text-sm text-muted">Order total</span>
           <strong className="font-display text-4xl leading-none text-gold">{unitPrice === undefined ? "—" : currency.format(unitPrice)}</strong>
         </div>
-        <motion.button className="mt-5 min-h-12 w-full rounded-lg bg-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:bg-border disabled:text-muted" disabled={!ready || unitPrice === undefined} onClick={onAdd} type="button" variants={reduceMotion ? undefined : menuControlVariants} whileHover={reduceMotion ? undefined : "hover"} whileTap={reduceMotion ? undefined : "tap"}>Add to cart</motion.button>
+        <motion.button className="mt-5 min-h-12 w-full rounded-lg bg-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:bg-border disabled:text-muted" disabled={!ready || unitPrice === undefined} onClick={onAdd} type="button" variants={reduceMotion ? undefined : menuControlVariants} whileHover={reduceMotion ? undefined : "hover"} whileTap={reduceMotion ? undefined : "tap"}>Add to order</motion.button>
       </motion.section>
     </motion.div>
   );
+}
+
+function animateDishToOrder(source: HTMLElement | null, image: string) {
+  if (!source) return;
+
+  const target = Array.from(document.querySelectorAll<HTMLElement>("[data-order-target]"))
+    .find((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+  if (!target) return;
+
+  const sourceRect = source.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const flyerSize = Math.min(76, Math.max(52, sourceRect.width * 0.35));
+  const flyer = document.createElement("img");
+  flyer.src = image;
+  flyer.alt = "";
+  flyer.setAttribute("aria-hidden", "true");
+  Object.assign(flyer.style, {
+    position: "fixed",
+    zIndex: "1000",
+    left: `${sourceRect.left + sourceRect.width / 2 - flyerSize / 2}px`,
+    top: `${sourceRect.top + sourceRect.height / 2 - flyerSize / 2}px`,
+    width: `${flyerSize}px`,
+    height: `${flyerSize}px`,
+    borderRadius: "50%",
+    objectFit: "cover",
+    pointerEvents: "none",
+    boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
+  });
+  document.body.appendChild(flyer);
+
+  const destinationX = targetRect.left + targetRect.width / 2 - (sourceRect.left + sourceRect.width / 2);
+  const destinationY = targetRect.top + targetRect.height / 2 - (sourceRect.top + sourceRect.height / 2);
+  const flight = flyer.animate([
+    { transform: "translate3d(0, 0, 0) scale(1)", opacity: 1 },
+    { transform: `translate3d(${destinationX * 0.45}px, ${destinationY * 0.35 - 70}px, 0) scale(0.82)`, opacity: 1, offset: 0.45 },
+    { transform: `translate3d(${destinationX}px, ${destinationY}px, 0) scale(0.22)`, opacity: 0.25 },
+  ], {
+    duration: 720,
+    easing: "cubic-bezier(0.2, 0.75, 0.25, 1)",
+    fill: "forwards",
+  });
+
+  flight.onfinish = () => {
+    flyer.remove();
+    target.animate([
+      { transform: "scale(1)" },
+      { transform: "scale(1.16)" },
+      { transform: "scale(1)" },
+    ], { duration: 300, easing: "ease-out" });
+  };
 }
 
 function getUnitPrice(selectedSize: MenuPrice | undefined, selectedProteinId: string) {

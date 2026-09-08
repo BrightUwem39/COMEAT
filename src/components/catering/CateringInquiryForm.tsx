@@ -24,13 +24,13 @@ export function CateringInquiryForm() {
   return (
     <motion.section
       animate="visible"
-      className="min-w-0 rounded-[1.5rem] border border-border bg-surface/90 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-7 lg:p-8"
+      className="mt-8 min-w-0 border-t border-border pt-7 sm:mt-10 sm:pt-8 lg:mt-14 lg:pt-10"
       initial={reduceMotion ? false : "hidden"}
       variants={reduceMotion ? undefined : authFormVariants}
     >
-      <motion.div className="border-b border-border pb-5" variants={reduceMotion ? undefined : authFieldVariants}>
+      <motion.div variants={reduceMotion ? undefined : authFieldVariants}>
         <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Event inquiry</p>
-        <h2 className="mt-2 font-display text-2xl leading-none tracking-[-0.03em] text-foreground sm:text-3xl">Start with the essentials.</h2>
+        <h2 className="mt-3 font-display text-3xl leading-none tracking-[-0.03em] text-foreground sm:text-4xl">Start with the essentials.</h2>
         <p className="mt-3 text-sm leading-6 text-muted">Packages and pricing are shared after your event details are reviewed.</p>
       </motion.div>
 

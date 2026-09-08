@@ -68,7 +68,7 @@ export async function createPendingOrder(
       if (!cart.valid || cart.lines.some((line) =>
         !line.productId || !line.variantId || line.authoritativeUnitPriceCents === undefined || line.lineTotalCents === undefined,
       )) {
-        throw new CheckoutOrderError("CART_INVALID", "One or more cart items changed. Review your cart before placing the order.", 409);
+        throw new CheckoutOrderError("CART_INVALID", "One or more order items changed. Review your order before placing it.", 409);
       }
 
       const window = getFulfillmentWindow(input.requestedDate, rules);
