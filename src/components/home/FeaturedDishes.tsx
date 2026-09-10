@@ -23,10 +23,10 @@ export function FeaturedDishes() {
           <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left bg-orange transition-transform duration-300 ease-out group-hover:scale-x-75 group-focus-visible:scale-x-75" />
         </Link>
 
-        <div className="mt-10 -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-8 sm:gap-4 sm:px-8 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0 md:pb-0 lg:mt-14">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:mt-14">
           {dishes.map((dish) => (
-            <Link className="group relative min-h-[300px] w-[78vw] max-w-[20rem] shrink-0 snap-start overflow-hidden border border-border md:min-h-[360px] md:w-auto md:max-w-none lg:min-h-[420px]" href="/menu" key={dish.name}>
-              <Image alt="" className="image-zoom object-cover" fill sizes="(min-width: 768px) 25vw, 78vw" src={dish.image} />
+            <Link className="group relative min-h-[240px] overflow-hidden border border-border sm:min-h-[300px] md:min-h-[360px] lg:min-h-[420px]" href="/menu" key={dish.name}>
+              <Image alt="" className="image-zoom object-cover" fill sizes="(min-width: 768px) 25vw, 50vw" src={dish.image} />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4 sm:p-8">
                 <h3 className="font-display text-xl tracking-[-0.03em] sm:text-2xl lg:text-3xl">{dish.name}</h3>
