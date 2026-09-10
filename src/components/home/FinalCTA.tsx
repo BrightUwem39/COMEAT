@@ -6,7 +6,7 @@ export function FinalCTA() {
     <section className="relative overflow-hidden bg-gold py-20 text-background sm:py-24 lg:py-28">
       <div aria-hidden="true" className="final-cta-orb absolute -right-24 -top-32 size-96 rounded-full bg-gold-light/55 blur-3xl sm:size-[34rem]" />
       <Container className="relative">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between xl:gap-10">
+        <div className="flex flex-col gap-6 md:gap-12 xl:flex-row xl:items-end xl:justify-between xl:gap-10">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em]">Your table is waiting</p>
             <h2 className="mt-3 whitespace-nowrap font-display text-[clamp(3rem,14vw,13rem)] leading-[0.72] tracking-[-0.055em]">Hungry yet?</h2>
