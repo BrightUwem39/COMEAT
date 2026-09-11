@@ -31,7 +31,7 @@ export function Hero() {
                 <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
               </svg>
             </Button>
-            <Button className="group min-h-[2.4rem]! w-auto min-w-0 gap-2 whitespace-nowrap border-transparent! bg-background/35 px-3! text-[0.65rem] tracking-[0.08em] text-foreground backdrop-blur-sm transition-[transform,background-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-transparent! hover:bg-foreground hover:text-background hover:shadow-[0_12px_30px_rgba(0,0,0,0.25)] sm:px-5! sm:text-xs sm:tracking-[0.12em]" href="/catering" variant="secondary">
+            <Button className="group min-h-[2.4rem]! w-auto min-w-0 gap-2 whitespace-nowrap border-gold! bg-background/35 px-3! text-[0.65rem] tracking-[0.08em] text-foreground backdrop-blur-sm transition-[transform,background-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-gold-light! hover:bg-foreground hover:text-background hover:shadow-[0_12px_30px_rgba(0,0,0,0.25)] sm:px-5! sm:text-xs sm:tracking-[0.12em]" href="/catering" variant="secondary">
               <span>Book event catering</span>
               <svg aria-hidden="true" className="size-4 shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-reduce:transform-none" fill="none" viewBox="0 0 20 20">
                 <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />

@@ -151,7 +151,7 @@ export function CartPageClient() {
                 onChange={(event) => updateAllergyInfo({ ...allergyInfo, acknowledged: event.target.checked })}
                 type="checkbox"
               />
-              <span className="text-xs leading-relaxed text-muted">I understand that menu items may share preparation areas and that cross-contact may still occur.</span>
+              <span className="text-xs leading-relaxed text-muted">I understand that ComEat&apos;s kitchen handles common allergens and cannot guarantee an allergen-free meal.</span>
             </label>
           ) : null}
         </section>
@@ -284,8 +284,8 @@ function OrderSummary({ allergyComplete, allergyDetails, allergyStatus, classNam
       </div>
       <p className="text-xs leading-relaxed text-muted">Delivery fees and any applicable taxes will be calculated during checkout. Full payment is required before an order is confirmed.</p>
       {checkoutReady ? (
-        <Link className="mt-6 flex min-h-12 items-center justify-center rounded-lg bg-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light" href="/checkout">
-          Proceed to checkout
+        <Link className="mt-6 flex min-h-12 items-center justify-center rounded-lg bg-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light" href="/delivery">
+          Add delivery details
         </Link>
       ) : (
         <div className="mt-6 rounded-lg border border-dashed border-border px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.12em] text-muted">
