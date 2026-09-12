@@ -78,8 +78,8 @@ export function DeliveryEntryClient({ addresses, customer, rules }: {
   }
 
   return (
-    <form className="mx-auto max-w-4xl space-y-4" noValidate onSubmit={handleSubmit}>
-      <section className="rounded-[1.25rem] border border-border bg-surface p-4 sm:p-6" aria-labelledby="contact-title">
+    <form className="mx-auto max-w-4xl motion-safe:animate-[hero-content-enter_650ms_cubic-bezier(0.16,1,0.3,1)_both]" noValidate onSubmit={handleSubmit}>
+      <section className="border-b border-border py-6 first:pt-0 sm:py-7" aria-labelledby="contact-title">
         <SectionTitle description="Where we can reach you about this order." id="contact-title" title="Contact information" />
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Field autoComplete="name" className="sm:col-span-2" defaultValue={`${customer.firstName} ${customer.lastName}`} label="Full name" name="recipientName" required />
@@ -88,7 +88,7 @@ export function DeliveryEntryClient({ addresses, customer, rules }: {
         </div>
       </section>
 
-      <section className="rounded-[1.25rem] border border-border bg-surface p-4 sm:p-6" aria-labelledby="address-title">
+      <section className="border-b border-border py-6 sm:py-7" aria-labelledby="address-title">
         <SectionTitle description="Tell us where and when your food should arrive." id="address-title" title="Delivery address" />
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Field autoComplete="address-line1" className="sm:col-span-2" defaultValue={defaultAddress?.streetLine1 ?? ""} label="Street address" name="streetLine1" required />
@@ -96,47 +96,47 @@ export function DeliveryEntryClient({ addresses, customer, rules }: {
           <Field autoComplete="address-level2" defaultValue={defaultAddress?.city ?? ""} label="City" name="city" required />
           <Field autoComplete="address-level1" defaultValue={defaultAddress?.state ?? ""} label="State" name="state" required />
           <Field autoComplete="postal-code" defaultValue={defaultAddress?.postalCode ?? ""} label="ZIP code" name="postalCode" required />
-          <label className="rounded-lg border border-border bg-background/55 px-3 py-2">
+          <label className="border-b border-border px-1 py-1 transition-colors hover:border-gold/40">
             <span className="block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">Requested delivery date</span>
-            <input className="mt-1 min-h-8 w-full bg-transparent text-base text-foreground sm:text-sm" min={rules.earliestFulfillmentDate} onChange={(event) => setRequestedDate(event.target.value)} required type="date" value={requestedDate} />
+            <input className="mt-1 min-h-10 w-full bg-transparent text-base text-foreground sm:text-sm" min={rules.earliestFulfillmentDate} onChange={(event) => setRequestedDate(event.target.value)} required type="date" value={requestedDate} />
             <span className="mt-1 block text-[0.65rem] text-muted">Minimum {rules.minimumAdvanceHours} hours&apos; notice</span>
           </label>
         </div>
-        <label className="mt-3 block rounded-lg border border-border bg-background/55 px-3 py-2">
+        <label className="mt-4 block border-b border-border px-1 py-1 transition-colors hover:border-gold/40">
           <span className="block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted">Delivery instructions <span className="normal-case tracking-normal">(optional)</span></span>
           <textarea className="mt-1.5 min-h-16 w-full resize-y bg-transparent text-base text-foreground sm:text-sm" maxLength={500} name="deliveryNotes" placeholder="Gate code, building access, landmarks, or another helpful note." />
         </label>
-        <p className="mt-3 rounded-lg border border-orange/25 bg-orange/5 px-3 py-2.5 text-xs leading-5 text-muted"><span className="font-semibold text-orange">Outside Georgia?</span> Shipping is available {formatDayList(rules.outOfStateShippingDays)} and must meet the {titleCase(rules.weeklyShippingCutoffDay)} cutoff.</p>
+        <p className="mt-4 border-l border-orange px-3 text-xs leading-5 text-muted"><span className="font-semibold text-orange">Outside Georgia?</span> Shipping is available {formatDayList(rules.outOfStateShippingDays)} and must meet the {titleCase(rules.weeklyShippingCutoffDay)} cutoff.</p>
       </section>
 
-      <fieldset className="rounded-[1.25rem] border border-border bg-surface p-4 sm:p-6">
+      <fieldset className="border-b border-border py-6 sm:py-7">
         <legend className="sr-only">Delivery method</legend>
         <SectionTitle description="Choose how you would like to receive the order." id="method-title" title="Delivery method" />
-        <div className="mt-5 grid grid-cols-2 gap-2.5">
+        <div className="mt-5 grid grid-cols-2 gap-2">
           <Method active={handoffMethod === "LEAVE_AT_DOOR"} label="Leave at door" onChange={() => setHandoffMethod("LEAVE_AT_DOOR")} value="LEAVE_AT_DOOR" />
           <Method active={handoffMethod === "HAND_TO_ME"} label="Hand it to me" onChange={() => setHandoffMethod("HAND_TO_ME")} value="HAND_TO_ME" />
         </div>
       </fieldset>
 
-      {error ? <p className="border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{error}</p> : null}
-      <div className="flex items-center justify-between gap-3">
+      {error ? <p className="mt-5 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{error}</p> : null}
+      <div className="flex items-center justify-between gap-3 pt-6">
         <Link className="text-sm font-semibold text-muted transition-colors hover:text-foreground" href="/cart">Back to order</Link>
-        <button className="min-h-12 rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light" type="submit">Continue to checkout</button>
+        <button className="min-h-11 rounded-lg bg-gold px-5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)]" type="submit">Continue to checkout</button>
       </div>
     </form>
   );
 }
 
 function SectionTitle({ description, id, title }: { description: string; id: string; title: string }) {
-  return <div className="border-l-2 border-gold pl-3"><h2 className="font-display text-[1.3rem] text-foreground sm:text-2xl" id={id}>{title}</h2><p className="mt-0.5 text-xs leading-5 text-muted">{description}</p></div>;
+  return <div><p className="text-[0.6rem] font-bold uppercase tracking-[0.18em] text-gold">Required information</p><h2 className="mt-2 font-display text-[1.25rem] text-foreground sm:text-[1.4rem]" id={id}>{title}</h2><p className="mt-1 text-xs leading-5 text-muted">{description}</p></div>;
 }
 
 function Field({ className = "", label, name, readOnly, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { className?: string; label: string; name: string }) {
-  return <label className={`block rounded-lg border border-border bg-background/55 px-3 py-2 ${className}`}><span className="block text-[0.58rem] font-bold uppercase tracking-[0.15em] text-muted">{label}</span><input className={`mt-0.5 min-h-8 w-full bg-transparent text-base text-foreground sm:text-sm ${readOnly ? "text-muted" : ""}`} name={name} readOnly={readOnly} {...props} /></label>;
+  return <label className={`block border-b border-border px-1 py-1 transition-colors hover:border-gold/40 ${className}`}><span className="block text-[0.58rem] font-bold uppercase tracking-[0.15em] text-muted">{label}</span><input className={`mt-0.5 min-h-10 w-full bg-transparent text-base text-foreground sm:text-sm ${readOnly ? "text-muted" : ""}`} name={name} readOnly={readOnly} {...props} /></label>;
 }
 
 function Method({ active, label, onChange, value }: { active: boolean; label: string; onChange: () => void; value: HandoffMethod }) {
-  return <label className={`flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-lg border px-3 text-center text-xs font-semibold transition-colors ${active ? "border-gold bg-gold/10 text-foreground" : "border-border bg-background/45 text-muted"}`}><input checked={active} className="sr-only" name="handoffMethod" onChange={onChange} type="radio" value={value} /><span aria-hidden="true" className={`size-2 rounded-full ${active ? "bg-gold" : "bg-muted/50"}`} />{label}</label>;
+  return <label className={`flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border px-3 text-center text-xs font-semibold transition-[border-color,background-color,color,transform] duration-300 hover:-translate-y-0.5 ${active ? "border-gold bg-gold/10 text-foreground" : "border-border text-muted hover:border-gold/40"}`}><input checked={active} className="sr-only" name="handoffMethod" onChange={onChange} type="radio" value={value} /><span aria-hidden="true" className={`size-2 rounded-full ${active ? "bg-gold" : "bg-muted/50"}`} />{label}</label>;
 }
 
 function requiredFieldsComplete(form: FormData) {

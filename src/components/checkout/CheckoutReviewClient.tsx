@@ -150,8 +150,8 @@ export function CheckoutReviewClient({ rules }: { rules: CheckoutRulesDTO }) {
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-      <motion.section animate={{ opacity: 1, x: 0 }} className="rounded-[1.5rem] border border-gold/30 bg-surface p-5 sm:p-8" initial={reduceMotion ? false : { opacity: 0, x: 20 }} transition={{ duration: 0.4 }}>
+    <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-12">
+      <motion.section animate={{ opacity: 1, x: 0 }} className="border-y border-border py-6 sm:py-8" initial={reduceMotion ? false : { opacity: 0, x: 18 }} transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}>
         <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Final check</p>
         <h2 className="mt-3 font-display text-2xl text-foreground sm:text-[1.75rem]">Review your order</h2>
         <div className="mt-7 divide-y divide-border border-y border-border">
@@ -168,7 +168,7 @@ export function CheckoutReviewClient({ rules }: { rules: CheckoutRulesDTO }) {
           }) : <p className="py-8 text-sm text-muted">Verifying your order…</p>}
         </div>
 
-        <div className="mt-7 grid gap-3 sm:grid-cols-2">
+        <div className="mt-7 border-t border-border">
           <ReviewBlock label="Fulfillment" value={draft.fulfillmentMethod === "LOCAL_DELIVERY" ? "Local delivery" : "Out-of-state shipping"} />
           <ReviewBlock label="Delivery method" value={draft.handoffMethod === "LEAVE_AT_DOOR" ? "Leave at door" : "Hand it to me"} />
           <ReviewBlock label="Requested date" value={formatDate(draft.requestedDate)} />
@@ -177,16 +177,16 @@ export function CheckoutReviewClient({ rules }: { rules: CheckoutRulesDTO }) {
         </div>
         <Link className="mt-4 inline-flex text-xs font-bold uppercase tracking-[0.12em] text-gold hover:text-gold-light" href="/delivery">Edit delivery details</Link>
 
-        <div className="mt-5 rounded-xl border border-border bg-background/45 p-4"><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Allergy information</p><p className="mt-3 text-sm text-foreground">{allergyInfo.status === "has-allergies" ? allergyInfo.details.trim() : "No known allergies declared."}</p></div>
+        <div className="mt-5 border-l-2 border-gold px-4 py-1"><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Allergy information</p><p className="mt-2 text-sm text-foreground">{allergyInfo.status === "has-allergies" ? allergyInfo.details.trim() : "No known allergies declared."}</p></div>
         {draft.deliveryNotes ? <ReviewBlock className="mt-4" label="Delivery notes" value={draft.deliveryNotes} /> : null}
         {validation?.valid ? <div className="mt-6 flex items-end justify-between gap-4 border-t border-border pt-6"><p className="text-xs font-bold uppercase tracking-[0.14em] text-muted">Verified subtotal</p><strong className="font-display text-3xl text-gold">{currency.format(validation.subtotalCents / 100)}</strong></div> : null}
         {validationError ? <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{validationError}</p> : null}
         {!allergyReady ? <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange">Complete allergy details on the order page before payment.</p> : null}
         {orderError ? <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{orderError}</p> : null}
-        <motion.button className="mt-5 min-h-12 w-full rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-wait disabled:opacity-60" disabled={orderPending || !validation?.valid || !allergyReady} onClick={handlePlaceOrder} type="button" whileTap={reduceMotion ? undefined : { scale: 0.98 }}>{orderPending ? "Preparing payment…" : "Continue to payment"}</motion.button>
+        <motion.button className="mt-5 min-h-11 w-full rounded-lg bg-gold px-5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,box-shadow] hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-wait disabled:opacity-60" disabled={orderPending || !validation?.valid || !allergyReady} onClick={handlePlaceOrder} type="button" whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.985 }}>{orderPending ? "Preparing payment…" : "Continue to payment"}</motion.button>
       </motion.section>
 
-      <aside className="rounded-[1.25rem] border border-gold/20 bg-surface p-5 lg:sticky lg:top-28">
+      <aside className="border-l border-gold/30 pl-5 lg:sticky lg:top-28">
         <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Checkout readiness</p>
         <h2 className="mt-2 font-display text-xl text-foreground">Ready for payment.</h2>
         <StatusRow label="Order items" ready={Boolean(validation?.valid)} />
@@ -203,7 +203,7 @@ function EmptyState({ heading, href, link }: { heading: string; href: string; li
 }
 
 function ReviewBlock({ className = "", label, value }: { className?: string; label: string; value: string }) {
-  return <div className={`rounded-xl border border-border bg-background/45 p-4 ${className}`}><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">{label}</p><p className="mt-3 text-sm leading-6 text-foreground">{value}</p></div>;
+  return <div className={`grid gap-2 border-b border-border py-4 sm:grid-cols-[9rem_1fr] sm:items-start ${className}`}><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">{label}</p><p className="text-sm leading-6 text-foreground sm:text-right">{value}</p></div>;
 }
 
 function StatusRow({ label, ready }: { label: string; ready: boolean }) {
@@ -211,7 +211,7 @@ function StatusRow({ label, ready }: { label: string; ready: boolean }) {
 }
 
 function OrderCreated({ order }: { order: CheckoutOrderResponse["order"] }) {
-  return <div className="mx-auto max-w-3xl space-y-6"><section className="rounded-2xl border border-gold/40 bg-surface p-6 sm:p-10"><p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Order created</p><h2 className="mt-3 font-display text-3xl text-foreground sm:text-4xl">Pending payment.</h2><p className="mt-4 text-sm leading-7 text-muted">Your order is saved, but it is not confirmed until full payment is completed.</p><dl className="mt-7 grid gap-4 sm:grid-cols-2"><ReviewBlock label="Order reference" value={order.publicReference} /><ReviewBlock label="Amount due" value={currency.format(order.totalCents / 100)} /></dl></section><div className="scroll-mt-24" id="checkout-payment"><PaymentSection amountCents={order.totalCents} currency={order.currency} orderReference={order.publicReference} /></div></div>;
+  return <div className="mx-auto max-w-3xl space-y-8"><section className="border-y border-gold/35 py-7 sm:py-9"><p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Order created</p><h2 className="mt-3 font-display text-3xl text-foreground sm:text-4xl">Pending payment.</h2><p className="mt-4 text-sm leading-7 text-muted">Your order is saved, but it is not confirmed until full payment is completed.</p><dl className="mt-6 border-t border-border"><ReviewBlock label="Order reference" value={order.publicReference} /><ReviewBlock label="Amount due" value={currency.format(order.totalCents / 100)} /></dl></section><div className="scroll-mt-24" id="checkout-payment"><PaymentSection amountCents={order.totalCents} currency={order.currency} orderReference={order.publicReference} /></div></div>;
 }
 
 function formatTime(value: string) {

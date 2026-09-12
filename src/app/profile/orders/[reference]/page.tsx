@@ -68,19 +68,22 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
           <div className="mb-7 border-l-2 border-orange bg-orange/5 px-5 py-4 text-sm leading-6 text-orange">This order is {order.statusLabel.toLowerCase()}. Review the activity history below for details.</div>
         ) : null}
 
-        <section className="rounded-2xl border border-border bg-surface p-6 sm:p-8" aria-labelledby="order-progress-title">
+        <section className="border-y border-border py-7 sm:py-8" aria-labelledby="order-progress-title">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Live progress</p>
           <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]" id="order-progress-title">Order status</h2>
-          <ol className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <ol className="mt-8 grid sm:grid-cols-6">
             {progressStages.map((stage, index) => {
               const reached = !terminalStatus && index <= currentStage;
               const active = !terminalStatus && index === currentStage;
               const history = historyByStatus.get(stage.status);
               return (
-                <li className={`relative border p-4 ${active ? "border-gold bg-gold/10" : reached ? "border-gold/35 bg-background/50" : "border-border bg-background/30"}`} key={stage.status}>
-                  <span aria-hidden="true" className={`grid size-7 place-items-center rounded-full text-xs font-bold ${reached ? "bg-gold text-background" : "border border-border text-muted"}`}>{reached ? "✓" : index + 1}</span>
-                  <p className={`mt-3 text-xs font-bold uppercase tracking-[0.1em] ${reached ? "text-foreground" : "text-muted"}`}>{stage.label}</p>
-                  {history ? <time className="mt-2 block text-[0.65rem] leading-4 text-muted" dateTime={history.createdAt}>{dateTimeFormatter.format(new Date(history.createdAt))}</time> : null}
+                <li className="group relative flex min-h-20 gap-4 pb-5 last:pb-0 sm:block sm:min-h-0 sm:pb-0 sm:pr-3" key={stage.status}>
+                  {index < progressStages.length - 1 ? <span aria-hidden="true" className={`absolute left-[0.85rem] top-7 h-[calc(100%-1.2rem)] w-px transition-colors duration-500 sm:left-7 sm:top-[0.85rem] sm:h-px sm:w-[calc(100%-1.75rem)] ${reached && index < currentStage ? "bg-gold" : "bg-border"}`} /> : null}
+                  <span aria-hidden="true" className={`relative z-10 grid size-7 shrink-0 place-items-center rounded-full border text-[0.65rem] font-bold transition-[background-color,border-color,box-shadow,transform] duration-300 group-hover:scale-105 ${active ? "border-gold bg-gold text-background shadow-[0_0_22px_rgba(230,165,26,0.35)]" : reached ? "border-gold bg-background text-gold" : "border-border bg-background text-muted"}`}>{reached ? "✓" : index + 1}</span>
+                  <div className="min-w-0 sm:mt-4">
+                    <p className={`text-xs font-bold uppercase tracking-[0.09em] transition-colors ${reached ? "text-foreground" : "text-muted"}`}>{stage.label}</p>
+                    {history ? <time className="mt-1.5 block text-[0.62rem] leading-4 text-muted" dateTime={history.createdAt}>{dateTimeFormatter.format(new Date(history.createdAt))}</time> : null}
+                  </div>
                 </li>
               );
             })}
@@ -88,7 +91,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
         </section>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start">
-          <section className="rounded-2xl border border-border bg-surface p-6 sm:p-8" aria-labelledby="tracked-items-title">
+          <section className="border-y border-border py-6 sm:py-7" aria-labelledby="tracked-items-title">
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Order contents</p>
             <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]" id="tracked-items-title">Your dishes</h2>
             <div className="mt-6 divide-y divide-border border-y border-border">
@@ -109,7 +112,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
           </section>
 
           <aside className="space-y-6 lg:sticky lg:top-28">
-            <section className="rounded-2xl border border-border bg-surface p-6">
+            <section className="border-l border-gold/30 pl-5">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold">Delivery</p>
               <dl className="mt-5 space-y-4 text-sm">
                 <InfoRow label="Method" value={formatFulfillment(order.fulfillmentMethod)} />
@@ -120,7 +123,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
               {order.deliveryNotes ? <p className="mt-4 text-xs leading-6 text-muted"><strong className="text-foreground">Notes:</strong> {order.deliveryNotes}</p> : null}
             </section>
 
-            <section className="rounded-2xl border border-border bg-surface p-6">
+            <section className="border-l border-gold/30 pl-5">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold">Order total</p>
               <dl className="mt-5 space-y-3 text-sm">
                 <MoneyRow label="Subtotal" value={order.subtotalCents} currency={order.currency} />
@@ -132,7 +135,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
           </aside>
         </div>
 
-        <section className="mt-6 rounded-2xl border border-border bg-surface p-6 sm:p-8" aria-labelledby="activity-title">
+        <section className="mt-8 border-y border-border py-7" aria-labelledby="activity-title">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Updates</p>
           <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground" id="activity-title">Activity history</h2>
           <ol className="mt-6 divide-y divide-border border-y border-border">

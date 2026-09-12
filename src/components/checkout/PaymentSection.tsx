@@ -20,7 +20,7 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 
 const appearance: NonNullable<StripeElementsOptions["appearance"]> = {
   theme: "night",
-  inputs: "spaced",
+  inputs: "condensed",
   labels: "above",
   variables: {
     colorPrimary: "#e6a51a",
@@ -29,13 +29,16 @@ const appearance: NonNullable<StripeElementsOptions["appearance"]> = {
     colorDanger: "#f26a00",
     colorTextSecondary: "#a7a29a",
     fontFamily: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
-    borderRadius: "10px",
-    spacingUnit: "4px",
+    borderRadius: "6px",
+    spacingUnit: "3px",
+    fontSizeBase: "14px",
   },
   rules: {
     ".Input": {
       border: "1px solid #292929",
       boxShadow: "none",
+      padding: "10px 12px",
+      transition: "border-color 180ms ease, background-color 180ms ease",
     },
     ".Input:focus": {
       border: "1px solid #292929",
@@ -44,6 +47,7 @@ const appearance: NonNullable<StripeElementsOptions["appearance"]> = {
     ".Tab": {
       border: "1px solid #292929",
       boxShadow: "none",
+      padding: "10px 12px",
     },
     ".Tab:hover": {
       borderColor: "#e6a51a",
@@ -122,12 +126,12 @@ export function PaymentSection({ amountCents, currency, orderReference }: Paymen
   return (
     <motion.section
       animate={{ opacity: 1, y: 0 }}
-      className="overflow-hidden rounded-2xl border border-gold/35 bg-surface"
+      className="border-y border-gold/35"
       initial={reduceMotion ? false : { opacity: 0, y: 16 }}
       transition={{ duration: 0.4, delay: reduceMotion ? 0 : 0.08 }}
       aria-labelledby="payment-title"
     >
-      <div className="border-b border-border p-6 sm:p-8">
+      <div className="border-b border-border py-6 sm:py-7">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Secure payment</p>
@@ -135,13 +139,13 @@ export function PaymentSection({ amountCents, currency, orderReference }: Paymen
           </div>
           <div className="sm:text-right">
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted">Amount due</p>
-            <p className="mt-2 font-display text-3xl text-gold">{currencyFormatter.format(amountCents / 100)}</p>
+            <p className="mt-1 font-display text-2xl text-gold">{currencyFormatter.format(amountCents / 100)}</p>
           </div>
         </div>
         <p className="mt-4 text-xs leading-6 text-muted">Cards and Cash App Pay appear when eligible. Payment details are securely collected by Stripe and never touch ComEat servers.</p>
       </div>
 
-      <div className="p-6 sm:p-8">
+      <div className="py-6 sm:py-7">
         {loading ? <PaymentLoading /> : null}
         {loadError ? (
           <div className="border-l-2 border-orange bg-orange/5 px-4 py-4" role="alert">
@@ -200,7 +204,7 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className={elementReady ? "opacity-100 transition-opacity" : "min-h-40 opacity-0"}>
+      <div className={elementReady ? "opacity-100 transition-opacity duration-300" : "min-h-36 opacity-0"}>
         <PaymentElement
           onChange={(event) => {
             setPaymentComplete(event.complete);
@@ -211,7 +215,7 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
               type: "accordion",
               defaultCollapsed: false,
               radios: "always",
-              spacedAccordionItems: true,
+              spacedAccordionItems: false,
             },
           }}
         />
@@ -220,7 +224,7 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
       {message ? <p className="mt-5 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm leading-6 text-orange" aria-live="polite">{message}</p> : null}
 
       <motion.button
-        className="mt-6 min-h-12 w-full rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-5 min-h-11 w-full rounded-lg bg-gold px-5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,box-shadow] duration-300 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-not-allowed disabled:opacity-50"
         disabled={!stripe || !elements || !elementReady || !paymentComplete || submitting}
         type="submit"
         whileHover={reduceMotion || submitting ? undefined : { y: -2 }}
@@ -228,17 +232,17 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
       >
         {submitting ? "Processing securely…" : `Pay ${currencyFormatter.format(amountCents / 100)} ${currency.toUpperCase()}`}
       </motion.button>
-      <p className="mt-4 text-center text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted">Secured by Stripe</p>
+      <p className="mt-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.12em] text-muted">Secured by Stripe</p>
     </form>
   );
 }
 
 function PaymentLoading() {
   return (
-    <div aria-label="Loading secure payment form" className="animate-pulse space-y-4" role="status">
-      <div className="h-12 rounded-lg bg-background" />
-      <div className="h-24 rounded-lg bg-background" />
-      <div className="h-12 rounded-lg bg-background" />
+    <div aria-label="Loading secure payment form" className="animate-pulse space-y-3" role="status">
+      <div className="h-10 rounded-md bg-surface" />
+      <div className="h-20 rounded-md bg-surface" />
+      <div className="h-10 rounded-md bg-surface" />
     </div>
   );
 }
