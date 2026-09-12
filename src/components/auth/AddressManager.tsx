@@ -19,18 +19,18 @@ export function AddressManager({ addresses }: { addresses: SavedAddress[] }) {
 
   return (
     <div className="mt-5">
-      <div className="grid gap-4">
+      <div className="grid gap-3 md:grid-cols-2">
         {addresses.map((address) => (
-          <article className="border border-border bg-surface/40 p-5 sm:p-6" key={address.id}>
-            <div className="flex flex-wrap items-start justify-between gap-4">
+          <article className="rounded-xl border border-border bg-surface/35 p-4 transition-colors hover:border-gold/30" key={address.id}>
+            <div className="flex h-full flex-col justify-between gap-4">
               <div>
                 <div className="flex flex-wrap items-center gap-3">
                   <p className="font-semibold">{address.label || "Delivery address"}</p>
                   {address.isDefault ? <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-gold">Default</span> : null}
                 </div>
-                <p className="mt-2 text-sm leading-6 text-muted">{address.recipientName}<br />{address.streetLine1}{address.streetLine2 ? <><br />{address.streetLine2}</> : null}<br />{address.city}, {address.state} {address.postalCode}</p>
+                <p className="mt-2 text-xs leading-5 text-muted">{address.recipientName}<br />{address.streetLine1}{address.streetLine2 ? <><br />{address.streetLine2}</> : null}<br />{address.city}, {address.state} {address.postalCode}</p>
               </div>
-              <div className="flex flex-wrap gap-3 text-[0.65rem] font-bold uppercase tracking-[0.13em]">
+              <div className="flex flex-wrap gap-3 border-t border-border pt-3 text-[0.62rem] font-bold uppercase tracking-[0.11em]">
                 <button className="text-gold hover:text-gold-light" onClick={() => setEditingId(address.id)} type="button">Edit</button>
                 {!address.isDefault ? (
                   <form action={setDefaultAddressAction}><input name="id" type="hidden" value={address.id} /><button className="text-muted hover:text-foreground" type="submit">Make default</button></form>
@@ -45,7 +45,7 @@ export function AddressManager({ addresses }: { addresses: SavedAddress[] }) {
       {editingId ? (
         <AddressForm address={editingAddress} onCancel={() => setEditingId(null)} />
       ) : (
-        <button className="mt-5 min-h-12 border border-gold px-5 text-xs font-bold uppercase tracking-[0.14em] text-gold transition-colors hover:bg-gold hover:text-background" onClick={() => setEditingId("new")} type="button">
+        <button className="mt-4 min-h-11 rounded-lg border border-gold px-4 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:bg-gold hover:text-background" onClick={() => setEditingId("new")} type="button">
           Add address
         </button>
       )}
@@ -57,7 +57,7 @@ function AddressForm({ address, onCancel }: { address?: SavedAddress; onCancel: 
   const [state, action] = useActionState(saveAddressAction, initialState);
 
   return (
-    <form action={action} className="mt-5 border border-gold/30 bg-surface/60 p-5 sm:p-6">
+    <form action={action} className="mt-5 rounded-xl border border-gold/30 bg-surface/50 p-4 sm:p-5">
       {address ? <input name="id" type="hidden" value={address.id} /> : null}
       <div className="grid gap-4 sm:grid-cols-2">
         <AddressField defaultValue={address?.label ?? ""} label="Label" name="label" placeholder="Home" />

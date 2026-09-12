@@ -36,7 +36,7 @@ export function ProfileActions() {
   return (
     <div>
       <motion.button
-        className="inline-flex min-h-14 items-center gap-3 border border-border px-6 text-xs font-bold uppercase tracking-[0.17em] text-foreground transition-colors hover:border-gold/60 hover:text-gold disabled:cursor-wait disabled:text-muted"
+        className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-foreground transition-colors hover:border-gold/60 hover:bg-surface/40 hover:text-gold disabled:cursor-wait disabled:text-muted"
         disabled={pending}
         onClick={handleSignOut}
         type="button"

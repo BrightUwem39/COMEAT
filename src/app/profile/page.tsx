@@ -27,11 +27,11 @@ export default async function ProfilePage() {
 
   return (
     <main className="min-h-[calc(100svh-5rem)] bg-background text-foreground" id="main-content">
-      <Container className="py-9 sm:py-12 lg:py-14">
-        <div className="flex flex-col gap-7 border-b border-border pb-8 sm:pb-10 lg:flex-row lg:items-end lg:justify-between">
+      <Container className="py-8 sm:py-10 lg:py-12">
+        <div className="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between sm:pb-8">
           <div>
             <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-gold">My account</p>
-            <h1 className="mt-3 font-display text-[2rem] leading-[1.02] tracking-[-0.045em] sm:text-[2.5rem] lg:text-5xl">
+            <h1 className="mt-3 font-display text-[2rem] leading-[1.02] tracking-[-0.045em] sm:text-[2.35rem] lg:text-[2.75rem]">
               Welcome back, {account.firstName}.
             </h1>
             <p className="mt-4 text-sm text-muted">Member since {dateFormatter.format(new Date(account.memberSince))}</p>
@@ -39,18 +39,18 @@ export default async function ProfilePage() {
           <ProfileActions />
         </div>
 
-        <div className="grid gap-9 pt-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-12 lg:pt-10">
-          <aside className="lg:border-r lg:border-border lg:pr-9">
+        <div className="grid gap-7 pt-7 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10 lg:pt-8">
+          <aside className="lg:border-r lg:border-border lg:pr-6">
             <nav aria-label="Account navigation" className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
-              <a className="flex min-h-14 items-center gap-4 bg-foreground px-5 text-xs font-bold uppercase tracking-[0.16em] text-background" href="#personal-details">
+              <a className="flex min-h-12 items-center gap-3 rounded-lg border border-gold/35 bg-gold/10 px-4 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-gold" href="#personal-details">
                 <AccountIcon type="user" />
                 User information
               </a>
-              <Link className="flex min-h-14 items-center gap-4 border border-transparent px-5 text-xs font-bold uppercase tracking-[0.16em] transition-colors hover:border-border hover:text-gold" href="/profile/orders">
+              <Link className="flex min-h-12 items-center gap-3 rounded-lg border border-transparent px-4 text-[0.68rem] font-bold uppercase tracking-[0.13em] transition-colors hover:border-border hover:bg-surface/40 hover:text-gold" href="/profile/orders">
                 <AccountIcon type="order" />
                 Order history
               </Link>
-              <a className="flex min-h-14 items-center gap-4 border border-transparent px-5 text-xs font-bold uppercase tracking-[0.16em] transition-colors hover:border-border hover:text-gold" href="#saved-addresses">
+              <a className="flex min-h-12 items-center gap-3 rounded-lg border border-transparent px-4 text-[0.68rem] font-bold uppercase tracking-[0.13em] transition-colors hover:border-border hover:bg-surface/40 hover:text-gold" href="#saved-addresses">
                 <AccountIcon type="pin" />
                 Saved addresses
               </a>
@@ -58,44 +58,46 @@ export default async function ProfilePage() {
           </aside>
 
           <div className="min-w-0">
-            <section id="personal-details">
-              <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-gold">Personal details</p>
-              <h2 className="mt-3 font-display text-[1.75rem] leading-none tracking-[-0.035em] sm:text-[2rem] lg:text-4xl">User information</h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">Your account details are protected by your verified ComEat session.</p>
+            <section className="overflow-hidden rounded-2xl border border-border bg-surface/30" id="personal-details">
+              <div className="border-b border-border px-5 py-5 sm:px-6">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Personal details</p>
+                <h2 className="mt-2 font-display text-[1.6rem] leading-none tracking-[-0.035em] sm:text-[1.8rem]">User information</h2>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">Your account details are protected by your verified ComEat session.</p>
+              </div>
 
-              <div className="mt-7 grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-px bg-border sm:grid-cols-2">
                 {details.map((detail) => (
-                  <div className="min-h-28 border border-border bg-surface/40 p-5 sm:p-6" key={detail.label}>
-                    <p className="text-[0.65rem] font-bold uppercase tracking-[0.17em] text-muted">{detail.label}</p>
-                    <p className="mt-4 break-words text-base font-semibold text-foreground sm:text-lg">{detail.value}</p>
+                  <div className="bg-background/75 px-5 py-4 sm:px-6" key={detail.label}>
+                    <p className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-muted">{detail.label}</p>
+                    <p className="mt-2 break-words text-sm font-semibold text-foreground sm:text-base">{detail.value}</p>
                   </div>
                 ))}
               </div>
             </section>
 
-            <section className="mt-10 border-t border-border pt-8" id="saved-addresses">
+            <section className="mt-8 border-t border-border pt-7" id="saved-addresses">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-gold">Delivery</p>
-                  <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] sm:text-[1.75rem]">Saved addresses</h2>
+                  <h2 className="mt-2 font-display text-2xl tracking-[-0.03em] sm:text-[1.65rem]">Saved addresses</h2>
                 </div>
                 <p className="text-xs uppercase tracking-[0.14em] text-muted">{account.addressCount} saved</p>
               </div>
               <AddressManager addresses={account.addresses} />
             </section>
 
-            <section className="mt-10 border-t border-border pt-8">
+            <section className="mt-8 border-t border-border pt-7">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-gold">{account.orderCount} total {account.orderCount === 1 ? "order" : "orders"}</p>
-                  <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] sm:text-[1.75rem]">Recent orders</h2>
+                  <h2 className="mt-2 font-display text-2xl tracking-[-0.03em] sm:text-[1.65rem]">Recent orders</h2>
                 </div>
                 <Link className="text-xs font-bold uppercase tracking-[0.14em] text-gold transition-colors hover:text-gold-light" href="/profile/orders">View all →</Link>
               </div>
               {account.recentOrders.length ? (
-                <div className="mt-5 divide-y divide-border border-y border-border">
+                <div className="mt-5 divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface/30 px-4 sm:px-5">
                   {account.recentOrders.map((order) => (
-                    <div className="flex flex-wrap items-center justify-between gap-3 py-5" key={order.publicReference}>
+                    <div className="flex flex-wrap items-center justify-between gap-3 py-4" key={order.publicReference}>
                       <div>
                         <p className="font-semibold">{order.publicReference}</p>
                         <p className="mt-1 text-xs text-muted">{order.statusLabel}</p>
