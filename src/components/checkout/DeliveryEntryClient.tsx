@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
@@ -79,8 +78,8 @@ export function DeliveryEntryClient({ addresses, customer, rules }: {
 
   return (
     <form className="mx-auto max-w-4xl motion-safe:animate-[hero-content-enter_650ms_cubic-bezier(0.16,1,0.3,1)_both]" noValidate onSubmit={handleSubmit}>
-      <section className="border-b border-border py-6 first:pt-0 sm:py-7" aria-labelledby="contact-title">
-        <SectionTitle description="Where we can reach you about this order." id="contact-title" title="Contact information" />
+      <section className="py-5 first:pt-0 sm:py-6" aria-labelledby="contact-title">
+        <SectionTitle id="contact-title" title="Contact information" />
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Field autoComplete="name" className="sm:col-span-2" defaultValue={`${customer.firstName} ${customer.lastName}`} label="Full name" name="recipientName" required />
           <Field defaultValue={customer.email} label="Email" name="contactEmail" readOnly type="email" />
@@ -88,8 +87,8 @@ export function DeliveryEntryClient({ addresses, customer, rules }: {
         </div>
       </section>
 
-      <section className="border-b border-border py-6 sm:py-7" aria-labelledby="address-title">
-        <SectionTitle description="Tell us where and when your food should arrive." id="address-title" title="Delivery address" />
+      <section className="py-5 sm:py-6" aria-labelledby="address-title">
+        <SectionTitle id="address-title" title="Delivery address" />
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Field autoComplete="address-line1" className="sm:col-span-2" defaultValue={defaultAddress?.streetLine1 ?? ""} label="Street address" name="streetLine1" required />
           <Field autoComplete="address-line2" defaultValue={defaultAddress?.streetLine2 ?? ""} label="Apt / Suite / Unit" name="streetLine2" />
@@ -109,9 +108,9 @@ export function DeliveryEntryClient({ addresses, customer, rules }: {
         <p className="mt-4 border-l border-orange px-3 text-xs leading-5 text-muted"><span className="font-semibold text-orange">Outside Georgia?</span> Shipping is available {formatDayList(rules.outOfStateShippingDays)} and must meet the {titleCase(rules.weeklyShippingCutoffDay)} cutoff.</p>
       </section>
 
-      <fieldset className="border-b border-border py-6 sm:py-7">
+      <fieldset className="py-5 sm:py-6">
         <legend className="sr-only">Delivery method</legend>
-        <SectionTitle description="Choose how you would like to receive the order." id="method-title" title="Delivery method" />
+        <SectionTitle id="method-title" title="Delivery method" />
         <div className="mt-5 grid grid-cols-2 gap-2">
           <Method active={handoffMethod === "LEAVE_AT_DOOR"} label="Leave at door" onChange={() => setHandoffMethod("LEAVE_AT_DOOR")} value="LEAVE_AT_DOOR" />
           <Method active={handoffMethod === "HAND_TO_ME"} label="Hand it to me" onChange={() => setHandoffMethod("HAND_TO_ME")} value="HAND_TO_ME" />
@@ -119,16 +118,15 @@ export function DeliveryEntryClient({ addresses, customer, rules }: {
       </fieldset>
 
       {error ? <p className="mt-5 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{error}</p> : null}
-      <div className="flex items-center justify-between gap-3 pt-6">
-        <Link className="text-sm font-semibold text-muted transition-colors hover:text-foreground" href="/cart">Back to order</Link>
-        <button className="min-h-11 rounded-lg bg-gold px-5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)]" type="submit">Continue to checkout</button>
+      <div className="flex justify-end pt-5">
+        <button className="min-h-11 whitespace-nowrap rounded-lg bg-gold px-4 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-background transition-[background-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] sm:px-5 sm:text-[0.68rem] sm:tracking-[0.12em]" type="submit">Continue to checkout</button>
       </div>
     </form>
   );
 }
 
-function SectionTitle({ description, id, title }: { description: string; id: string; title: string }) {
-  return <div><p className="text-[0.6rem] font-bold uppercase tracking-[0.18em] text-gold">Required information</p><h2 className="mt-2 font-display text-[1.25rem] text-foreground sm:text-[1.4rem]" id={id}>{title}</h2><p className="mt-1 text-xs leading-5 text-muted">{description}</p></div>;
+function SectionTitle({ id, title }: { id: string; title: string }) {
+  return <h2 className="font-display text-[1.25rem] text-foreground sm:text-[1.4rem]" id={id}>{title}</h2>;
 }
 
 function Field({ className = "", label, name, readOnly, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { className?: string; label: string; name: string }) {

@@ -126,12 +126,12 @@ export function PaymentSection({ amountCents, currency, orderReference }: Paymen
   return (
     <motion.section
       animate={{ opacity: 1, y: 0 }}
-      className="border-y border-gold/35"
+      className=""
       initial={reduceMotion ? false : { opacity: 0, y: 16 }}
       transition={{ duration: 0.4, delay: reduceMotion ? 0 : 0.08 }}
       aria-labelledby="payment-title"
     >
-      <div className="border-b border-border py-6 sm:py-7">
+      <div className="py-5 sm:py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Secure payment</p>
@@ -142,15 +142,14 @@ export function PaymentSection({ amountCents, currency, orderReference }: Paymen
             <p className="mt-1 font-display text-2xl text-gold">{currencyFormatter.format(amountCents / 100)}</p>
           </div>
         </div>
-        <p className="mt-4 text-xs leading-6 text-muted">Cards and Cash App Pay appear when eligible. Payment details are securely collected by Stripe and never touch ComEat servers.</p>
       </div>
 
-      <div className="py-6 sm:py-7">
+      <div className="py-4 sm:py-5">
         {loading ? <PaymentLoading /> : null}
         {loadError ? (
           <div className="border-l-2 border-orange bg-orange/5 px-4 py-4" role="alert">
             <p className="text-sm text-orange">{loadError}</p>
-            {stripePromise ? <button className="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-foreground underline decoration-gold underline-offset-4" onClick={() => setAttempt((value) => value + 1)} type="button">Try again</button> : null}
+            {stripePromise ? <button className="mt-4 whitespace-nowrap text-xs font-bold uppercase tracking-[0.14em] text-foreground underline decoration-gold underline-offset-4" onClick={() => setAttempt((value) => value + 1)} type="button">Try again</button> : null}
           </div>
         ) : null}
         {stripePromise && elementOptions ? (
@@ -224,7 +223,7 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
       {message ? <p className="mt-5 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm leading-6 text-orange" aria-live="polite">{message}</p> : null}
 
       <motion.button
-        className="mt-5 min-h-11 w-full rounded-lg bg-gold px-5 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,box-shadow] duration-300 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-5 min-h-11 w-full whitespace-nowrap rounded-lg bg-gold px-4 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-background transition-[background-color,box-shadow] duration-300 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-not-allowed disabled:opacity-50 sm:px-5 sm:text-[0.68rem] sm:tracking-[0.12em]"
         disabled={!stripe || !elements || !elementReady || !paymentComplete || submitting}
         type="submit"
         whileHover={reduceMotion || submitting ? undefined : { y: -2 }}

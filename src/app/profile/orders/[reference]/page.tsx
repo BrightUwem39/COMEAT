@@ -46,9 +46,9 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
 
   return (
     <main className="min-h-[calc(100svh-5rem)] bg-background" id="main-content">
-      <section className="border-b border-border py-10 sm:py-14">
+      <section className="py-9 sm:py-12">
         <Container>
-          <Link className="text-xs font-bold uppercase tracking-[0.14em] text-gold transition-colors hover:text-gold-light" href="/profile/orders">← Order history</Link>
+          <Link className="whitespace-nowrap text-xs font-bold uppercase tracking-[0.14em] text-gold transition-colors hover:text-gold-light" href="/profile/orders">← Order history</Link>
           <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Track order</p>
@@ -68,7 +68,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
           <div className="mb-7 border-l-2 border-orange bg-orange/5 px-5 py-4 text-sm leading-6 text-orange">This order is {order.statusLabel.toLowerCase()}. Review the activity history below for details.</div>
         ) : null}
 
-        <section className="border-y border-border py-7 sm:py-8" aria-labelledby="order-progress-title">
+        <section className="py-5 sm:py-7" aria-labelledby="order-progress-title">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Live progress</p>
           <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]" id="order-progress-title">Order status</h2>
           <ol className="mt-8 grid sm:grid-cols-6">
@@ -91,10 +91,10 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
         </section>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start">
-          <section className="border-y border-border py-6 sm:py-7" aria-labelledby="tracked-items-title">
+          <section className="py-5 sm:py-6" aria-labelledby="tracked-items-title">
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Order contents</p>
             <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]" id="tracked-items-title">Your dishes</h2>
-            <div className="mt-6 divide-y divide-border border-y border-border">
+            <div className="mt-6 divide-y divide-border">
               {order.items.map((item) => (
                 <article className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-4 py-4 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:items-center" key={item.id}>
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-background">
@@ -112,7 +112,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
           </section>
 
           <aside className="space-y-6 lg:sticky lg:top-28">
-            <section className="border-l border-gold/30 pl-5">
+            <section>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold">Delivery</p>
               <dl className="mt-5 space-y-4 text-sm">
                 <InfoRow label="Method" value={formatFulfillment(order.fulfillmentMethod)} />
@@ -123,7 +123,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
               {order.deliveryNotes ? <p className="mt-4 text-xs leading-6 text-muted"><strong className="text-foreground">Notes:</strong> {order.deliveryNotes}</p> : null}
             </section>
 
-            <section className="border-l border-gold/30 pl-5">
+            <section>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold">Order total</p>
               <dl className="mt-5 space-y-3 text-sm">
                 <MoneyRow label="Subtotal" value={order.subtotalCents} currency={order.currency} />
@@ -135,10 +135,10 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
           </aside>
         </div>
 
-        <section className="mt-8 border-y border-border py-7" aria-labelledby="activity-title">
+        <section className="mt-8 py-6" aria-labelledby="activity-title">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Updates</p>
           <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground" id="activity-title">Activity history</h2>
-          <ol className="mt-6 divide-y divide-border border-y border-border">
+          <ol className="mt-6 divide-y divide-border">
             {[...order.statusHistory].reverse().map((entry) => (
               <li className="grid gap-2 py-4 sm:grid-cols-[11rem_1fr]" key={entry.id}>
                 <time className="text-xs text-muted" dateTime={entry.createdAt}>{dateTimeFormatter.format(new Date(entry.createdAt))}</time>
