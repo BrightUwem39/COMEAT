@@ -19,7 +19,7 @@ const standaloneRoutes = new Set([
 
 export function RouteChrome({ children, footer, header }: RouteChromeProps) {
   const pathname = usePathname();
-  const standalone = standaloneRoutes.has(pathname);
+  const standalone = standaloneRoutes.has(pathname) || pathname.startsWith("/admin");
 
   return (
     <>

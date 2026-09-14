@@ -1,4 +1,4 @@
-const CUSTOMER_ROUTE_PREFIXES = ["/profile", "/checkout"] as const;
+const CUSTOMER_ROUTE_PREFIXES = ["/admin", "/profile", "/checkout"] as const;
 
 export function getSafeCustomerReturnTo(
   value: string | string[] | undefined,
