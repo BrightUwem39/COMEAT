@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { getSafeCustomerReturnTo } from "@/lib/customer-return-to";
+import type { UserRole } from "@/generated/prisma/client";
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 
@@ -12,7 +13,7 @@ export type CustomerSessionDTO = {
   email: string;
   firstName: string;
   lastName: string;
-  role: "ADMIN" | "CUSTOMER";
+  role: UserRole;
   userId: string;
 };
 

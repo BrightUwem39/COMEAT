@@ -1,10 +1,12 @@
 import Link from "next/link";
 
+import { LiveOrderCommandCenter } from "@/components/admin/LiveOrderCommandCenter";
 import { getAdminDashboardOverview } from "@/server/admin-dashboard";
 
 const statusStyles = {
   PENDING_PAYMENT: "bg-white/7 text-muted",
   PAID: "bg-gold/12 text-gold",
+  CONFIRMED: "bg-amber-300/10 text-amber-200",
   PREPARING: "bg-orange/12 text-orange",
   READY: "bg-emerald-400/10 text-emerald-300",
   OUT_FOR_DELIVERY: "bg-sky-400/10 text-sky-300",
@@ -54,13 +56,15 @@ export default async function AdminPage() {
         ))}
       </section>
 
+      <LiveOrderCommandCenter generatedAt={dashboard.generatedAt} orders={dashboard.liveOrders} totalActiveOrders={dashboard.activeOrders} />
+
       <section className="hero-reveal hero-reveal-3 mt-8 overflow-hidden rounded-2xl bg-white/[0.035]">
         <div className="flex flex-wrap items-end justify-between gap-4 px-5 py-5 sm:px-6">
           <div>
             <p className="text-[0.63rem] font-bold uppercase tracking-[0.18em] text-gold">Latest activity</p>
             <h2 className="mt-2 font-display text-xl font-medium tracking-[-0.03em] sm:text-2xl">Recent orders</h2>
           </div>
-          <p className="text-xs text-muted">Order tools arrive in Step 14.3</p>
+          <Link className="inline-flex min-h-11 items-center text-[0.63rem] font-bold uppercase tracking-[0.12em] text-gold transition-colors hover:text-gold-light" href="/admin/orders">View all orders →</Link>
         </div>
 
         {dashboard.recentOrders.length ? (
@@ -70,7 +74,7 @@ export default async function AdminPage() {
             </div>
             <div className="divide-y divide-white/8">
               {dashboard.recentOrders.map((order) => (
-                <div className="grid gap-3 px-5 py-4 transition-colors duration-200 hover:bg-white/[0.035] sm:px-6 md:grid-cols-[1.05fr_1.2fr_0.9fr_0.8fr] md:items-center md:gap-5" key={order.publicReference}>
+                <Link aria-label={`Open order ${order.publicReference}`} className="grid gap-3 px-5 py-4 transition-colors duration-200 hover:bg-white/[0.035] sm:px-6 md:grid-cols-[1.05fr_1.2fr_0.9fr_0.8fr] md:items-center md:gap-5" href={`/admin/orders/${encodeURIComponent(order.publicReference)}`} key={order.publicReference}>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">{order.publicReference}</p>
                     <p className="mt-1 text-xs text-muted">{formatOrderDate(order.createdAt)} · {order.itemCount} {order.itemCount === 1 ? "item" : "items"}</p>
@@ -83,7 +87,7 @@ export default async function AdminPage() {
                     <span className={`inline-flex rounded-full px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.1em] ${statusStyles[order.status]}`}>{order.statusLabel}</span>
                   </div>
                   <p className="text-sm font-semibold text-gold md:text-right">{formatMoney(order.totalCents, order.currency)}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

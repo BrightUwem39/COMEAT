@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { requireCurrentAdmin } from "@/server/admin-auth";
+import { getAdminNotificationCenter } from "@/server/admin-workspace";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -15,5 +16,6 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const admin = await requireCurrentAdmin("/admin");
-  return <AdminShell admin={admin}>{children}</AdminShell>;
+  const notifications = await getAdminNotificationCenter();
+  return <AdminShell admin={admin} notificationCount={notifications.count}>{children}</AdminShell>;
 }

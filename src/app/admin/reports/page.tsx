@@ -1,0 +1,18 @@
+import type { Metadata } from "next";
+
+import { assertCurrentAdmin } from "@/server/admin-auth";
+
+export const metadata: Metadata = { title: "Reports | Admin" };
+
+export default async function AdminReportsPage() {
+  await assertCurrentAdmin("REPORTS_EXPORT");
+  const today = new Date();
+  const from = new Date(today); from.setUTCDate(from.getUTCDate() - 30);
+  const defaultTo = today.toISOString().slice(0, 10);
+  const defaultFrom = from.toISOString().slice(0, 10);
+  return <main className="px-4 pb-12 pt-6 sm:px-6 sm:pt-8 xl:px-9" id="main-content"><header className="hero-reveal"><p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-gold">Data exports</p><h1 className="mt-3 font-display text-[2rem] font-medium leading-none tracking-[-0.045em] sm:text-[2.55rem]">Reports</h1><p className="mt-3 max-w-xl text-sm leading-6 text-muted">Download clean operational data for accounting and business review.</p></header><section className="hero-reveal hero-reveal-1 mt-8 grid gap-4 xl:grid-cols-2"><ExportCard action="/api/admin/exports/orders" defaultFrom={defaultFrom} defaultTo={defaultTo} description="Order references, customers, fulfillment, payment totals, and status." title="Order report" /><ExportCard action="/api/admin/exports/customers" defaultFrom={defaultFrom} defaultTo={defaultTo} description="Customer contact details, access status, order count, and lifetime spend." title="Customer report" /></section><aside className="hero-reveal hero-reveal-2 mt-6 max-w-3xl rounded-2xl bg-gold/[0.055] p-5"><p className="text-[0.61rem] font-bold uppercase tracking-[0.16em] text-gold">Export safety</p><p className="mt-2 text-xs leading-6 text-muted">Reports are generated only after a fresh permission check. Date ranges are limited to one year, and CSV values are protected against spreadsheet-formula injection.</p></aside></main>;
+}
+
+function ExportCard({ action, defaultFrom, defaultTo, description, title }: { action: string; defaultFrom: string; defaultTo: string; description: string; title: string }) { return <article className="rounded-2xl bg-white/[0.04] p-5 sm:p-6"><span className="grid size-11 place-items-center rounded-xl bg-gold/10 text-gold"><ReportIcon /></span><h2 className="mt-5 font-display text-xl font-medium">{title}</h2><p className="mt-2 text-xs leading-6 text-muted">{description}</p><form action={action} className="mt-6 grid gap-4 sm:grid-cols-2" method="get"><DateField defaultValue={defaultFrom} label="From" name="from" /><DateField defaultValue={defaultTo} label="To" name="to" /><button className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full bg-gold px-5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,transform] duration-300 hover:bg-gold-light active:scale-[0.98] sm:col-span-2 motion-reduce:transform-none" type="submit">Download CSV</button></form></article>; }
+function DateField({ defaultValue, label, name }: { defaultValue: string; label: string; name: string }) { return <label><span className="text-[0.61rem] font-bold uppercase tracking-[0.15em] text-muted">{label}</span><input className="mt-2 h-11 w-full border-b border-white/15 bg-transparent text-sm text-foreground outline-none transition-colors focus:border-gold" defaultValue={defaultValue} name={name} required type="date" /></label>; }
+function ReportIcon() { return <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6V3Zm9 0v4h4M9 12h6m-6 4h6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" /></svg>; }

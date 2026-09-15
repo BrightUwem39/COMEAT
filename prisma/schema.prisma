@@ -12,6 +12,11 @@ datasource db {
 enum UserRole {
   CUSTOMER
   ADMIN
+  OWNER
+  MANAGER
+  CASHIER
+  CHEF
+  SUPPORT
 }
 
 enum ModifierKind {
@@ -29,6 +34,7 @@ enum ModifierSelectionType {
 enum OrderStatus {
   PENDING_PAYMENT
   PAID
+  CONFIRMED
   PREPARING
   READY
   OUT_FOR_DELIVERY
@@ -53,6 +59,19 @@ enum PaymentStatus {
   FAILED
   REFUNDED
   PARTIALLY_REFUNDED
+}
+
+enum PromotionType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_DELIVERY
+}
+
+enum InventoryAdjustmentType {
+  RESTOCK
+  WASTE
+  CORRECTION
+  ORDER_USAGE
 }
 
 enum OrderEmailKind {
@@ -92,11 +111,12 @@ model User {
   accounts                  Account[]
   addresses                 Address[]
   orders                    Order[]
-  statusChanges             OrderStatusHistory[] @relation("OrderStatusActor")
-  assignedCateringInquiries CateringInquiry[]    @relation("CateringAssignee")
-  assignedContactMessages   ContactMessage[]     @relation("ContactAssignee")
-  auditLogs                 AdminAuditLog[]      @relation("AuditActor")
-  settingsUpdates           OperationalSetting[] @relation("SettingUpdater")
+  statusChanges             OrderStatusHistory[]  @relation("OrderStatusActor")
+  assignedCateringInquiries CateringInquiry[]     @relation("CateringAssignee")
+  assignedContactMessages   ContactMessage[]      @relation("ContactAssignee")
+  auditLogs                 AdminAuditLog[]       @relation("AuditActor")
+  inventoryAdjustments      InventoryAdjustment[] @relation("InventoryAdjustmentActor")
+  settingsUpdates           OperationalSetting[]  @relation("SettingUpdater")
 
   @@index([role, active])
 }
@@ -314,6 +334,8 @@ model Order {
   customerPhone              String
   fulfillmentMethod          FulfillmentMethod
   requestedFulfillmentAt     DateTime          @db.Timestamptz(3)
+  estimatedReadyAt           DateTime?         @db.Timestamptz(3)
+  estimatedDeliveryAt        DateTime?         @db.Timestamptz(3)
   deliveryWindowStart        DateTime?         @db.Timestamptz(3)
   deliveryWindowEnd          DateTime?         @db.Timestamptz(3)
   deliveryRecipientName      String?
@@ -448,6 +470,60 @@ model Payment {
 
   @@index([orderId, createdAt])
   @@index([status, createdAt])
+}
+
+model Promotion {
+  id                String        @id @default(uuid()) @db.Uuid
+  code              String        @unique
+  name              String
+  type              PromotionType
+  percentageOff     Int?
+  amountOffCents    Int?
+  minimumOrderCents Int           @default(0)
+  usageLimit        Int?
+  redemptionCount   Int           @default(0)
+  startsAt          DateTime?     @db.Timestamptz(3)
+  expiresAt         DateTime?     @db.Timestamptz(3)
+  active            Boolean       @default(true)
+  createdAt         DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([active, startsAt, expiresAt])
+  @@index([createdAt])
+}
+
+model InventoryItem {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String   @unique
+  unit              String
+  quantity          Decimal  @default(0) @db.Decimal(12, 3)
+  lowStockThreshold Decimal  @default(0) @db.Decimal(12, 3)
+  unitCostCents     Int      @default(0)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime @updatedAt @db.Timestamptz(3)
+
+  adjustments InventoryAdjustment[]
+
+  @@index([active, name])
+}
+
+model InventoryAdjustment {
+  id           String                  @id @default(uuid()) @db.Uuid
+  itemId       String                  @db.Uuid
+  actorUserId  String                  @db.Uuid
+  type         InventoryAdjustmentType
+  delta        Decimal                 @db.Decimal(12, 3)
+  balanceAfter Decimal                 @db.Decimal(12, 3)
+  note         String?                 @db.Text
+  createdAt    DateTime                @default(now()) @db.Timestamptz(3)
+
+  item  InventoryItem @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  actor User          @relation("InventoryAdjustmentActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([itemId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([type, createdAt])
 }
 
 model CateringInquiry {

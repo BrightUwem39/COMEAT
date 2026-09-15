@@ -3,15 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { CustomerAccessControl } from "@/components/admin/CustomerAccessControl";
+import { getCurrentAdmin } from "@/server/admin-auth";
 import { getAdminCustomerDetail } from "@/server/admin-customers";
 
 export const metadata: Metadata = { title: "Customer details | Admin" };
 
-const statusStyles = { PENDING_PAYMENT: "bg-white/7 text-muted", PAID: "bg-gold/12 text-gold", PREPARING: "bg-orange/12 text-orange", READY: "bg-emerald-400/10 text-emerald-300", OUT_FOR_DELIVERY: "bg-sky-400/10 text-sky-300", COMPLETED: "bg-white/7 text-foreground", CANCELLED: "bg-red-400/10 text-red-300", REFUNDED: "bg-violet-400/10 text-violet-300" } as const;
+const statusStyles = { PENDING_PAYMENT: "bg-white/7 text-muted", PAID: "bg-gold/12 text-gold", CONFIRMED: "bg-amber-300/10 text-amber-200", PREPARING: "bg-orange/12 text-orange", READY: "bg-emerald-400/10 text-emerald-300", OUT_FOR_DELIVERY: "bg-sky-400/10 text-sky-300", COMPLETED: "bg-white/7 text-foreground", CANCELLED: "bg-red-400/10 text-red-300", REFUNDED: "bg-violet-400/10 text-violet-300" } as const;
 
 export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const customer = await getAdminCustomerDetail(id);
+  const [customer, admin] = await Promise.all([getAdminCustomerDetail(id), getCurrentAdmin()]);
   if (!customer) notFound();
 
   return (
@@ -30,7 +31,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
           <section className="hero-reveal hero-reveal-3 overflow-hidden rounded-2xl bg-white/[0.035]"><div className="flex items-end justify-between gap-4 px-5 py-5 sm:px-6"><div><p className="text-[0.61rem] font-bold uppercase tracking-[0.17em] text-gold">Activity</p><h2 className="mt-2 font-display text-xl font-medium tracking-[-0.03em]">Recent orders</h2></div><p className="text-xs text-muted">Latest 10</p></div>{customer.orders.length ? <div className="divide-y divide-white/8 border-t border-white/8">{customer.orders.map((order) => <Link className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 transition-colors hover:bg-white/[0.035] sm:px-6" href={`/admin/orders/${encodeURIComponent(order.publicReference)}`} key={order.publicReference}><div><p className="text-sm font-semibold">{order.publicReference}</p><p className="mt-1 text-xs text-muted">{formatDate(order.createdAt)}</p></div><span className={`rounded-full px-2.5 py-1 text-[0.59rem] font-bold uppercase tracking-[0.08em] ${statusStyles[order.status]}`}>{order.statusLabel}</span><p className="text-sm font-semibold text-gold">{formatMoney(order.totalCents, order.currency)}</p></Link>)}</div> : <p className="border-t border-white/8 px-5 py-10 text-sm text-muted sm:px-6">No orders placed from this account.</p>}</section>
         </div>
 
-        <aside className="hero-reveal hero-reveal-3 xl:sticky xl:top-6"><section className="rounded-2xl bg-white/[0.045] p-5"><p className="text-[0.61rem] font-bold uppercase tracking-[0.17em] text-gold">Access control</p><h2 className="mt-2 font-display text-xl font-medium tracking-[-0.03em]">Account access</h2><p className="mt-3 text-xs leading-5 text-muted">{customer.active ? "Disabling access signs the customer out without deleting their orders or profile." : customer.emailVerified ? "Restoring access allows this customer to sign in again." : "Restoring access does not bypass the customer’s email-verification requirement."}</p><div className="mt-5"><CustomerAccessControl active={customer.active} id={customer.id} key={customer.updatedAt} updatedAt={customer.updatedAt} /></div></section></aside>
+        <aside className="hero-reveal hero-reveal-3 xl:sticky xl:top-6"><section className="rounded-2xl bg-white/[0.045] p-5"><p className="text-[0.61rem] font-bold uppercase tracking-[0.17em] text-gold">Access control</p><h2 className="mt-2 font-display text-xl font-medium tracking-[-0.03em]">Account access</h2><p className="mt-3 text-xs leading-5 text-muted">{admin?.permissions.includes("CUSTOMERS_MANAGE") ? customer.active ? "Disabling access signs the customer out without deleting their orders or profile." : customer.emailVerified ? "Restoring access allows this customer to sign in again." : "Restoring access does not bypass the customer’s email-verification requirement." : "Your role has read-only access to customer accounts."}</p>{admin?.permissions.includes("CUSTOMERS_MANAGE") ? <div className="mt-5"><CustomerAccessControl active={customer.active} id={customer.id} key={customer.updatedAt} updatedAt={customer.updatedAt} /></div> : null}</section></aside>
       </div>
     </main>
   );

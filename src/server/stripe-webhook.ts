@@ -13,6 +13,9 @@ export type StripeWebhookOutcome = "ignored" | "processed" | "duplicate";
 export async function processStripeWebhookEvent(
   event: Stripe.Event,
 ): Promise<StripeWebhookOutcome> {
+  if (event.type === "charge.refunded") {
+    return recordChargeRefund(event.data.object as Stripe.Charge, event.created);
+  }
   if (!event.type.startsWith("payment_intent.")) return "ignored";
 
   const paymentIntent = event.data.object as Stripe.PaymentIntent;
@@ -39,6 +42,36 @@ export async function processStripeWebhookEvent(
   }
 
   return "ignored";
+}
+
+async function recordChargeRefund(charge: Stripe.Charge, eventCreatedAt: number): Promise<StripeWebhookOutcome> {
+  const paymentIntentId = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+  if (!paymentIntentId || charge.amount_refunded < 1) return "ignored";
+
+  return db.$transaction(async (transaction) => {
+    const payment = await transaction.payment.findUnique({
+      where: { providerPaymentIntentId: paymentIntentId },
+      select: { amountCents: true, currency: true, id: true, order: { select: { id: true, status: true } }, refundedAmountCents: true },
+    });
+    if (!payment) return "ignored";
+    if (charge.amount !== payment.amountCents || charge.currency !== payment.currency.toLowerCase() || charge.amount_refunded > payment.amountCents) {
+      throw new StripeWebhookDataError("Stripe refund data does not match the stored payment.");
+    }
+    if (charge.amount_refunded <= payment.refundedAmountCents) return "duplicate";
+
+    const fullyRefunded = charge.amount_refunded === payment.amountCents;
+    await transaction.payment.update({
+      where: { id: payment.id },
+      data: { refundedAmountCents: charge.amount_refunded, refundedAt: new Date(eventCreatedAt * 1_000), status: fullyRefunded ? "REFUNDED" : "PARTIALLY_REFUNDED" },
+    });
+    if (fullyRefunded && payment.order.status !== "REFUNDED") {
+      const updated = await transaction.order.updateMany({ where: { id: payment.order.id, status: payment.order.status }, data: { status: "REFUNDED" } });
+      if (updated.count === 1) await transaction.orderStatusHistory.create({
+        data: { newStatus: "REFUNDED", note: "Full refund confirmed by Stripe.", orderId: payment.order.id, previousStatus: payment.order.status },
+      });
+    }
+    return "processed";
+  });
 }
 
 async function recordSuccessfulPayment(

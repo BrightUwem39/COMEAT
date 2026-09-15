@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 const progressStages = [
   { status: "PENDING_PAYMENT", label: "Pending payment" },
   { status: "PAID", label: "Paid" },
+  { status: "CONFIRMED", label: "Confirmed" },
   { status: "PREPARING", label: "Preparing" },
   { status: "READY", label: "Ready" },
   { status: "OUT_FOR_DELIVERY", label: "Out for delivery" },
@@ -71,7 +72,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
         <section className="py-5 sm:py-7" aria-labelledby="order-progress-title">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Live progress</p>
           <h2 className="mt-3 font-display text-2xl tracking-[-0.03em] text-foreground sm:text-[1.75rem]" id="order-progress-title">Order status</h2>
-          <ol className="mt-8 grid sm:grid-cols-6">
+          <ol className="mt-8 grid sm:grid-cols-7">
             {progressStages.map((stage, index) => {
               const reached = !terminalStatus && index <= currentStage;
               const active = !terminalStatus && index === currentStage;
@@ -118,6 +119,8 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
                 <InfoRow label="Method" value={formatFulfillment(order.fulfillmentMethod)} />
                 <InfoRow label="Requested date" value={dateFormatter.format(new Date(order.requestedFulfillmentAt))} />
                 {order.deliveryWindowStart && order.deliveryWindowEnd ? <InfoRow label="Window" value={`${timeFormatter.format(new Date(order.deliveryWindowStart))}–${timeFormatter.format(new Date(order.deliveryWindowEnd))}`} /> : null}
+                {order.estimatedReadyAt ? <InfoRow label="Estimated ready" value={dateTimeFormatter.format(new Date(order.estimatedReadyAt))} /> : null}
+                {order.estimatedDeliveryAt ? <InfoRow label="Estimated delivery" value={dateTimeFormatter.format(new Date(order.estimatedDeliveryAt))} /> : null}
               </dl>
               <p className="mt-5 border-t border-border pt-5 text-xs leading-6 text-muted">{order.deliveryRecipientName}<br />{order.deliveryStreetLine1}{order.deliveryStreetLine2 ? <><br />{order.deliveryStreetLine2}</> : null}<br />{order.deliveryCity}, {order.deliveryState} {order.deliveryPostalCode}<br />{order.deliveryCountryCode}</p>
               {order.deliveryNotes ? <p className="mt-4 text-xs leading-6 text-muted"><strong className="text-foreground">Notes:</strong> {order.deliveryNotes}</p> : null}

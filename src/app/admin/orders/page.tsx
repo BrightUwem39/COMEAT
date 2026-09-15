@@ -23,6 +23,7 @@ type OrdersPageProps = {
 const statusStyles = {
   PENDING_PAYMENT: "bg-white/7 text-muted",
   PAID: "bg-gold/12 text-gold",
+  CONFIRMED: "bg-amber-300/10 text-amber-200",
   PREPARING: "bg-orange/12 text-orange",
   READY: "bg-emerald-400/10 text-emerald-300",
   OUT_FOR_DELIVERY: "bg-sky-400/10 text-sky-300",

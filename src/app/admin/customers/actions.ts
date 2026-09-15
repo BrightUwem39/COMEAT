@@ -14,7 +14,7 @@ export async function updateCustomerAccessAction(
   _previousState: UpdateCustomerState,
   formData: FormData,
 ): Promise<UpdateCustomerState> {
-  const admin = await assertCurrentAdmin();
+  const admin = await assertCurrentAdmin("CUSTOMERS_MANAGE");
   const id = String(formData.get("id") ?? "");
   const updatedAt = new Date(String(formData.get("updatedAt") ?? ""));
   const nextActive = String(formData.get("nextActive") ?? "") === "true";

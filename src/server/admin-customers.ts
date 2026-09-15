@@ -11,7 +11,7 @@ const PAGE_SIZE = 12;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const getAdminCustomers = cache(async (input: { page?: number; query?: string; state?: string }) => {
-  await assertCurrentAdmin();
+  await assertCurrentAdmin("CUSTOMERS_VIEW");
   const query = input.query?.trim().slice(0, 80) ?? "";
   const state = input.state === "ACTIVE" || input.state === "DISABLED" ? input.state : null;
   const page = Number.isSafeInteger(input.page) && (input.page ?? 0) > 0 ? Math.min(input.page as number, 100) : 1;
@@ -79,7 +79,7 @@ export const getAdminCustomers = cache(async (input: { page?: number; query?: st
 });
 
 export const getAdminCustomerDetail = cache(async (id: string) => {
-  await assertCurrentAdmin();
+  await assertCurrentAdmin("CUSTOMERS_VIEW");
   if (!UUID_PATTERN.test(id)) return null;
 
   const [customer, spend] = await Promise.all([
@@ -114,7 +114,7 @@ export const getAdminCustomerDetail = cache(async (id: string) => {
     }),
     db.order.aggregate({
       _sum: { totalCents: true },
-      where: { userId: id, status: { in: ["PAID", "PREPARING", "READY", "OUT_FOR_DELIVERY", "COMPLETED"] } },
+      where: { userId: id, status: { in: ["PAID", "CONFIRMED", "PREPARING", "READY", "OUT_FOR_DELIVERY", "COMPLETED"] } },
     }),
   ]);
   if (!customer) return null;

@@ -6,7 +6,7 @@ import { assertCurrentAdmin } from "@/server/admin-auth";
 import { db } from "@/server/db";
 
 export const getAdminMenuProducts = cache(async (rawQuery?: string) => {
-  await assertCurrentAdmin();
+  await assertCurrentAdmin("MENU_MANAGE");
   const query = rawQuery?.trim().slice(0, 80) ?? "";
 
   const products = await db.product.findMany({

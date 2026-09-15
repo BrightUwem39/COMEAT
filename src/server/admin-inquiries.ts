@@ -17,7 +17,7 @@ const PAGE_SIZE = 12;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const getAdminInquiries = cache(async (input: { page?: number; query?: string; status?: string; type?: string }) => {
-  await assertCurrentAdmin();
+  await assertCurrentAdmin("INQUIRIES_MANAGE");
   const query = input.query?.trim().slice(0, 80) ?? "";
   const status = inquiryStatuses.includes(input.status as AdminInquiryStatus) ? input.status as AdminInquiryStatus : null;
   const type = inquiryTypes.includes(input.type as AdminInquiryType) ? input.type as AdminInquiryType : null;
@@ -122,7 +122,7 @@ export const getAdminInquiries = cache(async (input: { page?: number; query?: st
 });
 
 export const getAdminInquiryDetail = cache(async (type: string, id: string) => {
-  await assertCurrentAdmin();
+  await assertCurrentAdmin("INQUIRIES_MANAGE");
   if (!UUID_PATTERN.test(id)) return null;
   if (type === "contact") {
     const message = await db.contactMessage.findUnique({

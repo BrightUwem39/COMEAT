@@ -8,6 +8,7 @@ import { db } from "@/server/db";
 const orderStatusLabels = {
   PENDING_PAYMENT: "Pending payment",
   PAID: "Paid",
+  CONFIRMED: "Confirmed",
   PREPARING: "Preparing",
   READY: "Ready",
   OUT_FOR_DELIVERY: "Out for delivery",
@@ -137,6 +138,8 @@ export const getCustomerOrderDetail = cache(async (publicReference: string) => {
       requestedFulfillmentAt: true,
       deliveryWindowStart: true,
       deliveryWindowEnd: true,
+      estimatedDeliveryAt: true,
+      estimatedReadyAt: true,
       deliveryRecipientName: true,
       deliveryPhone: true,
       deliveryStreetLine1: true,
@@ -189,6 +192,8 @@ export const getCustomerOrderDetail = cache(async (publicReference: string) => {
     requestedFulfillmentAt: order.requestedFulfillmentAt.toISOString(),
     deliveryWindowStart: order.deliveryWindowStart?.toISOString() ?? null,
     deliveryWindowEnd: order.deliveryWindowEnd?.toISOString() ?? null,
+    estimatedDeliveryAt: order.estimatedDeliveryAt?.toISOString() ?? null,
+    estimatedReadyAt: order.estimatedReadyAt?.toISOString() ?? null,
     statusHistory: order.statusHistory.map((entry) => ({
       ...entry,
       createdAt: entry.createdAt.toISOString(),

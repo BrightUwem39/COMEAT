@@ -9,6 +9,7 @@ import { db } from "@/server/db";
 export const adminOrderStatusLabels = {
   PENDING_PAYMENT: "Pending payment",
   PAID: "Paid",
+  CONFIRMED: "Confirmed",
   PREPARING: "Preparing",
   READY: "Ready",
   OUT_FOR_DELIVERY: "Out for delivery",
@@ -28,7 +29,8 @@ export function getAllowedAdminOrderTransitions(
   fulfillmentMethod: "LOCAL_DELIVERY" | "OUT_OF_STATE_SHIPPING" | "PICKUP",
 ): AdminOrderStatus[] {
   if (status === "PENDING_PAYMENT") return ["CANCELLED"];
-  if (status === "PAID") return ["PREPARING"];
+  if (status === "PAID") return ["CONFIRMED"];
+  if (status === "CONFIRMED") return ["PREPARING"];
   if (status === "PREPARING") return ["READY"];
   if (status === "READY") return fulfillmentMethod === "PICKUP" ? ["COMPLETED"] : ["OUT_FOR_DELIVERY"];
   if (status === "OUT_FOR_DELIVERY") return ["COMPLETED"];
@@ -36,7 +38,7 @@ export function getAllowedAdminOrderTransitions(
 }
 
 export const getAdminOrders = cache(async (input: { page?: number; query?: string; status?: string }) => {
-  await assertCurrentAdmin();
+  await assertCurrentAdmin("ORDERS_VIEW");
 
   const query = input.query?.trim().slice(0, 80) ?? "";
   const status = adminOrderStatuses.includes(input.status as AdminOrderStatus)
@@ -106,7 +108,7 @@ export const getAdminOrders = cache(async (input: { page?: number; query?: strin
 });
 
 export const getAdminOrderDetail = cache(async (publicReference: string) => {
-  await assertCurrentAdmin();
+  await assertCurrentAdmin("ORDERS_VIEW");
 
   const order = await db.order.findUnique({
     where: { publicReference: publicReference.trim().slice(0, 80) },
@@ -123,6 +125,8 @@ export const getAdminOrderDetail = cache(async (publicReference: string) => {
       deliveryCity: true,
       deliveryCountryCode: true,
       deliveryFeeCents: true,
+      estimatedDeliveryAt: true,
+      estimatedReadyAt: true,
       deliveryNotes: true,
       deliveryPostalCode: true,
       deliveryRecipientName: true,
@@ -157,6 +161,7 @@ export const getAdminOrderDetail = cache(async (publicReference: string) => {
           amountCents: true,
           paidAt: true,
           paymentMethodType: true,
+          refundedAmountCents: true,
           status: true,
         },
       },
@@ -180,6 +185,8 @@ export const getAdminOrderDetail = cache(async (publicReference: string) => {
     createdAt: order.createdAt.toISOString(),
     crossContactAcknowledgedAt: order.crossContactAcknowledgedAt.toISOString(),
     requestedFulfillmentAt: order.requestedFulfillmentAt.toISOString(),
+    estimatedDeliveryAt: order.estimatedDeliveryAt?.toISOString() ?? null,
+    estimatedReadyAt: order.estimatedReadyAt?.toISOString() ?? null,
     statusLabel: adminOrderStatusLabels[order.status],
     allowedTransitions: getAllowedAdminOrderTransitions(order.status, order.fulfillmentMethod),
     payments: order.payments.map((payment) => ({

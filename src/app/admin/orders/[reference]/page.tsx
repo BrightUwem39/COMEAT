@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { OrderStatusUpdateForm } from "@/components/admin/OrderStatusUpdateForm";
+import { RefundOrderForm } from "@/components/admin/RefundOrderForm";
+import { getCurrentAdmin } from "@/server/admin-auth";
 import { adminOrderStatusLabels, getAdminOrderDetail } from "@/server/admin-orders";
 
 export const metadata: Metadata = { title: "Order details | Admin" };
@@ -11,6 +13,7 @@ export const metadata: Metadata = { title: "Order details | Admin" };
 const statusStyles = {
   PENDING_PAYMENT: "bg-white/7 text-muted",
   PAID: "bg-gold/12 text-gold",
+  CONFIRMED: "bg-amber-300/10 text-amber-200",
   PREPARING: "bg-orange/12 text-orange",
   READY: "bg-emerald-400/10 text-emerald-300",
   OUT_FOR_DELIVERY: "bg-sky-400/10 text-sky-300",
@@ -21,7 +24,7 @@ const statusStyles = {
 
 export default async function AdminOrderDetailPage({ params }: { params: Promise<{ reference: string }> }) {
   const { reference } = await params;
-  const order = await getAdminOrderDetail(reference);
+  const [order, admin] = await Promise.all([getAdminOrderDetail(reference), getCurrentAdmin()]);
   if (!order) notFound();
 
   const payment = order.payments[0] ?? null;
@@ -29,6 +32,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     label: adminOrderStatusLabels[status],
     value: status,
   }));
+  const refundableAmountCents = payment ? Math.max(0, payment.amountCents - payment.refundedAmountCents) : 0;
 
   return (
     <main className="px-4 pb-12 pt-6 sm:px-6 sm:pt-8 xl:px-9" id="main-content">
@@ -40,7 +44,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <h1 className="mt-3 font-display text-[2rem] font-medium leading-none tracking-[-0.045em] sm:text-[2.55rem]">{order.publicReference}</h1>
           <p className="mt-3 text-sm text-muted">Placed {formatDateTime(order.createdAt)}</p>
         </div>
-        <span className={`w-fit rounded-full px-3 py-1.5 text-[0.63rem] font-bold uppercase tracking-[0.1em] ${statusStyles[order.status]}`}>{order.statusLabel}</span>
+        <div className="flex flex-wrap items-center gap-3"><Link className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full border border-white/12 px-4 text-[0.61rem] font-bold uppercase tracking-[0.1em] transition-colors hover:border-gold/50 hover:text-gold" href={`/admin/orders/${encodeURIComponent(order.publicReference)}/receipt`}>Kitchen receipt</Link><span className={`w-fit rounded-full px-3 py-1.5 text-[0.63rem] font-bold uppercase tracking-[0.1em] ${statusStyles[order.status]}`}>{order.statusLabel}</span></div>
       </header>
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
@@ -87,6 +91,8 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               <dl className="mt-5 space-y-4 text-sm">
                 <DetailRow label="Method" value={formatFulfillment(order.fulfillmentMethod)} />
                 <DetailRow label="Requested" value={formatDate(order.requestedFulfillmentAt)} />
+                {order.estimatedReadyAt ? <DetailRow label="Estimated ready" value={formatDateTime(order.estimatedReadyAt)} /> : null}
+                {order.estimatedDeliveryAt ? <DetailRow label="Estimated delivery" value={formatDateTime(order.estimatedDeliveryAt)} /> : null}
                 <DetailRow label="Recipient" value={order.deliveryRecipientName || `${order.customerFirstName} ${order.customerLastName}`} />
               </dl>
               {order.deliveryStreetLine1 ? <address className="mt-5 border-t border-white/8 pt-5 text-xs not-italic leading-6 text-muted">{order.deliveryStreetLine1}{order.deliveryStreetLine2 ? <><br />{order.deliveryStreetLine2}</> : null}<br />{order.deliveryCity}, {order.deliveryState} {order.deliveryPostalCode}<br />{order.deliveryCountryCode}</address> : null}
@@ -121,12 +127,12 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
         </div>
 
         <aside className="hero-reveal hero-reveal-3 space-y-5 xl:sticky xl:top-6">
-          <section className="rounded-2xl bg-white/[0.045] p-5">
+          {admin?.permissions.includes("ORDERS_MANAGE") ? <section className="rounded-2xl bg-white/[0.045] p-5">
             <p className="text-[0.61rem] font-bold uppercase tracking-[0.17em] text-gold">Update progress</p>
             <h2 className="mt-2 font-display text-xl font-medium tracking-[-0.03em]">Order status</h2>
             <p className="mt-3 text-xs leading-5 text-muted">Customers see approved updates in their order tracking.</p>
-            <div className="mt-5"><OrderStatusUpdateForm key={order.status} options={transitionOptions} publicReference={order.publicReference} /></div>
-          </section>
+            <div className="mt-5"><OrderStatusUpdateForm currentStatus={order.status} fulfillmentMethod={order.fulfillmentMethod} key={order.status} options={transitionOptions} publicReference={order.publicReference} /></div>
+          </section> : null}
 
           <section className="rounded-2xl bg-white/[0.035] p-5">
             <p className="text-[0.61rem] font-bold uppercase tracking-[0.17em] text-gold">Payment</p>
@@ -134,8 +140,11 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               <DetailRow label="Status" value={payment ? formatPaymentStatus(payment.status) : "No payment"} />
               {payment ? <DetailRow label="Method" value={formatPaymentMethod(payment.paymentMethodType)} /> : null}
               {payment?.paidAt ? <DetailRow label="Paid" value={formatDateTime(payment.paidAt)} /> : null}
+              {payment?.refundedAmountCents ? <DetailRow label="Refunded" value={formatMoney(payment.refundedAmountCents, order.currency)} /> : null}
             </dl>
           </section>
+
+          {admin?.permissions.includes("REFUNDS_MANAGE") && payment && refundableAmountCents > 0 && ["SUCCEEDED", "PARTIALLY_REFUNDED"].includes(payment.status) ? <section className="rounded-2xl bg-orange/[0.055] p-5"><p className="text-[0.61rem] font-bold uppercase tracking-[0.17em] text-orange">Refund control</p><h2 className="mt-2 font-display text-xl font-medium tracking-[-0.03em]">{order.status === "PAID" ? "Reject paid order" : "Return payment"}</h2><p className="mt-3 text-xs leading-5 text-muted">Refunds return to the original payment method and cannot be reversed here.</p><div className="mt-5"><RefundOrderForm currency={order.currency} orderStatus={order.status} publicReference={order.publicReference} remainingAmountCents={refundableAmountCents} /></div></section> : null}
 
           <section className="rounded-2xl bg-white/[0.035] p-5">
             <p className="text-[0.61rem] font-bold uppercase tracking-[0.17em] text-gold">Order total</p>

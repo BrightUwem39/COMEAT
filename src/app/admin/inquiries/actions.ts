@@ -19,7 +19,7 @@ export async function updateInquiryAction(
   _previousState: UpdateInquiryState,
   formData: FormData,
 ): Promise<UpdateInquiryState> {
-  const admin = await assertCurrentAdmin();
+  const admin = await assertCurrentAdmin("INQUIRIES_MANAGE");
   const id = String(formData.get("id") ?? "");
   const type = String(formData.get("type") ?? "");
   const requestedStatus = String(formData.get("inquiryStatus") ?? "");

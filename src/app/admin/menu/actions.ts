@@ -18,7 +18,7 @@ export async function updateMenuProductAction(
   _previousState: UpdateMenuProductState,
   formData: FormData,
 ): Promise<UpdateMenuProductState> {
-  const admin = await assertCurrentAdmin();
+  const admin = await assertCurrentAdmin("MENU_MANAGE");
   const productId = String(formData.get("productId") ?? "");
   const productUpdatedAt = new Date(String(formData.get("productUpdatedAt") ?? ""));
   const productActive = formData.get("productActive") === "on";
