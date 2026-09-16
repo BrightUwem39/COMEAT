@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { submitCateringInquiryAction } from "@/app/catering/actions";
 import { cateringEventTypes, initialCateringInquiryState, type CateringInquiryActionState, type CateringInquiryField } from "@/lib/catering-inquiry";
 import { authFieldVariants, authFormVariants, menuControlVariants } from "@/lib/animations";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 const inputClassName = "h-11 w-full rounded-lg border border-border bg-background/70 px-3.5 text-sm text-foreground placeholder:text-muted/65 transition-colors hover:border-white/20";
 const labelClassName = "mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.15em] text-muted";
@@ -106,10 +107,16 @@ export function CateringInquiryForm() {
             whileHover={reduceMotion ? undefined : "hover"}
             whileTap={reduceMotion ? undefined : "tap"}
           >
-            {pending ? "Sending inquiry…" : "Send inquiry"}
-            <svg aria-hidden="true" className="size-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 20 20">
-              <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
-            </svg>
+            {pending ? (
+              <><LoadingSpinner /> Sending inquiry…</>
+            ) : (
+              <>
+                Send inquiry
+                <svg aria-hidden="true" className="size-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 20 20">
+                  <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
+                </svg>
+              </>
+            )}
           </motion.button>
         </motion.div>
       </motion.form>

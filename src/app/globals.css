@@ -156,61 +156,6 @@ input[type="search"]::-webkit-search-cancel-button {
   animation: menu-image-shimmer 1.35s ease-in-out infinite;
 }
 
-@keyframes loading-indicator-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes loading-indicator-pulse {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(0.72);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.loading-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-  color: var(--gold-light);
-}
-
-.loading-indicator-ring {
-  position: relative;
-  display: grid;
-  width: 1.75rem;
-  height: 1.75rem;
-  place-items: center;
-  border: 1.5px solid color-mix(in srgb, var(--gold) 22%, transparent);
-  border-top-color: var(--gold-light);
-  border-right-color: var(--orange);
-  border-radius: 999px;
-  animation: loading-indicator-spin 900ms linear infinite;
-}
-
-.loading-indicator-core {
-  width: 0.35rem;
-  height: 0.35rem;
-  border-radius: 999px;
-  background: var(--gold-light);
-  box-shadow: 0 0 0.75rem color-mix(in srgb, var(--gold) 70%, transparent);
-  animation: loading-indicator-pulse 900ms ease-in-out infinite;
-}
-
-.loading-indicator-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
 @keyframes allergy-marquee-scroll {
   from {
     transform: translate3d(0, 0, 0);
@@ -302,11 +247,6 @@ select:focus-visible {
   .skeleton-shimmer {
     animation: none;
     background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
-  }
-
-  .loading-indicator-ring,
-  .loading-indicator-core {
-    animation: none;
   }
 
   .hero-image-reveal,

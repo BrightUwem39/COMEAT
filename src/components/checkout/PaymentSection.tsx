@@ -12,6 +12,7 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import type { PaymentIntentResponse } from "@/lib/payment-intent";
 import { getStripePromise } from "@/lib/stripe-client";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -223,13 +224,13 @@ function StripePaymentForm({ amountCents, currency, orderReference }: PaymentSec
       {message ? <p className="mt-5 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm leading-6 text-orange" aria-live="polite">{message}</p> : null}
 
       <motion.button
-        className="mt-5 min-h-11 w-full whitespace-nowrap rounded-lg bg-gold px-4 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-background transition-[background-color,box-shadow] duration-300 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-not-allowed disabled:opacity-50 sm:px-5 sm:text-[0.68rem] sm:tracking-[0.12em]"
+        className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-lg bg-gold px-4 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-background transition-[background-color,box-shadow] duration-300 hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-not-allowed disabled:opacity-50 sm:px-5 sm:text-[0.68rem] sm:tracking-[0.12em]"
         disabled={!stripe || !elements || !elementReady || !paymentComplete || submitting}
         type="submit"
         whileHover={reduceMotion || submitting ? undefined : { y: -2 }}
         whileTap={reduceMotion || submitting ? undefined : { scale: 0.985 }}
       >
-        {submitting ? "Processing securely…" : `Pay ${currencyFormatter.format(amountCents / 100)} ${currency.toUpperCase()}`}
+        {submitting ? <><LoadingSpinner /> Processing securely…</> : `Pay ${currencyFormatter.format(amountCents / 100)} ${currency.toUpperCase()}`}
       </motion.button>
       <p className="mt-3 text-center text-[0.62rem] font-bold uppercase tracking-[0.12em] text-muted">Secured by Stripe</p>
     </form>

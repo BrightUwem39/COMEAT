@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { adjustInventoryStockAction, createInventoryItemAction, updateInventoryItemAction, type InventoryActionState } from "@/app/admin/inventory/actions";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 type InventoryItemValue = { active: boolean; id: string; lowStockThreshold: number; name: string; quantity: number; unit: string; unitCostCents: number; updatedAt: string };
 const initialState: InventoryActionState = { message: "", status: "idle" };
@@ -45,4 +46,4 @@ export function InventoryAdjustmentForm({ item }: { item: InventoryItemValue }) 
 }
 
 function Field({ children, hint, label }: { children: React.ReactNode; hint?: string; label: string }) { return <label className="min-w-0"><span className="text-[0.61rem] font-bold uppercase tracking-[0.15em] text-muted">{label}</span>{children}{hint ? <span className="mt-1.5 block text-[0.68rem] leading-5 text-muted">{hint}</span> : null}</label>; }
-function FormFooter({ label, pending, state }: { label: string; pending: boolean; state: InventoryActionState }) { return <div className="flex flex-wrap items-center justify-between gap-3"><p aria-live="polite" className={`min-h-5 text-xs leading-5 ${state.status === "success" ? "text-emerald-300" : "text-orange"}`} role={state.status === "error" ? "alert" : "status"}>{state.message}</p><button className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full bg-gold px-5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,transform,opacity] duration-300 hover:bg-gold-light active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none" disabled={pending} type="submit">{pending ? "Saving…" : label}</button></div>; }
+function FormFooter({ label, pending, state }: { label: string; pending: boolean; state: InventoryActionState }) { return <div className="flex flex-wrap items-center justify-between gap-3"><p aria-live="polite" className={`min-h-5 text-xs leading-5 ${state.status === "success" ? "text-emerald-300" : "text-orange"}`} role={state.status === "error" ? "alert" : "status"}>{state.message}</p><button className="inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-gold px-5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,transform,opacity] duration-300 hover:bg-gold-light active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none" disabled={pending} type="submit">{pending ? <><LoadingSpinner className="size-3.5" /> Saving…</> : label}</button></div>; }

@@ -16,6 +16,7 @@ import {
   authFormVariants,
   menuControlVariants,
 } from "@/lib/animations";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 type FieldName = keyof RegistrationValues;
 type FieldErrors = Partial<Record<FieldName, string>>;
@@ -255,17 +256,15 @@ export function RegistrationForm() {
 
       <motion.div variants={reduceMotion ? undefined : authFieldVariants}>
         <motion.button
-          className="group relative flex min-h-11 w-full items-center justify-center rounded-lg bg-background px-12 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-foreground shadow-[0_12px_26px_rgba(5,5,5,0.13)] transition-[background-color,box-shadow] duration-300 hover:bg-surface hover:shadow-[0_16px_34px_rgba(5,5,5,0.18)] disabled:cursor-wait disabled:bg-background/60"
+          className="group relative flex min-h-11 w-full items-center justify-center gap-2.5 rounded-lg bg-background px-12 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-foreground shadow-[0_12px_26px_rgba(5,5,5,0.13)] transition-[background-color,box-shadow] duration-300 hover:bg-surface hover:shadow-[0_16px_34px_rgba(5,5,5,0.18)] disabled:cursor-wait disabled:bg-background/60"
           disabled={pending}
           type="submit"
           variants={reduceMotion ? undefined : menuControlVariants}
           whileHover={reduceMotion || pending ? undefined : "hover"}
           whileTap={reduceMotion || pending ? undefined : "tap"}
         >
-          {pending ? "Creating account…" : "Create account"}
-          <span aria-hidden="true" className="absolute right-5 text-xl font-normal transition-transform duration-300 group-hover:translate-x-1">
-            →
-          </span>
+          {pending ? <><LoadingSpinner className="size-3.5" /> Creating account…</> : "Create account"}
+          {!pending ? <span aria-hidden="true" className="absolute right-5 text-xl font-normal transition-transform duration-300 group-hover:translate-x-1">→</span> : null}
         </motion.button>
       </motion.div>
 

@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { createPromotionAction, updatePromotionAction, type PromotionFormState } from "@/app/admin/promotions/actions";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 type PromotionFormValue = {
   active: boolean;
@@ -46,7 +47,7 @@ export function PromotionForm({ promotion }: { promotion?: PromotionFormValue })
       <label className="flex min-h-12 items-center justify-between gap-4 rounded-xl bg-white/[0.035] px-4 text-sm font-semibold"><span>Promotion active</span><input className="peer sr-only" defaultChecked={promotion?.active ?? true} name="active" type="checkbox" /><span aria-hidden="true" className="relative h-6 w-11 shrink-0 rounded-full bg-white/12 transition-colors after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-muted after:transition-transform peer-focus-visible:ring-2 peer-focus-visible:ring-gold peer-checked:bg-gold peer-checked:after:translate-x-5 peer-checked:after:bg-background" /></label>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p aria-live="polite" className={`min-h-5 text-xs leading-5 ${state.status === "success" ? "text-emerald-300" : "text-orange"}`} role={state.status === "error" ? "alert" : "status"}>{state.message}</p>
-        <button className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full bg-gold px-5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,transform,opacity] duration-300 hover:bg-gold-light active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none" disabled={pending} type="submit">{pending ? "Saving…" : promotion ? "Save promotion" : "Create promotion"}</button>
+        <button className="inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-gold px-5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-background transition-[background-color,transform,opacity] duration-300 hover:bg-gold-light active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none" disabled={pending} type="submit">{pending ? <><LoadingSpinner className="size-3.5" /> Saving…</> : promotion ? "Save promotion" : "Create promotion"}</button>
       </div>
     </form>
   );

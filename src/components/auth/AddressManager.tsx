@@ -10,6 +10,7 @@ import {
   type AddressActionState,
 } from "@/app/profile/actions";
 import type { SavedAddress } from "@/lib/address-validation";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 const initialState: AddressActionState = { error: "", saved: false };
 
@@ -95,5 +96,5 @@ function AddressField({ label, name, ...props }: React.InputHTMLAttributes<HTMLI
 
 function SaveAddressButton() {
   const { pending } = useFormStatus();
-  return <button className="min-h-11 bg-gold px-5 text-xs font-bold uppercase tracking-[0.13em] text-background disabled:opacity-60" disabled={pending} type="submit">{pending ? "Saving…" : "Save address"}</button>;
+  return <button className="inline-flex min-h-11 items-center justify-center gap-2.5 bg-gold px-5 text-xs font-bold uppercase tracking-[0.13em] text-background disabled:opacity-60" disabled={pending} type="submit">{pending ? <><LoadingSpinner /> Saving…</> : "Save address"}</button>;
 }

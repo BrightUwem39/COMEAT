@@ -1,4 +1,4 @@
-import { LoadingIndicator, Skeleton } from "@/components/ui/Skeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function AdminLoading() {
   return (
@@ -12,7 +12,6 @@ export default function AdminLoading() {
         Loading administrator workspace.
       </span>
       <div aria-hidden="true">
-        <LoadingIndicator className="mb-7" />
         <Skeleton className="h-3 w-24 rounded-full" />
         <Skeleton className="mt-4 h-9 w-52 max-w-full rounded-lg" />
         <Skeleton className="mt-3 h-4 w-80 max-w-full rounded-full" />

@@ -1,4 +1,4 @@
-import { LoadingIndicator, Skeleton } from "@/components/ui/Skeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function SiteLoading() {
   return (
@@ -13,7 +13,6 @@ export default function SiteLoading() {
       </span>
 
       <div className="mx-auto w-full max-w-7xl" aria-hidden="true">
-        <LoadingIndicator className="mb-8" />
         <Skeleton className="h-3 w-24 rounded-full" />
         <Skeleton className="mt-5 h-10 w-3/4 max-w-xl rounded-xl sm:h-12" />
         <div className="mt-4 max-w-2xl space-y-2.5">

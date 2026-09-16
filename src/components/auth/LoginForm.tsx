@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 import { authClient, useSession } from "@/lib/auth-client";
 import { PasswordVisibilityIcon } from "@/components/auth/PasswordVisibilityIcon";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { loginSchema, type LoginValues } from "@/lib/auth-validation";
 import {
   authFieldVariants,
@@ -176,7 +177,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
             View profile
           </Link>
           <motion.button
-            className="min-h-12 rounded-xl border border-background/15 px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors duration-200 hover:border-background/40 disabled:cursor-wait disabled:text-background/40"
+            className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-background/15 px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors duration-200 hover:border-background/40 disabled:cursor-wait disabled:text-background/40"
             disabled={pending}
             onClick={handleLogout}
             type="button"
@@ -184,7 +185,7 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
             whileHover={reduceMotion || pending ? undefined : "hover"}
             whileTap={reduceMotion || pending ? undefined : "tap"}
           >
-            {pending ? "Signing out…" : "Sign out"}
+            {pending ? <><LoadingSpinner /> Signing out…</> : "Sign out"}
           </motion.button>
         </div>
       </motion.div>
@@ -285,17 +286,15 @@ export function LoginForm({ returnTo = "/profile" }: LoginFormProps) {
 
       <motion.div variants={reduceMotion ? undefined : authFieldVariants}>
         <motion.button
-          className="group relative flex min-h-11 w-full items-center justify-center rounded-lg bg-background px-12 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-foreground shadow-[0_12px_26px_rgba(5,5,5,0.13)] transition-[background-color,box-shadow] duration-300 hover:bg-surface hover:shadow-[0_16px_34px_rgba(5,5,5,0.18)] disabled:cursor-wait disabled:bg-background/60"
+          className="group relative flex min-h-11 w-full items-center justify-center gap-2.5 rounded-lg bg-background px-12 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-foreground shadow-[0_12px_26px_rgba(5,5,5,0.13)] transition-[background-color,box-shadow] duration-300 hover:bg-surface hover:shadow-[0_16px_34px_rgba(5,5,5,0.18)] disabled:cursor-wait disabled:bg-background/60"
           disabled={pending}
           type="submit"
           variants={reduceMotion ? undefined : menuControlVariants}
           whileHover={reduceMotion || pending ? undefined : "hover"}
           whileTap={reduceMotion || pending ? undefined : "tap"}
         >
-          {pending ? "Signing in…" : "Sign in"}
-          <span aria-hidden="true" className="absolute right-5 text-xl font-normal transition-transform duration-300 group-hover:translate-x-1">
-            →
-          </span>
+          {pending ? <><LoadingSpinner className="size-3.5" /> Signing in…</> : "Sign in"}
+          {!pending ? <span aria-hidden="true" className="absolute right-5 text-xl font-normal transition-transform duration-300 group-hover:translate-x-1">→</span> : null}
         </motion.button>
       </motion.div>
 

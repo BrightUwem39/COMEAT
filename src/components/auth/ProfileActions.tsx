@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 import { authClient } from "@/lib/auth-client";
 import { menuControlVariants } from "@/lib/animations";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 export function ProfileActions() {
   const router = useRouter();
@@ -44,8 +45,7 @@ export function ProfileActions() {
         whileHover={reduceMotion || pending ? undefined : "hover"}
         whileTap={reduceMotion || pending ? undefined : "tap"}
       >
-        <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg>
-        {pending ? "Signing out…" : "Sign out"}
+        {pending ? <><LoadingSpinner /> Signing out…</> : <><svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" /></svg> Sign out</>}
       </motion.button>
       {error ? <p className="mt-3 text-xs leading-5 text-orange" role="alert">{error}</p> : null}
     </div>

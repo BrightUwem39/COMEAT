@@ -11,6 +11,7 @@ import {
   type ResetPasswordValues,
 } from "@/lib/auth-validation";
 import { authFieldVariants, authFormVariants, menuControlVariants } from "@/lib/animations";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 type ResetPasswordFormProps = {
   invalid: boolean;
@@ -94,7 +95,7 @@ export function ResetPasswordForm({ invalid, token }: ResetPasswordFormProps) {
       <ResetPasswordField error={errors.confirmPassword} label="Confirm new password" name="confirmPassword" onChange={(value) => updateField("confirmPassword", value)} onToggle={() => setShown((current) => ({ ...current, confirmPassword: !current.confirmPassword }))} shown={shown.confirmPassword} value={values.confirmPassword} />
       <p className="text-xs leading-5 text-muted">Use at least 8 characters, begin with a capital letter, and include a number. All active sessions will be revoked after this change.</p>
       {formError ? <p className="border-l-2 border-orange bg-orange/10 px-4 py-3 text-sm leading-6 text-foreground" role="alert">{formError}</p> : null}
-      <motion.button className="flex min-h-14 w-full items-center justify-center rounded-xl bg-gold px-6 text-xs font-bold uppercase tracking-[0.18em] text-background hover:bg-gold-light disabled:cursor-wait disabled:bg-gold/60" disabled={pending} type="submit" variants={reduceMotion ? undefined : menuControlVariants} whileHover={reduceMotion || pending ? undefined : "hover"} whileTap={reduceMotion || pending ? undefined : "tap"}>{pending ? "Updating password…" : "Update password"}</motion.button>
+      <motion.button className="flex min-h-14 w-full items-center justify-center gap-2.5 rounded-xl bg-gold px-6 text-xs font-bold uppercase tracking-[0.18em] text-background hover:bg-gold-light disabled:cursor-wait disabled:bg-gold/60" disabled={pending} type="submit" variants={reduceMotion ? undefined : menuControlVariants} whileHover={reduceMotion || pending ? undefined : "hover"} whileTap={reduceMotion || pending ? undefined : "tap"}>{pending ? <><LoadingSpinner /> Updating password…</> : "Update password"}</motion.button>
     </motion.form>
   );
 }

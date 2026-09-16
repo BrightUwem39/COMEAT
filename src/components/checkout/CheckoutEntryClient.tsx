@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { useCart } from "@/components/cart/CartProvider";
 import { PaymentSection } from "@/components/checkout/PaymentSection";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { CartValidationResponse } from "@/lib/cart-validation";
 import type { CheckoutOrderResponse } from "@/lib/checkout-order";
 import type { CheckoutAddressDTO, CheckoutRulesDTO } from "@/server/checkout";
@@ -248,7 +249,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
           <div className="mt-5 border-t border-border pt-5">
             {formError ? <p className="border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{formError}</p> : null}
             {deliveryComplete ? <p className="border-l-2 border-gold bg-gold/5 px-4 py-3 text-sm text-gold" role="status">Delivery details and current menu prices are verified.</p> : null}
-            <button className={`${formError || deliveryComplete ? "mt-4" : ""} min-h-10 w-full rounded-lg bg-gold px-5 text-[0.65rem] font-bold uppercase tracking-[0.13em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light disabled:cursor-wait disabled:opacity-60 sm:w-auto`} disabled={reviewPending} type="submit">{reviewPending ? "Preparing review…" : "Review order"}</button>
+            <button className={`${formError || deliveryComplete ? "mt-4" : ""} inline-flex min-h-10 w-full items-center justify-center gap-2.5 rounded-lg bg-gold px-5 text-[0.65rem] font-bold uppercase tracking-[0.13em] text-background transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-gold-light disabled:cursor-wait disabled:opacity-60 sm:w-auto`} disabled={reviewPending} type="submit">{reviewPending ? <><LoadingSpinner className="size-3.5" /> Preparing review…</> : "Review order"}</button>
           </div>
         </fieldset>
 
@@ -307,14 +308,14 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
             <p className="mt-6 text-xs leading-6 text-muted">Creating the order records it as <strong className="text-foreground">Pending payment</strong>. It is not confirmed until full payment is completed.</p>
             {orderError ? <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{orderError}</p> : null}
             <motion.button
-              className="mt-5 min-h-12 w-full rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-wait disabled:opacity-60"
+              className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-lg bg-gold px-6 text-xs font-bold uppercase tracking-[0.14em] text-background transition-colors hover:bg-gold-light disabled:cursor-wait disabled:opacity-60"
               disabled={orderPending}
               onClick={handlePlaceOrder}
               type="button"
               whileHover={reduceMotion || orderPending ? undefined : { y: -2 }}
               whileTap={reduceMotion || orderPending ? undefined : { scale: 0.98 }}
             >
-              {orderPending ? "Preparing payment…" : "Continue to payment"}
+              {orderPending ? <><LoadingSpinner /> Preparing payment…</> : "Continue to payment"}
             </motion.button>
           </motion.section>
         ) : null}

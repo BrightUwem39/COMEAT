@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useCart } from "@/components/cart/CartProvider";
 import { PaymentSection } from "@/components/checkout/PaymentSection";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { CartValidationResponse } from "@/lib/cart-validation";
 import type { CheckoutOrderResponse } from "@/lib/checkout-order";
 import { DELIVERY_DRAFT_STORAGE_KEY, isDeliveryDraft, type DeliveryDraft } from "@/lib/delivery-draft";
@@ -183,7 +184,7 @@ export function CheckoutReviewClient({ rules }: { rules: CheckoutRulesDTO }) {
         {validationError ? <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{validationError}</p> : null}
         {!allergyReady ? <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange">Complete allergy details on the order page before payment.</p> : null}
         {orderError ? <p className="mt-4 border-l-2 border-orange bg-orange/5 px-4 py-3 text-sm text-orange" role="alert">{orderError}</p> : null}
-        <motion.button className="mt-5 min-h-11 w-full whitespace-nowrap rounded-lg bg-gold px-4 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-background transition-[background-color,box-shadow] hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-wait disabled:opacity-60 sm:px-5 sm:text-[0.68rem] sm:tracking-[0.12em]" disabled={orderPending || !validation?.valid || !allergyReady} onClick={handlePlaceOrder} type="button" whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.985 }}>{orderPending ? "Preparing payment…" : "Continue to payment"}</motion.button>
+        <motion.button className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-lg bg-gold px-4 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-background transition-[background-color,box-shadow] hover:bg-gold-light hover:shadow-[0_12px_30px_rgba(230,165,26,0.16)] disabled:cursor-wait disabled:opacity-60 sm:px-5 sm:text-[0.68rem] sm:tracking-[0.12em]" disabled={orderPending || !validation?.valid || !allergyReady} onClick={handlePlaceOrder} type="button" whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.985 }}>{orderPending ? <><LoadingSpinner /> Preparing payment…</> : "Continue to payment"}</motion.button>
       </motion.section>
 
     </div>
