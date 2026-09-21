@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { RouteChrome } from "@/components/layout/RouteChrome";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { HomeIntro } from "@/components/home/HomeIntro";
 import "./globals.css";
 
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://comeat-drab.vercel.app";
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
+        <HomeIntro />
         <a
           className="sr-only z-[100] bg-gold px-4 py-3 font-semibold text-background focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
           href="#main-content"
