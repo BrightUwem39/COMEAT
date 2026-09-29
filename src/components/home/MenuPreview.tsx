@@ -7,6 +7,14 @@ import { MenuPreviewGrid } from "@/components/home/MenuPreviewGrid";
 export function MenuPreview() {
   const featuredItems = ["jollof-rice", "egusi", "asun", "ayamase", "asaro", "ikokore"]
     .flatMap((id) => allMenuItems.find((item) => item.id === id) ?? []);
+  const mobileFeaturedItems = [
+    "fried-rice",
+    "coconut-rice",
+    "ofada-rice",
+    "efo-riro",
+    "seafood-okro",
+    "pepper-soup",
+  ].flatMap((id) => allMenuItems.find((item) => item.id === id) ?? []);
 
   return (
     <section className="py-12 sm:py-16 lg:py-20" id="menu-preview">
@@ -19,7 +27,7 @@ export function MenuPreview() {
           </svg>
           <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left bg-orange transition-transform duration-300 ease-out group-hover:scale-x-75 group-focus-visible:scale-x-75" />
         </Link>
-        <MenuPreviewGrid items={featuredItems} />
+        <MenuPreviewGrid items={featuredItems} mobileItems={mobileFeaturedItems} />
       </Container>
     </section>
   );

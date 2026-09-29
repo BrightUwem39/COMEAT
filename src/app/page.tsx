@@ -52,9 +52,7 @@ export default function Home() {
         type="application/ld+json"
       />
       <Hero />
-      <ScrollReveal direction="left">
-        <FeaturedDishes />
-      </ScrollReveal>
+      <FeaturedDishes />
       <ScrollReveal direction="right">
         <BrandStory />
       </ScrollReveal>
