@@ -19,7 +19,7 @@ export function MenuPreviewGrid({ items, mobileItems }: MenuPreviewGridProps) {
     <>
       <motion.div
         aria-label="Featured menu dishes"
-        className="mt-10 grid grid-cols-3 gap-2 sm:hidden"
+        className="mt-10 grid grid-cols-2 gap-2 sm:hidden"
         initial={reduceMotion ? false : "hidden"}
         role="region"
         variants={reduceMotion ? undefined : menuGridVariants}
@@ -33,7 +33,7 @@ export function MenuPreviewGrid({ items, mobileItems }: MenuPreviewGridProps) {
               className="group relative block aspect-[4/5] overflow-hidden rounded-lg border border-white/10 bg-surface"
               href="/menu"
             >
-              <Image alt={item.name} className="food-image-crop object-cover" fill sizes="calc((100vw - 56px) / 3)" src={item.image} />
+              <Image alt={item.name} className="food-image-crop object-cover" fill sizes="calc((100vw - 48px) / 2)" src={item.image} />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-2">
                 <h3 className="font-display text-xs leading-tight tracking-[-0.02em] text-foreground">{item.name}</h3>
