@@ -21,8 +21,8 @@ export function Hero() {
             A taste that feels like home.
           </h1>
           <p className="hero-reveal hero-reveal-2 mt-5 max-w-[23rem] text-sm leading-6 text-foreground/85 sm:mt-7 sm:max-w-2xl sm:text-[clamp(1rem,1.45vw,1.75rem)] sm:leading-[1.55] lg:mt-8 lg:max-w-5xl">
-            From Sunday lunch to celebrations that fill the<span className="sm:hidden"><br /></span> room, ComEat serves the Nigerian dishes<br />
-            that bring everyone back to the table.
+            From Sunday lunch to celebrations that fill the<span className="sm:hidden"><br /></span> room, ComeEat serves Naija dishes<br />
+            that brings everyone back to the table everytime.
           </p>
           <div className="hero-reveal hero-reveal-3 mt-6 flex w-full max-w-[23rem] flex-row items-center justify-center gap-3 sm:mt-8 sm:max-w-xl lg:mt-10">
             <Button className="group min-h-[2.4rem]! w-auto min-w-0 gap-2 whitespace-nowrap border-transparent! px-3! text-[0.65rem] tracking-[0.08em] transition-[transform,background-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-transparent! hover:shadow-[0_12px_30px_rgba(230,165,26,0.2)] sm:px-5! sm:text-xs sm:tracking-[0.12em]" href="/menu">

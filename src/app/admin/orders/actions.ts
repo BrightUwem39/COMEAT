@@ -10,6 +10,8 @@ import {
   getAllowedAdminOrderTransitions,
   type AdminOrderStatus,
 } from "@/server/admin-orders";
+import { verifyDeliveryPin } from "@/server/delivery-pin";
+import { sendDeliveryPinEmail } from "@/server/delivery-pin-notification";
 import { db } from "@/server/db";
 import { getStripe } from "@/server/stripe";
 
@@ -31,6 +33,7 @@ export async function updateAdminOrderStatusAction(
   const publicReference = String(formData.get("publicReference") ?? "").trim();
   const requestedStatus = String(formData.get("nextStatus") ?? "").trim();
   const note = String(formData.get("note") ?? "").trim();
+  const deliveryPin = String(formData.get("deliveryPin") ?? "").trim();
   const readyMinutes = Number(formData.get("readyMinutes"));
   const deliveryMinutes = Number(formData.get("deliveryMinutes"));
 
@@ -48,7 +51,7 @@ export async function updateAdminOrderStatusAction(
   const result = await db.$transaction(async (transaction) => {
     const order = await transaction.order.findUnique({
       where: { publicReference },
-      select: { fulfillmentMethod: true, id: true, status: true },
+      select: { fulfillmentMethod: true, id: true, publicReference: true, status: true },
     });
     if (!order) return { message: "This order could not be found.", status: "error" as const };
 
@@ -64,6 +67,12 @@ export async function updateAdminOrderStatusAction(
     if (accepting && order.fulfillmentMethod !== "PICKUP" && !ESTIMATE_MINUTES.includes(deliveryMinutes as typeof ESTIMATE_MINUTES[number])) {
       return { message: "Choose a valid delivery estimate.", status: "error" as const };
     }
+    const confirmingLocalDelivery = order.status === "OUT_FOR_DELIVERY"
+      && nextStatus === "COMPLETED"
+      && order.fulfillmentMethod === "LOCAL_DELIVERY";
+    if (confirmingLocalDelivery && !verifyDeliveryPin(order.id, order.publicReference, deliveryPin)) {
+      return { message: "The delivery PIN is incorrect. Ask the customer for the four-digit code shown in their account or email.", status: "error" as const };
+    }
     const estimatedReadyAt = accepting ? new Date(Date.now() + readyMinutes * 60_000) : undefined;
     const estimatedDeliveryAt = accepting && order.fulfillmentMethod !== "PICKUP" && estimatedReadyAt
       ? new Date(estimatedReadyAt.getTime() + deliveryMinutes * 60_000)
@@ -71,7 +80,13 @@ export async function updateAdminOrderStatusAction(
 
     const updated = await transaction.order.updateMany({
       where: { id: order.id, status: order.status },
-      data: { estimatedDeliveryAt, estimatedReadyAt, status: nextStatus },
+      data: {
+        deliveryConfirmationMethod: confirmingLocalDelivery ? "PIN" : undefined,
+        deliveryConfirmedAt: confirmingLocalDelivery ? new Date() : undefined,
+        estimatedDeliveryAt,
+        estimatedReadyAt,
+        status: nextStatus,
+      },
     });
     if (updated.count !== 1) {
       return { message: "The order changed while you were viewing it. Refresh and try again.", status: "error" as const };
@@ -81,7 +96,9 @@ export async function updateAdminOrderStatusAction(
       data: {
         actorUserId: admin.userId,
         newStatus: nextStatus,
-        note: note || (accepting ? "Order accepted by the kitchen." : null),
+        note: confirmingLocalDelivery
+          ? `Delivery confirmed with the customer's PIN.${note ? ` ${note}` : ""}`
+          : note || (accepting ? "Order accepted by the kitchen." : null),
         orderId: order.id,
         previousStatus: order.status,
       },
@@ -90,13 +107,21 @@ export async function updateAdminOrderStatusAction(
       action: "ORDER_STATUS_UPDATED",
       actorUserId: admin.userId,
       beforeData: { status: order.status },
-      afterData: { estimatedDeliveryAt: estimatedDeliveryAt?.toISOString() ?? null, estimatedReadyAt: estimatedReadyAt?.toISOString() ?? null, publicReference, status: nextStatus },
+      afterData: {
+        deliveryConfirmationMethod: confirmingLocalDelivery ? "PIN" : null,
+        estimatedDeliveryAt: estimatedDeliveryAt?.toISOString() ?? null,
+        estimatedReadyAt: estimatedReadyAt?.toISOString() ?? null,
+        publicReference,
+        status: nextStatus,
+      },
       entityId: order.id,
       entityType: "ORDER",
     });
 
     return {
       message: `Order moved to ${adminOrderStatusLabels[nextStatus].toLowerCase()}.`,
+      notifyDeliveryPin: order.fulfillmentMethod === "LOCAL_DELIVERY" && nextStatus === "OUT_FOR_DELIVERY",
+      orderId: order.id,
       status: "success" as const,
     };
   });
@@ -108,6 +133,16 @@ export async function updateAdminOrderStatusAction(
     revalidatePath(`/admin/orders/${encodeURIComponent(publicReference)}`);
     revalidatePath("/profile/orders");
     revalidatePath(`/profile/orders/${encodeURIComponent(publicReference)}`);
+
+    if (result.notifyDeliveryPin) {
+      try {
+        await sendDeliveryPinEmail(result.orderId);
+        return { message: `${result.message} The customer's delivery PIN was emailed successfully.`, status: "success" };
+      } catch (error) {
+        console.error("Delivery PIN email failed", error);
+        return { message: `${result.message} The email could not be sent, but the customer can see the PIN in their account.`, status: "success" };
+      }
+    }
   }
 
   return result;

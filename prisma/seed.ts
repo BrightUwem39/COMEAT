@@ -354,6 +354,16 @@ async function seed() {
       }
     }
 
+    await transaction.product.updateMany({
+      where: { slug: { notIn: allMenuItems.map((item) => item.id) } },
+      data: { active: false, featured: false },
+    });
+
+    await transaction.category.updateMany({
+      where: { slug: { notIn: menuCategories.map((category) => category.id) } },
+      data: { active: false },
+    });
+
     for (const setting of operationalSettings) {
       await transaction.operationalSetting.upsert({
         where: { key: setting.key },
@@ -374,7 +384,7 @@ async function seed() {
       }),
       prisma.productVariant.count({ where: { active: true } }),
       prisma.modifierGroup.count({
-        where: { code: "pepper", required: true },
+        where: { code: "pepper", required: true, product: { active: true } },
       }),
       prisma.operationalSetting.count(),
     ]);

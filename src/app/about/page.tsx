@@ -33,7 +33,7 @@ export default function AboutPage() {
             </div>
 
             <div className="relative mx-auto aspect-square w-full max-w-[32rem] overflow-hidden md:max-w-[26rem] lg:max-w-[32rem]">
-              <Image alt="ComEat asun with peppers" className="object-cover" fill priority sizes="(min-width: 1024px) 32rem, 100vw" src="/images/menu/asun.webp" />
+              <Image alt="ComEat asun with peppers" className="food-image-crop object-cover" fill priority sizes="(min-width: 1024px) 32rem, 100vw" src="/images/menu/asun.webp" />
             </div>
           </div>
         </Container>
@@ -62,10 +62,10 @@ export default function AboutPage() {
             <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20">
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div className="relative aspect-[3/4] overflow-hidden">
-                  <Image alt="ComEat asun with peppers" className="object-cover" fill sizes="(min-width: 1024px) 22vw, 48vw" src="/images/menu/asun.webp" />
+                  <Image alt="ComEat asun with peppers" className="food-image-crop object-cover" fill sizes="(min-width: 1024px) 22vw, 48vw" src="/images/menu/asun.webp" />
                 </div>
                 <div className="relative mt-12 aspect-[3/4] overflow-hidden">
-                  <Image alt="ComEat efo riro with assorted meat" className="object-cover" fill sizes="(min-width: 1024px) 22vw, 48vw" src="/images/menu/efo-riro.webp" />
+                  <Image alt="ComEat efo riro with assorted meat" className="food-image-crop object-cover" fill sizes="(min-width: 1024px) 22vw, 48vw" src="/images/menu/efo-riro.webp" />
                 </div>
               </div>
 
@@ -90,7 +90,7 @@ export default function AboutPage() {
         <section className="py-14 sm:py-20 lg:py-24">
           <Container>
             <div className="relative min-h-[32rem] overflow-hidden sm:min-h-[38rem]">
-              <Image alt="ComEat puff puff" className="image-zoom object-cover" fill sizes="100vw" src="/images/menu/puff-puff.webp" />
+              <Image alt="ComEat puff puff" className="food-image-crop object-cover" fill sizes="100vw" src="/images/menu/puff-puff.webp" />
               <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.92),rgba(5,5,5,0.25))]" />
               <div className="absolute inset-0 flex items-end p-6 sm:items-center sm:p-10 lg:p-14">
                 <div className="max-w-xl">

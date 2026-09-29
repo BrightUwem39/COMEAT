@@ -61,7 +61,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               {order.items.map((item) => (
                 <article className="grid grid-cols-[4.25rem_minmax(0,1fr)] gap-4 py-4 sm:grid-cols-[4.75rem_minmax(0,1fr)_auto] sm:items-center" key={item.id}>
                   <div className="relative aspect-square overflow-hidden rounded-xl bg-surface">
-                    <Image alt="" className="object-cover transition-transform duration-500 hover:scale-105 motion-reduce:transform-none" fill sizes="76px" src={item.productImageUrl || "/images/hero.jpg"} />
+                    <Image alt="" className="food-image-crop object-cover" fill sizes="76px" src={item.productImageUrl || "/images/hero.jpg"} />
                   </div>
                   <div className="min-w-0">
                     <h3 className="truncate text-sm font-semibold sm:text-base">{item.productName}</h3>
@@ -93,6 +93,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                 <DetailRow label="Requested" value={formatDate(order.requestedFulfillmentAt)} />
                 {order.estimatedReadyAt ? <DetailRow label="Estimated ready" value={formatDateTime(order.estimatedReadyAt)} /> : null}
                 {order.estimatedDeliveryAt ? <DetailRow label="Estimated delivery" value={formatDateTime(order.estimatedDeliveryAt)} /> : null}
+                {order.deliveryConfirmedAt ? <DetailRow label="Delivery verified" value={`${formatDateTime(order.deliveryConfirmedAt)}${order.deliveryConfirmationMethod === "PIN" ? " by customer PIN" : ""}`} /> : null}
                 <DetailRow label="Recipient" value={order.deliveryRecipientName || `${order.customerFirstName} ${order.customerLastName}`} />
               </dl>
               {order.deliveryStreetLine1 ? <address className="mt-5 border-t border-white/8 pt-5 text-xs not-italic leading-6 text-muted">{order.deliveryStreetLine1}{order.deliveryStreetLine2 ? <><br />{order.deliveryStreetLine2}</> : null}<br />{order.deliveryCity}, {order.deliveryState} {order.deliveryPostalCode}<br />{order.deliveryCountryCode}</address> : null}

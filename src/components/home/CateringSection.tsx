@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/Container";
 export function CateringSection() {
   return (
     <section className="relative overflow-hidden border-y border-border">
-      <Image alt="A bowl of ComEat local rice" className="object-cover object-center" fill sizes="100vw" src="/images/menu/local-rice.webp" />
+      <Image alt="A bowl of ComEat local rice" className="food-image-crop object-cover object-center" fill sizes="100vw" src="/images/menu/local-rice.webp" />
       <div className="absolute inset-0 bg-background/65" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.96),rgba(5,5,5,0.35))]" />
       <Container className="relative py-12 sm:py-16 lg:py-20">

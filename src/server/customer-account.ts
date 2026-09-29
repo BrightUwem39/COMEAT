@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import { requireCurrentCustomer } from "@/server/auth-session";
+import { getDeliveryPin } from "@/server/delivery-pin";
 import { db } from "@/server/db";
 
 const orderStatusLabels = {
@@ -126,6 +127,7 @@ export const getCustomerOrderDetail = cache(async (publicReference: string) => {
   const order = await db.order.findFirst({
     where: { publicReference, userId: customer.userId },
     select: {
+      id: true,
       publicReference: true,
       status: true,
       createdAt: true,
@@ -140,6 +142,8 @@ export const getCustomerOrderDetail = cache(async (publicReference: string) => {
       deliveryWindowEnd: true,
       estimatedDeliveryAt: true,
       estimatedReadyAt: true,
+      deliveryConfirmedAt: true,
+      deliveryConfirmationMethod: true,
       deliveryRecipientName: true,
       deliveryPhone: true,
       deliveryStreetLine1: true,
@@ -187,6 +191,10 @@ export const getCustomerOrderDetail = cache(async (publicReference: string) => {
   if (!order) return null;
   return {
     ...order,
+    deliveryPin: order.fulfillmentMethod === "LOCAL_DELIVERY" && order.status === "OUT_FOR_DELIVERY"
+      ? getDeliveryPin(order.id, order.publicReference)
+      : null,
+    deliveryConfirmedAt: order.deliveryConfirmedAt?.toISOString() ?? null,
     statusLabel: orderStatusLabels[order.status],
     createdAt: order.createdAt.toISOString(),
     requestedFulfillmentAt: order.requestedFulfillmentAt.toISOString(),

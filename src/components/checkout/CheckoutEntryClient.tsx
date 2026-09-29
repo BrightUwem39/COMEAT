@@ -271,7 +271,7 @@ export function CheckoutEntryClient({ addresses, customer, rules }: {
                 return (
                   <article className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-4 py-4 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:items-center" key={line.key}>
                     <div className="relative aspect-square overflow-hidden rounded-xl bg-background">
-                      <Image alt="" className="object-cover" fill sizes="88px" src={cartItem.image} />
+                      <Image alt="" className="food-image-crop object-cover" fill sizes="88px" src={cartItem.image} />
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-semibold text-foreground">{line.productName ?? cartItem.name}</h3>

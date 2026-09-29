@@ -173,7 +173,7 @@ export function CartPageClient() {
           return (
           <article className={`grid grid-cols-[5.75rem_minmax(0,1fr)] overflow-hidden rounded-xl border bg-surface min-[360px]:grid-cols-[6.5rem_minmax(0,1fr)] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5 sm:rounded-2xl sm:p-5 ${validatedLine && !validatedLine.valid ? "border-orange/70" : "border-border"}`} key={item.key}>
             <div className="relative min-h-full overflow-hidden bg-surface-elevated sm:min-h-36 sm:rounded-xl">
-              <Image alt={item.name} className="object-cover" fill sizes="144px" src={item.image} />
+              <Image alt={item.name} className="food-image-crop object-cover" fill sizes="144px" src={item.image} />
             </div>
             <div className="flex min-w-0 flex-col justify-between gap-3 p-3 min-[360px]:p-4 sm:gap-5 sm:p-0">
               <div className="flex items-start justify-between gap-2 sm:gap-4">

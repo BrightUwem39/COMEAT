@@ -161,7 +161,7 @@ export function CheckoutReviewClient({ rules }: { rules: CheckoutRulesDTO }) {
             if (!cartItem || line.lineTotalCents === undefined) return null;
             return (
               <article className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-4 py-4 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:items-center" key={line.key}>
-                <div className="relative aspect-square overflow-hidden rounded-xl bg-background"><Image alt="" className="object-cover" fill sizes="88px" src={cartItem.image} /></div>
+                <div className="relative aspect-square overflow-hidden rounded-xl bg-background"><Image alt="" className="food-image-crop object-cover" fill sizes="88px" src={cartItem.image} /></div>
                 <div className="min-w-0"><h3 className="font-semibold text-foreground">{line.productName ?? cartItem.name}</h3><p className="mt-1 text-xs leading-5 text-muted">{line.variantLabel ?? cartItem.sizeLabel}{line.grainLabel ? ` · ${line.grainLabel}` : ""}{line.proteinLabel ? ` · ${line.proteinLabel}` : ""}</p><p className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-orange">{cartItem.pepperTolerance !== undefined ? `Pepper ${cartItem.pepperTolerance}/5 · ` : ""}Quantity {line.quantity}</p></div>
                 <strong className="col-start-2 text-sm text-gold sm:col-start-auto sm:text-base">{currency.format(line.lineTotalCents / 100)}</strong>
               </article>

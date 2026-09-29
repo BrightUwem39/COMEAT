@@ -23,7 +23,7 @@ export function GalleryCard({ alt, className, index, src }: GalleryCardProps) {
       viewport={{ amount: 0.25, once: true }}
       whileInView={reduceMotion ? undefined : "visible"}
     >
-      <Image alt={alt} className="image-zoom object-cover" fill sizes="(min-width: 640px) 60vw, 100vw" src={src} />
+      <Image alt={alt} className="food-image-crop object-cover" fill sizes="(min-width: 640px) 60vw, 100vw" src={src} />
       <div className="absolute inset-0 bg-background/0 transition-colors duration-200 group-hover:bg-background/10" />
     </motion.div>
   );

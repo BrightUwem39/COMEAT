@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { MenuBrowser } from "@/components/menu/MenuBrowser";
-import { getStorefrontMenuItems } from "@/server/menu";
+import { getStorefrontMenuCategories } from "@/server/menu";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function MenuPage() {
-  const menuItems = await getStorefrontMenuItems();
+  const menuCategories = await getStorefrontMenuCategories();
 
   return (
     <main className="min-h-[calc(100svh-5rem)]" id="main-content">
@@ -37,7 +37,7 @@ export default async function MenuPage() {
               <p className="mt-3 text-sm leading-relaxed text-muted">Out-of-state orders ship Monday through Wednesday, with Friday as the weekly order cut-off.</p>
             </article>
           </div>
-          <MenuBrowser items={menuItems} />
+          <MenuBrowser categories={menuCategories} />
         </Container>
       </section>
     </main>

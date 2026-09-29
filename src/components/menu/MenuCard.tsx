@@ -30,6 +30,7 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [added, setAdded] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
+  const isLogoPlaceholder = item.image === "/images/comeat-logo.png";
 
   useEffect(() => {
     if (!panelOpen) return;
@@ -102,27 +103,29 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
         variants={reduceMotion ? undefined : menuCardVariants}
         whileHover={reduceMotion ? undefined : "hover"}
       >
-        <div className="relative min-h-full overflow-hidden bg-surface-elevated sm:aspect-[5/4] sm:min-h-0" ref={imageRef}>
+        <div className="relative min-h-full overflow-hidden bg-surface-elevated sm:aspect-[16/9] sm:min-h-0" ref={imageRef}>
           <motion.div className="absolute inset-0" variants={reduceMotion ? undefined : menuImageVariants}>
-            <Image alt={item.name} className="object-cover" fill sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw" src={item.image} />
+            <Image alt={isLogoPlaceholder ? "ComEat" : item.name} className={isLogoPlaceholder ? "object-contain p-6 opacity-80 sm:p-8" : "food-image-crop object-cover"} fill sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw" src={item.image} />
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col p-3 min-[360px]:p-4 sm:p-5">
+        <div className="flex min-w-0 flex-1 flex-col p-3 min-[360px]:p-4 sm:p-4">
           <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-1">
-            <h3 className="min-w-0 flex-1 font-display text-xl leading-none tracking-[-0.03em] text-foreground min-[360px]:text-2xl sm:text-3xl">{item.name}</h3>
-            {unitPrice !== undefined ? <strong className="shrink-0 text-sm text-gold min-[360px]:text-base sm:text-lg">{currency.format(unitPrice)}</strong> : null}
+            <h3 className="min-w-0 flex-1 font-display text-xl leading-none tracking-[-0.03em] text-foreground min-[360px]:text-2xl sm:text-2xl">{item.name}</h3>
+            {unitPrice !== undefined ? <strong className="shrink-0 text-sm text-gold min-[360px]:text-base sm:text-base">{currency.format(unitPrice)}</strong> : null}
           </div>
 
+          {item.priceNote ? <p className="mt-1.5 text-[11px] leading-relaxed text-muted min-[360px]:text-xs sm:text-xs">{item.priceNote}</p> : null}
+
           {item.pricing ? (
-            <div className={`mt-5 ${hasCustomizations ? "hidden sm:block" : "block"}`}>
-              <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">Select size</p>
-              <div className={`grid gap-2 ${item.pricing.length === 3 ? "grid-cols-3" : item.pricing.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
+            <div className={`mt-3 ${hasCustomizations ? "hidden sm:block" : "block"}`}>
+              <p className="mb-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-muted">Select size</p>
+              <div className={`grid gap-1.5 ${item.pricing.length === 3 ? "grid-cols-3" : item.pricing.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {item.pricing.map((option) => (
                   <motion.button
                     aria-pressed={selectedSize?.id === option.id}
-                    className={`min-h-10 rounded-lg border px-2 text-[11px] font-semibold transition-[background-color,border-color,color] duration-200 ${selectedSize?.id === option.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
+                    className={`min-h-9 rounded-lg border px-2 text-[10px] font-semibold transition-[background-color,border-color,color] duration-200 ${selectedSize?.id === option.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
                     key={option.id}
                     onClick={() => { setSelectedSizeId(option.id); setAdded(false); }}
                     type="button"
@@ -136,11 +139,11 @@ export function MenuCard({ item, href, size = "default" }: MenuCardProps) {
               </div>
             </div>
           ) : (
-            <p className="mt-2 text-[11px] leading-snug text-muted min-[360px]:mt-3 min-[360px]:text-xs sm:mt-5 sm:text-sm">Price awaiting confirmation.</p>
+            <p className="mt-2 text-[11px] leading-snug text-muted min-[360px]:mt-3 min-[360px]:text-xs sm:mt-3 sm:text-xs">Price awaiting confirmation.</p>
           )}
 
           <motion.button
-            className="group/order mt-3 flex min-h-10 w-full items-center justify-center gap-1.5 overflow-hidden rounded-lg border border-gold bg-transparent px-2 text-[9px] font-bold uppercase tracking-[0.1em] text-gold transition-[background-color,color,box-shadow] duration-300 hover:bg-gold hover:text-background hover:shadow-[0_10px_28px_rgba(230,165,26,0.2)] disabled:cursor-not-allowed disabled:border-border disabled:text-muted disabled:shadow-none min-[360px]:mt-4 min-[360px]:gap-2 min-[360px]:px-3 min-[360px]:text-[10px] min-[360px]:tracking-[0.12em] sm:mt-5 sm:min-h-12 sm:px-5 sm:text-xs sm:tracking-[0.14em]"
+            className="group/order mt-3 flex min-h-10 w-full items-center justify-center gap-1.5 overflow-hidden rounded-lg border border-gold bg-transparent px-2 text-[9px] font-bold uppercase tracking-[0.1em] text-gold transition-[background-color,color,box-shadow] duration-300 hover:bg-gold hover:text-background hover:shadow-[0_10px_28px_rgba(230,165,26,0.2)] disabled:cursor-not-allowed disabled:border-border disabled:text-muted disabled:shadow-none min-[360px]:gap-2 min-[360px]:px-3 min-[360px]:text-[10px] min-[360px]:tracking-[0.12em] sm:min-h-10 sm:px-4 sm:text-[10px] sm:tracking-[0.13em]"
             disabled={!selectedSize}
             onClick={() => hasCustomizations ? setPanelOpen(true) : addConfiguredItem()}
             type="button"
@@ -375,7 +378,7 @@ function PreviewCard({ href, item, reduceMotion, size }: { href: string; item: M
     <motion.article className={`group relative overflow-hidden rounded-xl border border-white/10 bg-surface shadow-[0_12px_34px_rgba(0,0,0,0.2)] transition-shadow duration-200 hover:shadow-[0_18px_42px_rgba(0,0,0,0.38)] ${heightClass}`} variants={reduceMotion ? undefined : menuCardVariants} whileHover={reduceMotion ? undefined : "hover"} whileTap={reduceMotion ? undefined : "tap"}>
       <Link aria-label={`View ${item.name} on the menu`} className="absolute inset-0" href={href}>
         <motion.div className="absolute inset-0" variants={reduceMotion ? undefined : menuImageVariants}>
-          <Image alt={item.name} className="object-cover" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" src={item.image} />
+          <Image alt={item.name} className="food-image-crop object-cover" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" src={item.image} />
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/15 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6"><h3 className="font-display text-3xl leading-none tracking-[-0.03em] text-foreground sm:text-4xl">{item.name}</h3></div>

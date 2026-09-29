@@ -10,7 +10,8 @@ export function HomeIntro() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
+      const frame = window.requestAnimationFrame(() => setIsVisible(false));
+      return () => window.cancelAnimationFrame(frame);
     }
 
     const root = document.documentElement;

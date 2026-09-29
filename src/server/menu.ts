@@ -48,6 +48,13 @@ export type MenuProductDTO = {
   modifierGroups: readonly MenuModifierGroupDTO[];
 };
 
+export type StorefrontMenuCategoryDTO = {
+  id: string;
+  name: string;
+  note: string | null;
+  items: readonly MenuItem[];
+};
+
 const menuProductInclude = {
   variants: {
     where: { active: true },
@@ -84,6 +91,31 @@ export async function getMenuCatalog(): Promise<readonly MenuProductDTO[]> {
 export async function getStorefrontMenuItems(): Promise<readonly MenuItem[]> {
   const products = await getMenuCatalog();
   return products.map(toStorefrontMenuItem);
+}
+
+export async function getStorefrontMenuCategories(): Promise<
+  readonly StorefrontMenuCategoryDTO[]
+> {
+  const categories = await db.category.findMany({
+    where: { active: true, products: { some: { active: true } } },
+    orderBy: { sortOrder: "asc" },
+    include: {
+      products: {
+        where: { active: true },
+        orderBy: { sortOrder: "asc" },
+        include: menuProductInclude,
+      },
+    },
+  });
+
+  return categories.map((category) => ({
+    id: category.slug,
+    name: category.name,
+    note: category.internalNote,
+    items: category.products.map((product) =>
+      toStorefrontMenuItem(toMenuProductDTO(product)),
+    ),
+  }));
 }
 
 export async function getFeaturedMenuProducts(): Promise<

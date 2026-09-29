@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SoupImageSequence } from "@/components/home/SoupImageSequence";
 
 export function BrandStory() {
   return (
@@ -21,9 +21,7 @@ export function BrandStory() {
               <span className="max-w-40 text-xs font-bold uppercase leading-5 tracking-[0.16em]">confirmed dishes across three menu categories</span>
             </div> */}
           </div>
-          <div className="relative min-h-[520px] overflow-hidden xl:col-span-6 xl:min-h-[700px]">
-            <Image alt="ComEat efo riro with meat" className="object-cover" fill sizes="(min-width: 1024px) 50vw, 100vw" src="/images/menu/efo-riro.webp" />
-          </div>
+          <SoupImageSequence />
         </div>
       </Container>
     </section>

@@ -55,7 +55,7 @@ export default async function AdminMenuPage({ searchParams }: { searchParams: Pr
               <details className="group overflow-hidden rounded-2xl bg-white/[0.035] transition-colors duration-300 open:bg-white/[0.05] hover:bg-white/[0.05]" key={product.id}>
                 <summary className="flex min-h-24 cursor-pointer list-none items-center gap-4 p-4 marker:hidden sm:p-5 [&::-webkit-details-marker]:hidden">
                   <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-surface sm:size-[4.5rem]">
-                    <Image alt="" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none" fill sizes="72px" src={product.imageUrl || "/images/hero.jpg"} />
+                    <Image alt="" className="food-image-crop object-cover" fill sizes="72px" src={product.imageUrl || "/images/hero.jpg"} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">

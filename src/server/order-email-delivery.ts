@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import { db } from "@/server/db";
 import { sendTransactionalEmail } from "@/server/email-delivery";
 
-type OrderEmailKind = "CUSTOMER_CONFIRMATION" | "ADMIN_NOTIFICATION";
+type OrderEmailKind = "CUSTOMER_CONFIRMATION" | "ADMIN_NOTIFICATION" | "DELIVERY_PIN";
 
 type SendOrderEmailOnceInput = {
   html: string;

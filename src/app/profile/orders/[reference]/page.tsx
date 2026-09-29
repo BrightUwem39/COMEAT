@@ -68,6 +68,21 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
         {terminalStatus ? (
           <div className="mb-7 border-l-2 border-orange bg-orange/5 px-5 py-4 text-sm leading-6 text-orange">This order is {order.statusLabel.toLowerCase()}. Review the activity history below for details.</div>
         ) : null}
+        {order.deliveryPin ? (
+          <section className="mb-8 rounded-2xl border border-gold/35 bg-gold/[0.06] p-5 sm:p-6" aria-labelledby="delivery-pin-title">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Secure handoff</p>
+            <div className="mt-3 grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+              <div>
+                <h2 className="font-display text-2xl tracking-[-0.03em] text-foreground" id="delivery-pin-title">Your delivery PIN</h2>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-muted">Give this code to the delivery person only after your food has been handed to you. It confirms that you received the order.</p>
+              </div>
+              <p aria-label={`Delivery PIN ${order.deliveryPin.split("").join(" ")}`} className="rounded-xl border border-gold/30 bg-background px-5 py-4 text-center font-mono text-3xl font-bold tracking-[0.24em] text-gold sm:min-w-52">{order.deliveryPin}</p>
+            </div>
+          </section>
+        ) : null}
+        {order.deliveryConfirmedAt && order.deliveryConfirmationMethod === "PIN" ? (
+          <div className="mb-8 border-l-2 border-emerald-400 bg-emerald-400/[0.06] px-5 py-4 text-sm leading-6 text-muted"><strong className="text-emerald-300">Delivery verified.</strong> Your PIN was accepted on {dateTimeFormatter.format(new Date(order.deliveryConfirmedAt))}.</div>
+        ) : null}
 
         <section className="py-5 sm:py-7" aria-labelledby="order-progress-title">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gold">Live progress</p>
@@ -99,7 +114,7 @@ export default async function CustomerOrderDetailPage({ params }: { params: Prom
               {order.items.map((item) => (
                 <article className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-4 py-4 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:items-center" key={item.id}>
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-background">
-                    <Image alt="" className="object-cover" fill sizes="88px" src={item.productImageUrl || "/images/hero.jpg"} />
+                    <Image alt="" className="food-image-crop object-cover" fill sizes="88px" src={item.productImageUrl || "/images/hero.jpg"} />
                   </div>
                   <div className="min-w-0">
                     <h3 className="font-semibold text-foreground">{item.productName}</h3>
