@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { StorefrontMenuCategoryDTO } from "@/server/menu";
-import { menuCardVariants, menuGridVariants } from "@/lib/animations";
+import { menuGridVariants } from "@/lib/animations";
 import { MenuCard } from "./MenuCard";
 
 type MenuBrowserProps = {
@@ -42,11 +42,15 @@ export function MenuBrowser({ categories }: MenuBrowserProps) {
                 {category.note ? <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">{category.note}</p> : null}
               </div>
             </div>
-            <motion.div animate="visible" className="mt-6 grid items-stretch gap-2.5 min-[360px]:gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4" initial={reduceMotion ? false : "hidden"} variants={reduceMotion ? undefined : menuGridVariants}>
+            <motion.div
+              className="mt-6 grid items-stretch gap-2.5 min-[360px]:gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4"
+              initial={reduceMotion ? false : "hidden"}
+              variants={reduceMotion ? undefined : menuGridVariants}
+              viewport={{ amount: 0.08, once: true }}
+              whileInView={reduceMotion ? undefined : "visible"}
+            >
               {category.items.map((item) => (
-                <motion.div key={item.id} variants={reduceMotion ? undefined : menuCardVariants}>
-                  <MenuCard item={item} />
-                </motion.div>
+                <MenuCard item={item} key={item.id} />
               ))}
             </motion.div>
           </section>

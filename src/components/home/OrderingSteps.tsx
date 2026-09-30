@@ -13,8 +13,10 @@ export function OrderingSteps() {
   return (
     <section className="bg-surface py-12 sm:py-16 lg:py-20">
       <Container>
-        <SectionHeading eyebrow="How it works" singleLine title="From our kitchen to your table." />
-        <ol className="mt-10 grid border-t border-border lg:mt-14 lg:grid-cols-4">
+        <div data-scroll-reveal-item="1">
+          <SectionHeading eyebrow="How it works" singleLine title="From our kitchen to your table." />
+        </div>
+        <ol className="mt-10 grid border-t border-border lg:mt-14 lg:grid-cols-4" data-scroll-reveal-item="2">
           {steps.map((step, index) => <OrderingStep {...step} index={index} key={step.title} showArrow={index < steps.length - 1} />)}
         </ol>
       </Container>

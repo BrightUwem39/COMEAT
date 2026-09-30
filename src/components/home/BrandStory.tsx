@@ -7,7 +7,7 @@ export function BrandStory() {
     <section className="bg-foreground py-8 sm:py-10 lg:py-12">
       <Container>
         <div className="grid items-center gap-12 xl:grid-cols-12 xl:gap-16">
-          <div className="xl:col-span-6">
+          <div className="xl:col-span-6" data-scroll-reveal-item="1">
             <div className="xl:[&_h2]:text-8xl">
               <SectionHeading
                 description="Food with warmth, depth, and a place at the center of the table. ComEat brings familiar Nigerian dishes into a modern, generous dining experience."

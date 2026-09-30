@@ -128,14 +128,53 @@ input[type="search"]::-webkit-search-cancel-button {
   transition: transform 700ms cubic-bezier(0.2, 0.75, 0.25, 1);
 }
 
-.group:hover .image-zoom,
-.group:focus-within .image-zoom {
-  transform: scale(1.035);
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .image-zoom,
+  .group:focus-within .image-zoom {
+    transform: scale(1.035);
+  }
+
+  .group:hover .food-image-crop,
+  .group:focus-within .food-image-crop {
+    transform: scale(1.18);
+  }
 }
 
-.group:hover .food-image-crop,
-.group:focus-within .food-image-crop {
-  transform: scale(1.18);
+.scroll-reveal-shell[data-direction="left"] {
+  --scroll-reveal-x: -1rem;
+}
+
+.scroll-reveal-shell[data-direction="right"] {
+  --scroll-reveal-x: 1rem;
+}
+
+.scroll-reveal-shell [data-scroll-reveal-item] {
+  opacity: 0;
+  transform: translate3d(var(--scroll-reveal-x), 0, 0);
+  transition:
+    opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-shell [data-scroll-reveal-item="2"] {
+  transition-delay: 70ms;
+}
+
+.scroll-reveal-shell [data-scroll-reveal-item="3"] {
+  transition-delay: 140ms;
+}
+
+.scroll-reveal-shell [data-scroll-reveal-item="4"] {
+  transition-delay: 210ms;
+}
+
+.scroll-reveal-shell [data-scroll-reveal-item="5"] {
+  transition-delay: 280ms;
+}
+
+.scroll-reveal-shell[data-visible="true"] [data-scroll-reveal-item] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 @keyframes hero-image-enter {
@@ -297,15 +336,39 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .featured-dishes-rail {
+  position: relative;
+  isolation: isolate;
   width: 100%;
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+  contain: paint;
+}
+
+.featured-dishes-rail::before,
+.featured-dishes-rail::after {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  width: 1.25rem;
+  content: "";
+  pointer-events: none;
+}
+
+.featured-dishes-rail::before {
+  left: 0;
+  background: linear-gradient(to right, var(--background), transparent);
+}
+
+.featured-dishes-rail::after {
+  right: 0;
+  background: linear-gradient(to left, var(--background), transparent);
 }
 
 .featured-dishes-track {
   display: flex;
   width: max-content;
   animation: featured-dishes-scroll 17s linear infinite;
+  backface-visibility: hidden;
   will-change: transform;
 }
 
@@ -328,22 +391,8 @@ input[type="search"]::-webkit-search-cancel-button {
   animation-play-state: paused;
 }
 
-@keyframes final-cta-orb-drift {
-  0%,
-  100% {
-    opacity: 0.35;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    opacity: 0.65;
-    transform: translate3d(-4rem, 2rem, 0) scale(1.15);
-  }
-}
-
 .final-cta-orb {
-  animation: final-cta-orb-drift 7s ease-in-out infinite;
-  will-change: opacity, transform;
+  opacity: 0.5;
 }
 
 ::selection {
@@ -368,6 +417,12 @@ select:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .scroll-reveal-shell [data-scroll-reveal-item] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   html {
     scroll-behavior: auto;
   }
@@ -431,7 +486,12 @@ select:focus-visible {
 
   .featured-dishes-rail {
     overflow-x: auto;
-    mask-image: none;
+    contain: none;
+  }
+
+  .featured-dishes-rail::before,
+  .featured-dishes-rail::after {
+    display: none;
   }
 
   .featured-dishes-track {
