@@ -53,15 +53,15 @@ export async function validateCart(input: CartValidationRequest, client: Prisma.
       : pepperGroup?.options.find((option) => option.code === `level-${item.pepperTolerance}`);
 
     if (proteinGroup?.required && !item.proteinId) {
-      issues.push({ code: "protein_required", message: "Choose a protein for this dish." });
+      issues.push({ code: "protein_required", message: `Choose ${proteinGroup.name.toLowerCase()} for this dish.` });
     } else if (item.proteinId && !proteinOption) {
-      issues.push({ code: "protein_unavailable", message: "The selected protein is no longer available." });
+      issues.push({ code: "protein_unavailable", message: `The selected ${proteinGroup?.name.toLowerCase() ?? "option"} is no longer available.` });
     }
 
     if (grainGroup?.required && !item.grainId) {
-      issues.push({ code: "grain_required", message: "Choose basmati or long-grain rice for this dish." });
+      issues.push({ code: "grain_required", message: `Choose ${grainGroup.name.toLowerCase()} for this dish.` });
     } else if (item.grainId && !grainOption) {
-      issues.push({ code: "grain_unavailable", message: "The selected rice option is no longer available." });
+      issues.push({ code: "grain_unavailable", message: `The selected ${grainGroup?.name.toLowerCase() ?? "option"} is no longer available.` });
     }
 
     if (pepperGroup?.required && item.pepperTolerance === undefined) {

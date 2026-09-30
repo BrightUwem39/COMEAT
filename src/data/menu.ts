@@ -5,7 +5,9 @@ export type MenuItem = {
   pricing?: readonly MenuPrice[];
   priceNote?: string;
   proteins?: readonly MenuProtein[];
+  proteinOptionName?: string;
   grainOptions?: readonly MenuGrain[];
+  grainOptionName?: string;
   requiresPepperTolerance?: boolean;
 };
 
@@ -58,7 +60,7 @@ export const menuCategories: readonly MenuCategory[] = [
         pricing: [{ id: "12-tray", label: "12″ tray", price: 125 }, { id: "24-tray", label: "24″ tray", price: 250 }],
       },
       {
-        id: "ofada-rice", name: "Ofada Rice", image: "/images/menu/ofada-rice.jpeg", grainOptions: riceGrainOptions,
+        id: "ofada-rice", name: "Ofada Rice", image: "/images/menu/ofada-rice.jpeg",
         pricing: [{ id: "12-tray", label: "12″ tray", price: 60 }, { id: "24-tray", label: "24″ tray", price: 120 }],
       },
       {
@@ -78,28 +80,41 @@ export const menuCategories: readonly MenuCategory[] = [
     note: "Preparation choices are confirmed when your order is placed.",
     items: [
       {
-        id: "chicken", name: "Chicken", image: logoPlaceholder, priceNote: "Hard or soft; fried or peppered.",
+        id: "chicken", name: "Chicken", image: logoPlaceholder, priceNote: "Choose chicken type and preparation.",
         pricing: [{ id: "2l", label: "2L", price: 80 }, { id: "12-tray", label: "12″ tray", price: 120 }, { id: "24-tray", label: "24″ tray", price: 240 }],
+        grainOptionName: "Chicken type",
+        grainOptions: [{ id: "hard", label: "Hard" }, { id: "soft", label: "Soft" }],
+        proteinOptionName: "Preparation",
+        proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
-        id: "goat-meat", name: "Goat Meat", image: logoPlaceholder, priceNote: "Fried or peppered.",
+        id: "goat-meat", name: "Goat Meat", image: logoPlaceholder, priceNote: "Choose preparation.",
         pricing: [{ id: "2l", label: "2L", price: 140 }, { id: "12-tray", label: "12″ tray", price: 180 }, { id: "24-tray", label: "24″ tray", price: 360 }],
+        proteinOptionName: "Preparation",
+        proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
-        id: "gizzard", name: "Gizzard", image: logoPlaceholder, priceNote: "Fried or peppered.",
+        id: "gizzard", name: "Gizzard", image: logoPlaceholder, priceNote: "Choose preparation.",
         pricing: [{ id: "2l", label: "2L", price: 60 }, { id: "12-tray", label: "12″ tray", price: 80 }, { id: "24-tray", label: "24″ tray", price: 160 }],
+        proteinOptionName: "Preparation",
+        proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
-        id: "fish", name: "Fish", image: logoPlaceholder, priceNote: "Croaker, tilapia, or whiting; fried or peppered.",
+        id: "fish", name: "Fish", image: logoPlaceholder, priceNote: "Choose fish type and preparation.",
         pricing: [{ id: "2l", label: "2L", price: 100 }, { id: "12-tray", label: "12″ tray", price: 140 }, { id: "24-tray", label: "24″ tray", price: 280 }],
+        grainOptionName: "Fish type",
+        grainOptions: [{ id: "croaker", label: "Croaker" }, { id: "tilapia", label: "Tilapia" }, { id: "whiting", label: "Whiting" }],
+        proteinOptionName: "Preparation",
+        proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
         id: "chicken-drumsticks", name: "Chicken Drumsticks", image: logoPlaceholder,
         pricing: [{ id: "2l", label: "2L", price: 60 }, { id: "12-tray", label: "12″ tray", price: 100 }, { id: "24-tray", label: "24″ tray", price: 200 }],
       },
       {
-        id: "beef-mixed-offal", name: "Beef / Mixed Offal", image: logoPlaceholder, priceNote: "Choose beef or mixed offal when ordering.",
+        id: "beef-mixed-offal", name: "Beef / Mixed Offal", image: logoPlaceholder, priceNote: "Choose a meat option.",
         pricing: [{ id: "2l", label: "2L", price: 60 }, { id: "12-tray", label: "12″ tray", price: 120 }, { id: "24-tray", label: "24″ tray", price: 240 }],
+        proteinOptionName: "Meat option",
         proteins: [{ id: "beef", label: "Beef" }, { id: "mixed-offal", label: "Mixed offal" }],
       },
     ],

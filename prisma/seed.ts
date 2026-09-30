@@ -164,6 +164,18 @@ async function seed() {
 
         let modifierSortOrder = 0;
 
+        if (!item.grainOptions) {
+          await transaction.modifierGroup.deleteMany({
+            where: { productId: product.id, code: "grain" },
+          });
+        }
+
+        if (!item.proteins) {
+          await transaction.modifierGroup.deleteMany({
+            where: { productId: product.id, code: "protein" },
+          });
+        }
+
         if (item.grainOptions) {
           const grainGroup = await transaction.modifierGroup.upsert({
             where: {
@@ -172,7 +184,7 @@ async function seed() {
             create: {
               productId: product.id,
               code: "grain",
-              name: "Rice type",
+              name: item.grainOptionName ?? "Rice type",
               kind: ModifierKind.GRAIN,
               selectionType: ModifierSelectionType.SINGLE,
               required: true,
@@ -181,7 +193,7 @@ async function seed() {
               sortOrder: modifierSortOrder,
             },
             update: {
-              name: "Rice type",
+              name: item.grainOptionName ?? "Rice type",
               kind: ModifierKind.GRAIN,
               selectionType: ModifierSelectionType.SINGLE,
               required: true,
@@ -225,7 +237,7 @@ async function seed() {
             create: {
               productId: product.id,
               code: "protein",
-              name: "Protein",
+              name: item.proteinOptionName ?? "Protein",
               kind: ModifierKind.PROTEIN,
               selectionType: ModifierSelectionType.SINGLE,
               required: true,
@@ -234,7 +246,7 @@ async function seed() {
               sortOrder: modifierSortOrder,
             },
             update: {
-              name: "Protein",
+              name: item.proteinOptionName ?? "Protein",
               kind: ModifierKind.PROTEIN,
               selectionType: ModifierSelectionType.SINGLE,
               required: true,

@@ -254,7 +254,7 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
 
         {item.grainOptions ? (
           <fieldset className="mt-6">
-            <legend className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose rice type <span className="text-gold">Required</span></legend>
+            <legend className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose {item.grainOptionName?.toLowerCase() ?? "rice type"} <span className="text-gold">Required</span></legend>
             <div className="grid grid-cols-2 gap-2">
               {item.grainOptions.map((grain) => (
                 <motion.button
@@ -273,13 +273,25 @@ function OrderPanel({ item, onAdd, onClose, pepperTolerance, reduceMotion, selec
         ) : null}
 
         {item.proteins ? (
-          <label className="mt-6 block">
-            <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose protein</span>
-            <select className="min-h-12 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground outline-none" onChange={(event) => setSelectedProteinId(event.target.value)} required value={selectedProteinId}>
-              <option value="">Select a protein</option>
-              {item.proteins.map((protein) => <option key={protein.id} value={protein.id}>{protein.label}</option>)}
-            </select>
-          </label>
+          <fieldset className="mt-6">
+            <legend className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Choose {item.proteinOptionName?.toLowerCase() ?? "protein"} <span className="text-gold">Required</span></legend>
+            <div className={`grid gap-2 ${item.proteins.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
+              {item.proteins.map((protein) => (
+                <motion.button
+                  aria-pressed={selectedProteinId === protein.id}
+                  className={`min-h-12 rounded-lg border px-3 text-sm font-semibold transition-[background-color,border-color,color] ${selectedProteinId === protein.id ? "border-gold bg-gold text-background" : "border-border bg-background text-muted hover:border-gold/60 hover:text-foreground"}`}
+                  key={protein.id}
+                  onClick={() => setSelectedProteinId(protein.id)}
+                  type="button"
+                  variants={reduceMotion ? undefined : menuControlVariants}
+                  whileHover={reduceMotion ? undefined : "hover"}
+                  whileTap={reduceMotion ? undefined : "tap"}
+                >
+                  {protein.label}
+                </motion.button>
+              ))}
+            </div>
+          </fieldset>
         ) : null}
 
         {requiresPepperTolerance ? <fieldset className="mt-6">

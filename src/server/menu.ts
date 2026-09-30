@@ -234,6 +234,7 @@ function toStorefrontMenuItem(product: MenuProductDTO): MenuItem {
             id: option.id,
             label: option.label,
           })),
+          proteinOptionName: proteinGroup.name,
         }
       : {}),
     ...(grainGroup
@@ -242,6 +243,7 @@ function toStorefrontMenuItem(product: MenuProductDTO): MenuItem {
             id: option.id,
             label: option.label,
           })),
+          grainOptionName: grainGroup.name,
         }
       : {}),
   };
