@@ -26,8 +26,6 @@ const riceGrainOptions: readonly MenuGrain[] = [
   { id: "long-grain", label: "Long-grain" },
 ];
 
-const logoPlaceholder = "/images/comeat-logo.png";
-
 export type MenuCategory = {
   id: string;
   name: string;
@@ -80,7 +78,7 @@ export const menuCategories: readonly MenuCategory[] = [
     note: "Preparation choices are confirmed when your order is placed.",
     items: [
       {
-        id: "chicken", name: "Chicken", image: logoPlaceholder, priceNote: "Choose chicken type and preparation.",
+        id: "chicken", name: "Chicken", image: "/images/menu/chicken.webp", priceNote: "Choose chicken type and preparation.",
         pricing: [{ id: "2l", label: "2L", price: 80 }, { id: "12-tray", label: "12″ tray", price: 120 }, { id: "24-tray", label: "24″ tray", price: 240 }],
         grainOptionName: "Chicken type",
         grainOptions: [{ id: "hard", label: "Hard" }, { id: "soft", label: "Soft" }],
@@ -88,19 +86,19 @@ export const menuCategories: readonly MenuCategory[] = [
         proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
-        id: "goat-meat", name: "Goat Meat", image: logoPlaceholder, priceNote: "Choose preparation.",
+        id: "goat-meat", name: "Goat Meat", image: "/images/menu/goat-meat.webp", priceNote: "Choose preparation.",
         pricing: [{ id: "2l", label: "2L", price: 140 }, { id: "12-tray", label: "12″ tray", price: 180 }, { id: "24-tray", label: "24″ tray", price: 360 }],
         proteinOptionName: "Preparation",
         proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
-        id: "gizzard", name: "Gizzard", image: logoPlaceholder, priceNote: "Choose preparation.",
+        id: "gizzard", name: "Gizzard", image: "/images/menu/gizzard.webp", priceNote: "Choose preparation.",
         pricing: [{ id: "2l", label: "2L", price: 60 }, { id: "12-tray", label: "12″ tray", price: 80 }, { id: "24-tray", label: "24″ tray", price: 160 }],
         proteinOptionName: "Preparation",
         proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
-        id: "fish", name: "Fish", image: logoPlaceholder, priceNote: "Choose fish type and preparation.",
+        id: "fish", name: "Fish", image: "/images/menu/fish.webp", priceNote: "Choose fish type and preparation.",
         pricing: [{ id: "2l", label: "2L", price: 100 }, { id: "12-tray", label: "12″ tray", price: 140 }, { id: "24-tray", label: "24″ tray", price: 280 }],
         grainOptionName: "Fish type",
         grainOptions: [{ id: "croaker", label: "Croaker" }, { id: "tilapia", label: "Tilapia" }, { id: "whiting", label: "Whiting" }],
@@ -108,11 +106,11 @@ export const menuCategories: readonly MenuCategory[] = [
         proteins: [{ id: "fried", label: "Fried" }, { id: "peppered", label: "Peppered" }],
       },
       {
-        id: "chicken-drumsticks", name: "Chicken Drumsticks", image: logoPlaceholder,
+        id: "chicken-drumsticks", name: "Chicken Drumsticks", image: "/images/menu/chicken-drumsticks.webp",
         pricing: [{ id: "2l", label: "2L", price: 60 }, { id: "12-tray", label: "12″ tray", price: 100 }, { id: "24-tray", label: "24″ tray", price: 200 }],
       },
       {
-        id: "beef-mixed-offal", name: "Beef / Mixed Offal", image: logoPlaceholder, priceNote: "Choose a meat option.",
+        id: "beef-mixed-offal", name: "Beef / Mixed Offal", image: "/images/menu/beef-mixed-offal.webp", priceNote: "Choose a meat option.",
         pricing: [{ id: "2l", label: "2L", price: 60 }, { id: "12-tray", label: "12″ tray", price: 120 }, { id: "24-tray", label: "24″ tray", price: 240 }],
         proteinOptionName: "Meat option",
         proteins: [{ id: "beef", label: "Beef" }, { id: "mixed-offal", label: "Mixed offal" }],
@@ -209,15 +207,15 @@ export const menuCategories: readonly MenuCategory[] = [
     shortName: "Sides",
     items: [
       {
-        id: "moi-moi", name: "Moi Moi", image: "/images/menu/moi-moi.webp",
+        id: "moi-moi", name: "Moi Moi", image: "/images/menu/moi-moi-new.webp",
         pricing: [{ id: "12-pieces", label: "12 pieces", price: 60 }, { id: "24-pieces", label: "24 pieces", price: 120 }],
       },
       {
-        id: "gizdodo", name: "Gizdodo", image: logoPlaceholder,
+        id: "gizdodo", name: "Gizdodo", image: "/images/menu/gizdodo.webp",
         pricing: [{ id: "12-tray", label: "12″ tray", price: 120 }, { id: "24-tray", label: "24″ tray", price: 240 }],
       },
       {
-        id: "plantains", name: "Plantain", image: logoPlaceholder, requiresPepperTolerance: false,
+        id: "plantains", name: "Plantain", image: "/images/menu/plantain.webp", requiresPepperTolerance: false,
         pricing: [{ id: "12-tray", label: "12″ tray", price: 60 }, { id: "24-tray", label: "24″ tray", price: 120 }],
       },
       {
@@ -229,7 +227,7 @@ export const menuCategories: readonly MenuCategory[] = [
         pricing: [{ id: "12-tray", label: "12″ tray", price: 50 }, { id: "24-tray", label: "24″ tray", price: 100 }],
       },
       {
-        id: "masa-bowl", name: "Masa Bowl", image: logoPlaceholder, requiresPepperTolerance: false,
+        id: "masa-bowl", name: "Masa Bowl", image: "/images/menu/masa-bowl.webp", requiresPepperTolerance: false,
         pricing: [{ id: "12-tray", label: "12″ tray", price: 50 }, { id: "24-tray", label: "24″ tray", price: 100 }],
       },
     ],
@@ -252,7 +250,7 @@ export const menuCategories: readonly MenuCategory[] = [
         pricing: [{ id: "2l", label: "2L", price: 60 }, { id: "12-tray", label: "12″ tray", price: 75 }, { id: "24-tray", label: "24″ tray", price: 150 }],
       },
       {
-        id: "ewa-agoyin-sauce", name: "Ewa Agoyin Sauce", image: "/images/menu/ewa-agoyin-sauce.webp", priceNote: "12″ and 24″ trays require price confirmation.",
+        id: "ewa-agoyin-sauce", name: "Ewa Agoyin Sauce", image: "/images/menu/ewa-agoyin-sauce.webp",
         pricing: [{ id: "2l", label: "2L", price: 100 }],
       },
     ],
